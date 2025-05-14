@@ -1,0 +1,66 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Bb]in/
+[Oo]bj/
+
+# NuGet
+*.nupkg
+# The packages folder can be ignored because of Package Restore
+**/packages/*
+!**/packages/build/
+!**/packages/repositories.config
+
+# Publish results
+[Dd]ebug/
+[Rr]elease/
+*.Publish.xml
+*.publishsettings
+*.pubxml
+*.pdb
+
+# IIS Express
+/.vs/
+/.vsconfig
+/.vspscc
+/.vscode/
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+# Web server log
+IISExpress/
+
+# Others
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# Azure Pipelines
+azure-pipelines.yml
+
+# OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+Desktop.ini
+$RECYCLE.BIN/
+
+# Bicep build output
+*.bicep.build.json
+
+# Logs
+*.log
+
+# Rider
+.idea/
+*.sln.iml 

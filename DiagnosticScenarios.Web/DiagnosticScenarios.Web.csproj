@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A1B2C3D4-E5F6-4A5B-8C7D-9E0F1A2B3C4D}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DiagnosticScenarios.Web</RootNamespace>
+    <AssemblyName>DiagnosticScenarios.Web</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Default.aspx" />
+    <Content Include="Web.config" />
+    <Content Include="Scenarios\HighCpu\HighCpu1.aspx" />
+    <Content Include="Scenarios\HighMemory\HighMemory1.aspx" />
+    <Content Include="Scenarios\HighMemory\HighMemory2.aspx" />
+    <Content Include="Scenarios\HighMemory\HighMemory3.aspx" />
+    <Content Include="Scenarios\SlowResponse\SlowResponse1.aspx" />
+    <Content Include="Scenarios\SlowDependency\SlowDependency1.aspx" />
+    <Content Include="Scenarios\SlowDependency\SlowDependency2.aspx" />
+    <Content Include="Scenarios\SlowDatabase\SlowDatabase1.aspx" />
+    <Content Include="Scenarios\SlowDatabase\SlowDatabase2.aspx" />
+    <Content Include="Scenarios\Crash\UnhandledException1.aspx" />
+    <Content Include="Scenarios\Crash\StackOverflow1.aspx" />
+    <Content Include="Scenarios\Http500\Http500_1.aspx" />
+    <Content Include="Scenarios\ConnectionPool\ConnectionPool1.aspx" />
+    <Content Include="Scenarios\Deadlock\Deadlock1.aspx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\HighCpu\HighCpu1.aspx.cs">
+      <DependentUpon>HighCpu1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\HighCpu\HighCpu1.aspx.designer.cs">
+      <DependentUpon>HighCpu1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\HighMemory\HighMemory1.aspx.cs">
+      <DependentUpon>HighMemory1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\HighMemory\HighMemory1.aspx.designer.cs">
+      <DependentUpon>HighMemory1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\HighMemory\HighMemory2.aspx.cs">
+      <DependentUpon>HighMemory2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\HighMemory\HighMemory2.aspx.designer.cs">
+      <DependentUpon>HighMemory2.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\HighMemory\HighMemory3.aspx.cs">
+      <DependentUpon>HighMemory3.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\HighMemory\HighMemory3.aspx.designer.cs">
+      <DependentUpon>HighMemory3.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\SlowResponse\SlowResponse1.aspx.cs">
+      <DependentUpon>SlowResponse1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\SlowResponse\SlowResponse1.aspx.designer.cs">
+      <DependentUpon>SlowResponse1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\SlowDependency\SlowDependency1.aspx.cs">
+      <DependentUpon>SlowDependency1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\SlowDependency\SlowDependency1.aspx.designer.cs">
+      <DependentUpon>SlowDependency1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\SlowDependency\SlowDependency2.aspx.cs">
+      <DependentUpon>SlowDependency2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\SlowDependency\SlowDependency2.aspx.designer.cs">
+      <DependentUpon>SlowDependency2.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\SlowDatabase\SlowDatabase1.aspx.cs">
+      <DependentUpon>SlowDatabase1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\SlowDatabase\SlowDatabase1.aspx.designer.cs">
+      <DependentUpon>SlowDatabase1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\SlowDatabase\SlowDatabase2.aspx.cs">
+      <DependentUpon>SlowDatabase2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\SlowDatabase\SlowDatabase2.aspx.designer.cs">
+      <DependentUpon>SlowDatabase2.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\Crash\UnhandledException1.aspx.cs">
+      <DependentUpon>UnhandledException1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\Crash\UnhandledException1.aspx.designer.cs">
+      <DependentUpon>UnhandledException1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\Crash\StackOverflow1.aspx.cs">
+      <DependentUpon>StackOverflow1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\Crash\StackOverflow1.aspx.designer.cs">
+      <DependentUpon>StackOverflow1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\Http500\Http500_1.aspx.cs">
+      <DependentUpon>Http500_1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\Http500\Http500_1.aspx.designer.cs">
+      <DependentUpon>Http500_1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\ConnectionPool\ConnectionPool1.aspx.cs">
+      <DependentUpon>ConnectionPool1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\ConnectionPool\ConnectionPool1.aspx.designer.cs">
+      <DependentUpon>ConnectionPool1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\Deadlock\Deadlock1.aspx.cs">
+      <DependentUpon>Deadlock1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\Deadlock\Deadlock1.aspx.designer.cs">
+      <DependentUpon>Deadlock1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:44300/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project> 

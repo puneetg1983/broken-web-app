@@ -1,0 +1,54 @@
+name: Deploy Diagnostic Scenarios Web App
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
+  AZURE_WEBAPP_PACKAGE_PATH: '$(System.DefaultWorkingDirectory)/_DiagnosticScenarios.Web'
+  DOTNET_VERSION: '4.8'
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Build with MSBuild
+      run: |
+        msbuild DiagnosticScenarios.Web.sln /p:Configuration=Release /p:Platform="Any CPU"
+
+    - name: Publish Web App
+      run: |
+        msbuild DiagnosticScenarios.Web/DiagnosticScenarios.Web.csproj /p:Configuration=Release /p:Platform="Any CPU" /p:DeployOnBuild=true /p:PublishProfile=FolderProfile /p:OutDir=${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Deploy Bicep
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP }}
+        template: ./main.bicep
+        parameters: |
+          appServiceName=${{ env.AZURE_WEBAPP_NAME }}
+          location=${{ secrets.AZURE_LOCATION }}
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} 
