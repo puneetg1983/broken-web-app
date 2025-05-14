@@ -9,7 +9,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
-  AZURE_WEBAPP_PACKAGE_PATH: '$(System.DefaultWorkingDirectory)/_DiagnosticScenarios.Web'
+  AZURE_WEBAPP_PACKAGE_PATH: '${{ github.workspace }}/_DiagnosticScenarios.Web'
 
 jobs:
   build-and-deploy:
