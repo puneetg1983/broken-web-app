@@ -26,11 +26,22 @@ jobs:
       run: |
         New-Item -ItemType Directory -Force -Path ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
+    - name: List Directory Contents
+      shell: pwsh
+      run: |
+        Get-ChildItem -Path ${{ github.workspace }} -Recurse | Select-Object FullName
+
     - name: Build Solution
-      run: msbuild DiagnosticScenarios.Web.sln /p:Configuration=Release /p:Platform="Any CPU" /v:detailed
+      shell: pwsh
+      run: |
+        Set-Location ${{ github.workspace }}
+        msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /v:detailed
 
     - name: Publish Web App
-      run: msbuild DiagnosticScenarios.Web/DiagnosticScenarios.Web.csproj /p:Configuration=Release /p:Platform="Any CPU" /p:DeployOnBuild=true /p:PublishProfile=FolderProfile /p:OutDir=${{ env.AZURE_WEBAPP_PACKAGE_PATH }} /v:detailed
+      shell: pwsh
+      run: |
+        Set-Location ${{ github.workspace }}
+        msbuild DiagnosticScenarios.Web/DiagnosticScenarios.Web.csproj /p:Configuration=Release /p:Platform="Any CPU" /p:DeployOnBuild=true /p:PublishProfile=FolderProfile /p:OutDir=${{ env.AZURE_WEBAPP_PACKAGE_PATH }} /v:detailed
 
     - name: List Published Files
       shell: pwsh
