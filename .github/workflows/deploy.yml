@@ -21,11 +21,21 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
+    - name: Create Publish Directory
+      shell: pwsh
+      run: |
+        New-Item -ItemType Directory -Force -Path ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
     - name: Build Solution
-      run: msbuild DiagnosticScenarios.Web.sln /p:Configuration=Release /p:Platform="Any CPU"
+      run: msbuild DiagnosticScenarios.Web.sln /p:Configuration=Release /p:Platform="Any CPU" /v:detailed
 
     - name: Publish Web App
-      run: msbuild DiagnosticScenarios.Web/DiagnosticScenarios.Web.csproj /p:Configuration=Release /p:Platform="Any CPU" /p:DeployOnBuild=true /p:PublishProfile=FolderProfile /p:OutDir=${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+      run: msbuild DiagnosticScenarios.Web/DiagnosticScenarios.Web.csproj /p:Configuration=Release /p:Platform="Any CPU" /p:DeployOnBuild=true /p:PublishProfile=FolderProfile /p:OutDir=${{ env.AZURE_WEBAPP_PACKAGE_PATH }} /v:detailed
+
+    - name: List Published Files
+      shell: pwsh
+      run: |
+        Get-ChildItem -Path ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} -Recurse | Select-Object FullName
 
     - name: Azure Login
       uses: azure/login@v1
