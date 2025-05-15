@@ -94,6 +94,11 @@ jobs:
         Write-Host "Verifying NUnit installation..."
         Get-ChildItem -Path "tools" -Recurse
 
+    - name: Restore NuGet Packages for Tests
+      run: |
+        Write-Host "Restoring NuGet packages for tests..."
+        nuget restore DiagnosticScenarios.sln -PackagesDirectory packages
+
     - name: Verify Build Output
       run: |
         Write-Host "Verifying build output..."
@@ -108,7 +113,7 @@ jobs:
         Write-Host "Test DLL path: $testDll"
         if (Test-Path $nunitPath) {
             if (Test-Path $testDll) {
-                & $nunitPath $testDll --work="TestResults"
+                & $nunitPath $testDll --work="TestResults" --framework=net-4.8
             } else {
                 Write-Error "Test DLL not found at: $testDll"
                 Write-Host "Current directory contents:"
