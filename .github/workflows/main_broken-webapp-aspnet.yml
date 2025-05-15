@@ -86,7 +86,7 @@ jobs:
     - name: Build Solution in Release Mode
       run: |
         Write-Host "Building solution in Release mode..."
-        msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore
+        msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore /p:OutputPath="bin\Release"
 
     - name: Install NUnit Console Runner
       run: |
@@ -111,6 +111,8 @@ jobs:
                 & $nunitPath $testDll --work="TestResults"
             } else {
                 Write-Error "Test DLL not found at: $testDll"
+                Write-Host "Current directory contents:"
+                Get-ChildItem -Path "DiagnosticScenarios.Web\bin" -Recurse
                 exit 1
             }
         } else {
