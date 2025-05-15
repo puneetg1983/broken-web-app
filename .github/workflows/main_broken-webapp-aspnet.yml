@@ -9,6 +9,9 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  WEBAPP_URL: https://broken-webapp-aspnet-fmfzf8fdakanh8gm.canadacentral-01.azurewebsites.net
+
 jobs:
   build:
     runs-on: windows-latest
@@ -64,4 +67,29 @@ jobs:
           app-name: 'broken-webapp-aspnet'
           slot-name: 'Production'
           package: .
+
+  test:
+    runs-on: windows-latest
+    needs: deploy
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup MSBuild path
+        uses: microsoft/setup-msbuild@v1.0.2
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1.0.5
+
+      - name: Install NUnit.Console
+        run: nuget install NUnit.Console -Version 3.16.3 -OutputDirectory tools
+
+      - name: Restore NuGet packages
+        run: nuget restore
+
+      - name: Build and Run Tests
+        run: |
+          msbuild /t:Build /p:Configuration=Release
+          tools\NUnit.ConsoleRunner.3.16.3\tools\nunit3-console.exe DiagnosticScenarios.Web\bin\Release\DiagnosticScenarios.Web.dll
+        env:
+          WEBAPP_URL: ${{ env.WEBAPP_URL }}
           

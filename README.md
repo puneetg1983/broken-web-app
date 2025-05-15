@@ -141,6 +141,12 @@ These scenarios are designed for educational purposes and should not be used in 
    cd broken-web-app
    ```
 
+3. Update the web app URL:
+   - Open `.github/workflows/main_broken-webapp-aspnet.yml`
+   - Find the `WEBAPP_URL` environment variable
+   - Update its value to match your Azure Web App URL
+   - The URL should be in the format: `https://your-app-name.azurewebsites.net`
+
 #### Deploying to Azure
 1. Create a new Web App in Azure Portal:
    - Go to [Azure Portal](https://portal.azure.com)
@@ -166,10 +172,16 @@ These scenarios are designed for educational purposes and should not be used in 
    - Choose the branch you want to deploy (usually 'main' or 'master')
    - Click "Save"
 
-3. Monitor the deployment:
-   - The first deployment will start automatically
+3. Update the web app URL:
+   - After deployment, copy your web app's URL from the Azure Portal
+   - Open `.github/workflows/main_broken-webapp-aspnet.yml`
+   - Update the `WEBAPP_URL` environment variable with your actual web app URL
+   - Commit and push the changes to trigger a new deployment
+
+4. Monitor the deployment:
+   - The deployment will start automatically after pushing the changes
    - You can monitor the progress in the "Deployment Center"
-   - Once complete, your app will be available at `https://your-app-name.azurewebsites.net`
+   - Once complete, your app will be available at your web app URL
 
 #### Troubleshooting Common Issues
 1. **Deployment fails to start**:
