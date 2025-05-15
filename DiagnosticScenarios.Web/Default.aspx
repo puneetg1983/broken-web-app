@@ -37,11 +37,130 @@
             color: #666;
             margin-left: 10px;
         }
+        .system-info {
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .system-info table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .system-info th, .system-info td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .system-info th {
+            background-color: #f1f1f1;
+            font-weight: bold;
+        }
+        .system-info tr:hover {
+            background-color: #f5f5f5;
+        }
+        .azure-info {
+            background-color: #0072C6;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
     </style>
+    <script type="text/javascript">
+        function updateUptime() {
+            var startTime = new Date('<%= StartTime.ToString("yyyy-MM-dd HH:mm:ss") %>');
+            var now = new Date();
+            var diff = now - startTime;
+            
+            var seconds = Math.floor(diff / 1000);
+            var minutes = Math.floor(seconds / 60);
+            var hours = Math.floor(minutes / 60);
+            var days = Math.floor(hours / 24);
+            
+            var uptimeText = '';
+            if (days > 0) {
+                uptimeText += days + ' day' + (days > 1 ? 's' : '') + ' ';
+            }
+            if (hours % 24 > 0) {
+                uptimeText += (hours % 24) + ' hour' + ((hours % 24) > 1 ? 's' : '') + ' ';
+            }
+            if (minutes % 60 > 0) {
+                uptimeText += (minutes % 60) + ' minute' + ((minutes % 60) > 1 ? 's' : '') + ' ';
+            }
+            if (seconds % 60 > 0) {
+                uptimeText += (seconds % 60) + ' second' + ((seconds % 60) > 1 ? 's' : '') + ' ';
+            }
+            
+            document.getElementById('uptime').textContent = uptimeText;
+        }
+        
+        // Update uptime every second
+        setInterval(updateUptime, 1000);
+        // Initial update
+        updateUptime();
+    </script>
 </head>
 <body>
     <form id="form1" runat="server">
         <h1>Diagnostic Scenarios</h1>
+        
+        <div class="system-info">
+            <h2>System Information <span class="azure-info">Azure App Service</span></h2>
+            <table>
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td>App Service Name</td>
+                    <td><%= AppServiceName %></td>
+                </tr>
+                <tr>
+                    <td>App Service Plan</td>
+                    <td><%= AppServicePlan %></td>
+                </tr>
+                <tr>
+                    <td>Region</td>
+                    <td><%= Region %></td>
+                </tr>
+                <tr>
+                    <td>Deployment Slot</td>
+                    <td><%= AppServiceSlot %></td>
+                </tr>
+                <tr>
+                    <td>Instance ID</td>
+                    <td><%= InstanceId %></td>
+                </tr>
+                <tr>
+                    <td>Machine Name</td>
+                    <td><%= MachineName %></td>
+                </tr>
+                <tr>
+                    <td>Environment</td>
+                    <td><%= Environment %></td>
+                </tr>
+                <tr>
+                    <td>Process ID</td>
+                    <td><%= ProcessId %></td>
+                </tr>
+                <tr>
+                    <td>Uptime</td>
+                    <td id="uptime"></td>
+                </tr>
+                <tr>
+                    <td>Process Bitness</td>
+                    <td><%= ProcessBitness %></td>
+                </tr>
+                <tr>
+                    <td>Hostname</td>
+                    <td><%= Hostname %></td>
+                </tr>
+            </table>
+        </div>
         
         <div class="scenario-group">
             <h2>High CPU Scenarios</h2>
