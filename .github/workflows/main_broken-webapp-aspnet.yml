@@ -113,7 +113,7 @@ jobs:
         Write-Host "Test DLL path: $testDll"
         if (Test-Path $nunitPath) {
             if (Test-Path $testDll) {
-                & $nunitPath $testDll --work="TestResults" --framework=net-4.8
+                & $nunitPath $testDll --work="TestResults" --framework=net-4.8 --agents=1 --noheader --noresult
             } else {
                 Write-Error "Test DLL not found at: $testDll"
                 Write-Host "Current directory contents:"
