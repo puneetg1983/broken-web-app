@@ -123,7 +123,7 @@ These scenarios are designed for educational purposes and should not be used in 
 
 ## Deployment to Azure
 
-### Using GitHub Actions
+### Using Azure Portal and GitHub Actions
 
 #### Prerequisites
 1. A GitHub account (create one at [github.com](https://github.com) if you don't have one)
@@ -141,88 +141,46 @@ These scenarios are designed for educational purposes and should not be used in 
    cd broken-web-app
    ```
 
-#### Configuring GitHub Secrets
-1. Go to your forked repository on GitHub
-2. Click on "Settings" tab
-3. In the left sidebar, click on "Secrets and variables" → "Actions"
-4. Click on "New repository secret"
-5. Add the following secrets one by one:
+#### Deploying to Azure
+1. Create a new Web App in Azure Portal:
+   - Go to [Azure Portal](https://portal.azure.com)
+   - Click "Create a resource"
+   - Search for "Web App" and select it
+   - Click "Create"
+   - Fill in the basic details:
+     - Subscription: Choose your subscription
+     - Resource Group: Create new or select existing
+     - Name: Choose a unique name for your web app
+     - Publish: Code
+     - Runtime stack: .NET 4.8
+     - Operating System: Windows
+     - Region: Choose a region close to your users
+   - Click "Review + create" and then "Create"
 
-   a. `AZURE_CREDENTIALS`:
-   - Create an Azure service principal:
-     ```bash
-     az ad sp create-for-rbac --name "myApp" --role contributor \
-                             --scopes /subscriptions/{subscription-id} \
-                             --sdk-auth
-     ```
-   - Copy the entire JSON output and paste it as the secret value
+2. Configure GitHub Actions deployment:
+   - Once the Web App is created, go to its overview page
+   - Click on "Deployment Center" in the left menu
+   - Select "GitHub Actions" as the source
+   - Click "Configure"
+   - Select your GitHub repository
+   - Choose the branch you want to deploy (usually 'main' or 'master')
+   - Click "Save"
 
-   b. `AZURE_SUBSCRIPTION_ID`:
-   - Get your subscription ID:
-     ```bash
-     az account show --query id -o tsv
-     ```
-   - Copy the output and paste it as the secret value
-
-   c. `AZURE_RESOURCE_GROUP`:
-   - Create a resource group in Azure:
-     ```bash
-     az group create --name myResourceGroup --location eastus
-     ```
-   - Use the resource group name as the secret value
-
-   d. `AZURE_WEBAPP_NAME`:
-   - Choose a unique name for your web app (e.g., "my-diagnostic-app")
-   - This name must be globally unique across all of Azure
-   - Use this name as the secret value
-
-   e. `AZURE_LOCATION`:
-   - Choose an Azure region (e.g., "eastus", "westeurope")
-   - Common values:
-     - `eastus` (East US)
-     - `westeurope` (West Europe)
-     - `southeastasia` (Southeast Asia)
-   - Use the region name as the secret value
-
-#### Understanding the Deployment Process
-The GitHub Actions workflow will automatically:
-1. Build the application:
-   - Compiles the .NET code
-   - Creates the deployment package
-
-2. Deploy the infrastructure:
-   - Uses Azure Bicep templates to create:
-     - Azure Web App
-     - Required networking components
-     - Security configurations
-
-3. Deploy the application:
-   - Uploads the compiled application
-   - Configures the web app settings
-   - Starts the application
-
-#### Monitoring the Deployment
-1. Go to your repository on GitHub
-2. Click on the "Actions" tab
-3. You'll see the deployment workflow running
-4. Click on the workflow to see detailed progress
-5. Green checkmarks indicate successful steps
-6. Red X marks indicate failed steps (click to see error details)
+3. Monitor the deployment:
+   - The first deployment will start automatically
+   - You can monitor the progress in the "Deployment Center"
+   - Once complete, your app will be available at `https://your-app-name.azurewebsites.net`
 
 #### Troubleshooting Common Issues
-1. **Workflow fails to start**:
-   - Check if all required secrets are configured
-   - Verify your Azure credentials are correct
+1. **Deployment fails to start**:
+   - Check if the repository is properly connected
+   - Verify the branch name is correct
 
 2. **Build fails**:
-   - Check the build logs in the Actions tab
+   - Check the build logs in the Deployment Center
    - Verify your code compiles locally
 
-3. **Deployment fails**:
-   - Check Azure portal for resource creation status
-   - Verify your Azure subscription has sufficient permissions
-
-4. **Web App not accessible**:
+3. **Web App not accessible**:
    - Check the deployment logs
    - Verify the web app is running in Azure portal
 
