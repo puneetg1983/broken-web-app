@@ -74,7 +74,6 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
-    
     - name: Setup MSBuild path
       uses: microsoft/setup-msbuild@v1.0.2
 
@@ -84,18 +83,36 @@ jobs:
     - name: Restore NuGet packages
       run: nuget restore
 
-    - name: Build and Run Tests
+    - name: Build Solution in Release Mode
       run: |
-        msbuild /t:Build /p:Configuration=Release
+        Write-Host "Building solution in Release mode..."
+        msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore
+
+    - name: Install NUnit Console Runner
+      run: |
         nuget install NUnit.ConsoleRunner -Version 3.16.3 -OutputDirectory tools
-        Write-Host "Current directory: $(Get-Location)"
-        Write-Host "Listing tools directory:"
+        Write-Host "Verifying NUnit installation..."
         Get-ChildItem -Path "tools" -Recurse
+
+    - name: Verify Build Output
+      run: |
+        Write-Host "Verifying build output..."
+        Get-ChildItem -Path "DiagnosticScenarios.Web\bin\Release" -Recurse
+
+    - name: Run NUnit Tests
+      run: |
         Write-Host "Running NUnit tests..."
         $nunitPath = Join-Path $env:GITHUB_WORKSPACE "tools\NUnit.ConsoleRunner.3.16.3\tools\nunit3-console.exe"
         Write-Host "NUnit path: $nunitPath"
+        $testDll = Join-Path $env:GITHUB_WORKSPACE "DiagnosticScenarios.Web\bin\Release\DiagnosticScenarios.Web.dll"
+        Write-Host "Test DLL path: $testDll"
         if (Test-Path $nunitPath) {
-            & $nunitPath "$env:GITHUB_WORKSPACE\DiagnosticScenarios.Web\bin\Release\DiagnosticScenarios.Web.dll"
+            if (Test-Path $testDll) {
+                & $nunitPath $testDll --work="TestResults"
+            } else {
+                Write-Error "Test DLL not found at: $testDll"
+                exit 1
+            }
         } else {
             Write-Error "NUnit console runner not found at: $nunitPath"
             exit 1
