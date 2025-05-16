@@ -29,6 +29,8 @@ namespace DiagnosticScenarios.Tests
         [Test]
         public async Task TestHighCpuScenarios()
         {
+            // These pages are interactive and require button clicks to start the simulation
+            // We'll just verify the pages load successfully
             var response1 = await _httpClient.GetAsync($"{_baseUrl}/Scenarios/HighCpu/HighCpu1.aspx");
             var response2 = await _httpClient.GetAsync($"{_baseUrl}/Scenarios/HighCpu/HighCpu2.aspx");
             var response3 = await _httpClient.GetAsync($"{_baseUrl}/Scenarios/HighCpu/HighCpu3.aspx");
@@ -97,6 +99,8 @@ namespace DiagnosticScenarios.Tests
         [Test]
         public async Task TestConnectionPoolScenarios()
         {
+            // This page is interactive and requires a button click to start the simulation
+            // We'll just verify the page loads successfully
             var response1 = await _httpClient.GetAsync($"{_baseUrl}/Scenarios/ConnectionPool/ConnectionPool1.aspx");
             Assert.That(response1.IsSuccessStatusCode, Is.True, "Connection Pool Scenario 1 failed");
         }
