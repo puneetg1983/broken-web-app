@@ -20,6 +20,12 @@ namespace DiagnosticScenarios.Tests
             _httpClient = new HttpClient();
         }
 
+        [OneTimeTearDown]
+        public void Cleanup()
+        {
+            _httpClient?.Dispose();
+        }
+
         [Test]
         public async Task TestHighCpuScenarios()
         {
