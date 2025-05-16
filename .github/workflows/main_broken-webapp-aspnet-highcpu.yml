@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  WEBAPP_URL: https://broken-webapp-aspnet-fmfzf8fdakanh8gm.canadacentral-01.azurewebsites.net
+  WEBAPP_URL: https://broken-webapp-aspnet-highcpu.azurewebsites.net
 
 jobs:
   build:
@@ -106,3 +106,4 @@ jobs:
       env:
         WEBAPP_URL: ${{ env.WEBAPP_URL }}
           
+
