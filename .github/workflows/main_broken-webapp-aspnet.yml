@@ -95,7 +95,7 @@ jobs:
     - name: Run Tests
       run: |
         Write-Host "Running tests..."
-        msbuild DiagnosticScenarios.Tests\DiagnosticScenarios.Tests.csproj /p:Configuration=Release /t:VSTest /p:VSTestNoBuild=true
+        dotnet test DiagnosticScenarios.Tests/DiagnosticScenarios.Tests.csproj --configuration Release
       env:
         WEBAPP_URL: ${{ env.WEBAPP_URL }}
           
