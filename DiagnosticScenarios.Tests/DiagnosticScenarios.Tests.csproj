@@ -17,4 +17,8 @@
     <ProjectReference Include="..\DiagnosticScenarios.Web\DiagnosticScenarios.Web.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+
 </Project>
