@@ -64,6 +64,33 @@ if (-not (Test-Path $existingWorkflowPath)) {
 
 Write-Host "Found existing workflow file at $existingWorkflowPath" -ForegroundColor Green
 
+# Function to remove WEBSITE_RUN_FROM_PACKAGE setting from web apps
+function Remove-RunFromPackageSetting {
+    param (
+        [string]$ResourceGroup
+    )
+    
+    Write-Host "Removing WEBSITE_RUN_FROM_PACKAGE setting from all web apps in resource group $ResourceGroup..." -ForegroundColor Cyan
+    
+    # Get all web apps in the resource group
+    $webapps = az webapp list --resource-group $ResourceGroup --query "[?contains(name, 'broken-webapp-aspnet')].name" --output tsv
+    
+    foreach ($webapp in $webapps) {
+        Write-Host "Removing WEBSITE_RUN_FROM_PACKAGE setting from $webapp..." -ForegroundColor Yellow
+        
+        # Delete the WEBSITE_RUN_FROM_PACKAGE setting
+        az webapp config appsettings delete --name $webapp --resource-group $ResourceGroup --setting-names WEBSITE_RUN_FROM_PACKAGE
+        
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "Successfully removed WEBSITE_RUN_FROM_PACKAGE setting from $webapp" -ForegroundColor Green
+        } else {
+            Write-Host "Failed to remove WEBSITE_RUN_FROM_PACKAGE setting from $webapp" -ForegroundColor Red
+        }
+    }
+    
+    Write-Host "Completed removing WEBSITE_RUN_FROM_PACKAGE settings" -ForegroundColor Green
+}
+
 # Create web apps with scenario-based names
 $newApps = @()
 for ($i = 0; $i -lt $scenarioCount; $i++) {
@@ -89,11 +116,11 @@ for ($i = 0; $i -lt $scenarioCount; $i++) {
             continue
         }
         
-        # Configure app settings similar to existing app
+        # Configure app settings - REMOVED WEBSITE_RUN_FROM_PACKAGE=1
         az webapp config appsettings set `
             --name $newAppName `
             --resource-group $resourceGroup `
-            --settings WEBSITE_RUN_FROM_PACKAGE=1 ASPNETCORE_ENVIRONMENT=Production
+            --settings ASPNETCORE_ENVIRONMENT=Production
         
         # Set up Application Insights
         $appInsightsName = "$newAppName-insights"
@@ -219,6 +246,9 @@ function Update-WorkflowUrls {
 
 # Run the function to update workflow URLs with actual hostnames
 Update-WorkflowUrls
+
+# Remove WEBSITE_RUN_FROM_PACKAGE from all existing apps
+Remove-RunFromPackageSetting -ResourceGroup $resourceGroup
 
 Write-Host "`nNext Steps:" -ForegroundColor Magenta
 Write-Host "1. Commit and push the workflow files to your GitHub repository"
