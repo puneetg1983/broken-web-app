@@ -111,8 +111,9 @@ for ($i = 0; $i -lt $scenarioCount; $i++) {
             --settings APPINSIGHTS_INSTRUMENTATIONKEY=$instrumentationKey ApplicationInsightsAgent_EXTENSION_VERSION="~3"
     }
     
-    # Get the URL of the newly created app
-    $newWebAppUrl = "https://$newAppName.azurewebsites.net"
+    # Get the actual hostname of the newly created app
+    $actualHostname = az webapp show --name $newAppName --resource-group $resourceGroup --query defaultHostName --output tsv
+    $newWebAppUrl = "https://$actualHostname"
     
     # Create GitHub Actions workflow file for this app
     $workflowFileName = ".github/workflows/main_$newAppName.yml"
@@ -138,6 +139,7 @@ for ($i = 0; $i -lt $scenarioCount; $i++) {
         Name = $newAppName
         Scenario = $scenario
         URL = $newWebAppUrl
+        Hostname = $actualHostname
         WorkflowFile = $workflowFileName
     }
     
@@ -162,6 +164,61 @@ foreach ($app in $newApps) {
 Write-Host "`nAuthentication Information:" -ForegroundColor Magenta
 Write-Host "Using the same authentication mechanism as the existing workflow file." -ForegroundColor Yellow
 Write-Host "No modifications made to the authentication section of the workflow." -ForegroundColor Yellow
+
+# Function to update WEBAPP_URLs in workflow files with actual hostnames
+function Update-WorkflowUrls {
+    Write-Host "`nUpdating workflow files with actual hostnames..." -ForegroundColor Cyan
+    
+    # Get the list of web apps and their hostnames
+    $webapps = az webapp list --resource-group $resourceGroup --query "[?contains(name, 'broken-webapp-aspnet')].[name, defaultHostName]" | ConvertFrom-Json
+    
+    # Create a hashtable to store the app names and their hostnames
+    $hostnameMap = @{}
+    foreach ($webapp in $webapps) {
+        $appName = $webapp[0]
+        $hostname = $webapp[1]
+        $hostnameMap[$appName] = $hostname
+        Write-Host "App: $appName, Hostname: $hostname" -ForegroundColor Yellow
+    }
+    
+    # Update the YAML files
+    $workflowDir = ".github/workflows"
+    $workflowFiles = Get-ChildItem -Path $workflowDir -Filter "main_broken-webapp-aspnet-*.yml"
+    
+    foreach ($file in $workflowFiles) {
+        $appName = $file.Name -replace "main_", "" -replace "\.yml", ""
+        
+        if ($hostnameMap.ContainsKey($appName)) {
+            $hostname = $hostnameMap[$appName]
+            Write-Host "Updating $($file.FullName) with hostname: $hostname" -ForegroundColor Green
+            
+            # Read the file content line by line
+            $content = Get-Content -Path $file.FullName
+            $newContent = @()
+            
+            for ($i = 0; $i -lt $content.Length; $i++) {
+                if ($content[$i] -match "WEBAPP_URL: https://.+") {
+                    $newContent += "  WEBAPP_URL: https://$hostname"
+                } else {
+                    $newContent += $content[$i]
+                }
+            }
+            
+            # Write the updated content back to the file
+            Set-Content -Path $file.FullName -Value $newContent
+            
+            Write-Host "Updated $($file.Name) successfully" -ForegroundColor Green
+        }
+        else {
+            Write-Host "Warning: Could not find hostname for $appName" -ForegroundColor Red
+        }
+    }
+    
+    Write-Host "All workflow files updated with correct hostnames." -ForegroundColor Green
+}
+
+# Run the function to update workflow URLs with actual hostnames
+Update-WorkflowUrls
 
 Write-Host "`nNext Steps:" -ForegroundColor Magenta
 Write-Host "1. Commit and push the workflow files to your GitHub repository"
