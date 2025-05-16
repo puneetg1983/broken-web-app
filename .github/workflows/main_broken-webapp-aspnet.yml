@@ -92,10 +92,17 @@ jobs:
         Write-Host "Building solution in Release mode..."
         msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore /p:OutputPath="bin\Release"
 
+    - name: Install NUnit Console Runner
+      run: |
+        Write-Host "Installing NUnit Console Runner..."
+        nuget install NUnit.ConsoleRunner -Version 3.16.3 -OutputDirectory tools
+
     - name: Run Tests
       run: |
         Write-Host "Running tests..."
-        dotnet test DiagnosticScenarios.Tests/DiagnosticScenarios.Tests.csproj --configuration Release
+        $nunitPath = Join-Path $env:GITHUB_WORKSPACE "tools\NUnit.ConsoleRunner.3.16.3\tools\nunit3-console.exe"
+        $testDll = Join-Path $env:GITHUB_WORKSPACE "DiagnosticScenarios.Tests\bin\Release\DiagnosticScenarios.Tests.dll"
+        & $nunitPath $testDll --framework=net-4.8
       env:
         WEBAPP_URL: ${{ env.WEBAPP_URL }}
           
