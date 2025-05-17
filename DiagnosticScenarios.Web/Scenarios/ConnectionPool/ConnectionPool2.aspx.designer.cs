@@ -1,3 +1,8 @@
+using System;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.HtmlControls;
+
 namespace DiagnosticScenarios.Web.Scenarios.ConnectionPool
 {
     public partial class ConnectionPool2

@@ -7,7 +7,7 @@ namespace DiagnosticScenarios.Web.Scenarios.ConnectionPool
 {
     public partial class ConnectionPool2 : Page
     {
-        private static bool _isRunning = false;
+        private static volatile bool _isRunning = false;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -32,6 +32,10 @@ namespace DiagnosticScenarios.Web.Scenarios.ConnectionPool
                     {
                         try
                         {
+                            // Check if simulation should continue
+                            if (!_isRunning)
+                                return;
+                                
                             // Attempt to connect to a non-existent server with a short timeout
                             string connectionString = "Server=NonExistentServer;Database=master;Trusted_Connection=True;Connection Timeout=5;";
                             
