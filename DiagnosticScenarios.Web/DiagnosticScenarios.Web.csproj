@@ -66,6 +66,8 @@
     <Content Include="Default.aspx" />
     <Content Include="Web.config" />
     <Content Include="Scenarios\HighCpu\HighCpu1.aspx" />
+    <Content Include="Scenarios\HighCpu\HighCpu2.aspx" />
+    <Content Include="Scenarios\HighCpu\HighCpu3.aspx" />
     <Content Include="Scenarios\HighMemory\HighMemory1.aspx" />
     <Content Include="Scenarios\HighMemory\HighMemory2.aspx" />
     <Content Include="Scenarios\HighMemory\HighMemory3.aspx" />
@@ -78,6 +80,8 @@
     <Content Include="Scenarios\Crash\StackOverflow1.aspx" />
     <Content Include="Scenarios\Http500\Http500_1.aspx" />
     <Content Include="Scenarios\ConnectionPool\ConnectionPool1.aspx" />
+    <Content Include="Scenarios\ConnectionPool\ConnectionPool2.aspx" />
+    <Content Include="Scenarios\ConnectionPool\ConnectionPool3.aspx" />
     <Content Include="Scenarios\Deadlock\Deadlock1.aspx" />
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +98,20 @@
     </Compile>
     <Compile Include="Scenarios\HighCpu\HighCpu1.aspx.designer.cs">
       <DependentUpon>HighCpu1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\HighCpu\HighCpu2.aspx.cs">
+      <DependentUpon>HighCpu2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\HighCpu\HighCpu2.aspx.designer.cs">
+      <DependentUpon>HighCpu2.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\HighCpu\HighCpu3.aspx.cs">
+      <DependentUpon>HighCpu3.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\HighCpu\HighCpu3.aspx.designer.cs">
+      <DependentUpon>HighCpu3.aspx</DependentUpon>
     </Compile>
     <Compile Include="Scenarios\HighMemory\HighMemory1.aspx.cs">
       <DependentUpon>HighMemory1.aspx</DependentUpon>
@@ -178,6 +196,20 @@
     </Compile>
     <Compile Include="Scenarios\ConnectionPool\ConnectionPool1.aspx.designer.cs">
       <DependentUpon>ConnectionPool1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\ConnectionPool\ConnectionPool2.aspx.cs">
+      <DependentUpon>ConnectionPool2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\ConnectionPool\ConnectionPool2.aspx.designer.cs">
+      <DependentUpon>ConnectionPool2.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\ConnectionPool\ConnectionPool3.aspx.cs">
+      <DependentUpon>ConnectionPool3.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\ConnectionPool\ConnectionPool3.aspx.designer.cs">
+      <DependentUpon>ConnectionPool3.aspx</DependentUpon>
     </Compile>
     <Compile Include="Scenarios\Deadlock\Deadlock1.aspx.cs">
       <DependentUpon>Deadlock1.aspx</DependentUpon>

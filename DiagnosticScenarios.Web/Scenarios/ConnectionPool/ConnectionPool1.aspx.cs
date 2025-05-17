@@ -19,11 +19,11 @@ namespace DiagnosticScenarios.Web.Scenarios.ConnectionPool
             }
         }
 
-        protected void btnLeakConnections_Click(object sender, EventArgs e)
+        protected void btnStartConnectionPool_Click(object sender, EventArgs e)
         {
             try
             {
-                btnLeakConnections.Enabled = false;
+                btnStartConnectionPool.Enabled = false;
                 progress.Visible = true;
                 _isRunning = true;
 
@@ -66,7 +66,7 @@ namespace DiagnosticScenarios.Web.Scenarios.ConnectionPool
             }
             finally
             {
-                btnLeakConnections.Enabled = true;
+                btnStartConnectionPool.Enabled = true;
                 progress.Visible = false;
             }
         }
