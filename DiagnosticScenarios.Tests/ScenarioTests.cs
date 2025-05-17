@@ -34,7 +34,7 @@ namespace DiagnosticScenarios.Tests
         {
             Console.WriteLine($"[{DateTime.Now}] Making warmup request to ensure app is running...");
             int maxRetries = 5;
-            int retryDelaySeconds = 10;
+            int retryDelaySeconds = 50;
             
             for (int attempt = 1; attempt <= maxRetries; attempt++)
             {
@@ -113,7 +113,7 @@ namespace DiagnosticScenarios.Tests
                         throw;
                     
                     Console.WriteLine($"[{DateTime.Now}] Request timed out for {scenarioName}, retrying...");
-                    await Task.Delay(TimeSpan.FromSeconds(5));
+                    await Task.Delay(TimeSpan.FromSeconds(30));
                 }
                 catch (HttpRequestException ex)
                 {
