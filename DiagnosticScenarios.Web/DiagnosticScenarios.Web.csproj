@@ -78,7 +78,12 @@
     <Content Include="Scenarios\SlowDatabase\SlowDatabase2.aspx" />
     <Content Include="Scenarios\Crash\UnhandledException1.aspx" />
     <Content Include="Scenarios\Crash\StackOverflow1.aspx" />
+    <Content Include="Scenarios\Crash\Crash1.aspx" />
+    <Content Include="Scenarios\Crash\Crash2.aspx" />
+    <Content Include="Scenarios\Crash\Crash3.aspx" />
     <Content Include="Scenarios\Http500\Http500_1.aspx" />
+    <Content Include="Scenarios\Http500\Http500_2.aspx" />
+    <Content Include="Scenarios\Http500\Http500_3.aspx" />
     <Content Include="Scenarios\ConnectionPool\ConnectionPool1.aspx" />
     <Content Include="Scenarios\ConnectionPool\ConnectionPool2.aspx" />
     <Content Include="Scenarios\ConnectionPool\ConnectionPool3.aspx" />
@@ -183,12 +188,47 @@
     <Compile Include="Scenarios\Crash\StackOverflow1.aspx.designer.cs">
       <DependentUpon>StackOverflow1.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Scenarios\Crash\Crash1.aspx.cs">
+      <DependentUpon>Crash1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\Crash\Crash1.aspx.designer.cs">
+      <DependentUpon>Crash1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\Crash\Crash2.aspx.cs">
+      <DependentUpon>Crash2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\Crash\Crash2.aspx.designer.cs">
+      <DependentUpon>Crash2.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\Crash\Crash3.aspx.cs">
+      <DependentUpon>Crash3.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\Crash\Crash3.aspx.designer.cs">
+      <DependentUpon>Crash3.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Scenarios\Http500\Http500_1.aspx.cs">
       <DependentUpon>Http500_1.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Scenarios\Http500\Http500_1.aspx.designer.cs">
       <DependentUpon>Http500_1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\Http500\Http500_2.aspx.cs">
+      <DependentUpon>Http500_2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\Http500\Http500_2.aspx.designer.cs">
+      <DependentUpon>Http500_2.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\Http500\Http500_3.aspx.cs">
+      <DependentUpon>Http500_3.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\Http500\Http500_3.aspx.designer.cs">
+      <DependentUpon>Http500_3.aspx</DependentUpon>
     </Compile>
     <Compile Include="Scenarios\ConnectionPool\ConnectionPool1.aspx.cs">
       <DependentUpon>ConnectionPool1.aspx</DependentUpon>
