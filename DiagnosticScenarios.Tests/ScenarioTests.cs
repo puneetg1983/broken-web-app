@@ -13,7 +13,7 @@ namespace DiagnosticScenarios.Tests
         private HttpClient _httpClient;
 
         [OneTimeSetUp]
-        public void Setup()
+        public async Task Setup()
         {
             // Use local URL when running in development, Azure URL when running in CI/CD
             _baseUrl = Environment.GetEnvironmentVariable("WEBAPP_URL") ?? 
@@ -25,6 +25,53 @@ namespace DiagnosticScenarios.Tests
             _httpClient.DefaultRequestHeaders.Add("User-Agent", "DiagnosticScenarios.Tests");
             // Increase timeout for problematic scenarios
             _httpClient.Timeout = TimeSpan.FromMinutes(2);
+            
+            // Warmup request to ensure the app is running
+            await EnsureAppIsRunning();
+        }
+
+        // Make a warmup request to ensure the app is running
+        private async Task EnsureAppIsRunning()
+        {
+            Console.WriteLine($"[{DateTime.Now}] Making warmup request to ensure app is running...");
+            int maxRetries = 5;
+            int retryDelaySeconds = 10;
+            
+            for (int attempt = 1; attempt <= maxRetries; attempt++)
+            {
+                try
+                {
+                    Console.WriteLine($"[{DateTime.Now}] Warmup attempt {attempt} of {maxRetries}");
+                    var response = await _httpClient.GetAsync(_baseUrl);
+                    
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine($"[{DateTime.Now}] Warmup request succeeded with status code {(int)response.StatusCode} {response.StatusCode}");
+                        return;
+                    }
+                    
+                    Console.WriteLine($"[{DateTime.Now}] Warmup request returned status code {(int)response.StatusCode} {response.StatusCode}");
+                    
+                    if (attempt == maxRetries)
+                    {
+                        Console.WriteLine($"[{DateTime.Now}] WARNING: App may not be ready after {maxRetries} attempts. Tests may fail.");
+                        break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[{DateTime.Now}] Warmup request failed: {ex.GetType().Name}: {ex.Message}");
+                    
+                    if (attempt == maxRetries)
+                    {
+                        Console.WriteLine($"[{DateTime.Now}] WARNING: Could not reach the app after {maxRetries} attempts. Tests may fail.");
+                        break;
+                    }
+                }
+                
+                Console.WriteLine($"[{DateTime.Now}] Waiting {retryDelaySeconds} seconds before next warmup attempt...");
+                await Task.Delay(TimeSpan.FromSeconds(retryDelaySeconds));
+            }
         }
 
         [OneTimeTearDown]
@@ -166,100 +213,15 @@ namespace DiagnosticScenarios.Tests
         [Test]
         public async Task TestConnectionPoolScenarios()
         {
-            // The Connection Pool tests create a special condition that can cause 502 errors
-            // This is expected as part of the test scenario in some cases (connection pool exhaustion)
+            // These pages are interactive and require a button click to start the simulation
+            // We'll just verify the pages load successfully
+            var response1 = await GetWithRetryAsync($"{_baseUrl}/Scenarios/ConnectionPool/ConnectionPool1.aspx", "Connection Pool Scenario 1");
+            var response2 = await GetWithRetryAsync($"{_baseUrl}/Scenarios/ConnectionPool/ConnectionPool2.aspx", "Connection Pool Scenario 2");
+            var response3 = await GetWithRetryAsync($"{_baseUrl}/Scenarios/ConnectionPool/ConnectionPool3.aspx", "Connection Pool Scenario 3");
             
-            try
-            {
-                // These pages are interactive and require a button click to start the simulation
-                // We'll just verify the pages load successfully
-                var connectionPool1Url = $"{_baseUrl}/Scenarios/ConnectionPool/ConnectionPool1.aspx";
-                Console.WriteLine($"[{DateTime.Now}] IMPORTANT: Testing Connection Pool URL: {connectionPool1Url}");
-                
-                // Add more retry attempts for connection pool specifically due to 502 Bad Gateway issues
-                var response1 = await GetWithRetryWithStatusHandlingAsync(connectionPool1Url, "Connection Pool Scenario 1", 
-                    acceptableStatusCodes: new[] { System.Net.HttpStatusCode.OK, System.Net.HttpStatusCode.BadGateway });
-                
-                if (response1.StatusCode == System.Net.HttpStatusCode.BadGateway)
-                {
-                    Console.WriteLine($"[{DateTime.Now}] NOTE: Connection Pool Scenario 1 returned 502 Bad Gateway, which may be expected behavior for this test");
-                    // Continue with the test but mark as inconclusive rather than failed
-                    Assert.Inconclusive("Connection Pool Scenario 1 returned 502 Bad Gateway - this may be expected behavior for a connection pool exhaustion test");
-                }
-                else
-                {
-                    await AssertSuccessfulResponse(response1, "Connection Pool Scenario 1");
-                }
-                
-                var response2 = await GetWithRetryAsync($"{_baseUrl}/Scenarios/ConnectionPool/ConnectionPool2.aspx", "Connection Pool Scenario 2");
-                var response3 = await GetWithRetryAsync($"{_baseUrl}/Scenarios/ConnectionPool/ConnectionPool3.aspx", "Connection Pool Scenario 3");
-                
-                await AssertSuccessfulResponse(response2, "Connection Pool Scenario 2");
-                await AssertSuccessfulResponse(response3, "Connection Pool Scenario 3");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[{DateTime.Now}] ERROR in ConnectionPool test: {ex.GetType().Name}: {ex.Message}");
-                throw;
-            }
-        }
-
-        // Special method to handle 502 errors for connection pool
-        private async Task<HttpResponseMessage> GetWithRetryWithStatusHandlingAsync(
-            string url, 
-            string scenarioName, 
-            System.Net.HttpStatusCode[] acceptableStatusCodes = null, 
-            int maxRetries = 5)
-        {
-            Console.WriteLine($"[{DateTime.Now}] Testing URL with status handling for {scenarioName}: {url}");
-            
-            for (int attempt = 1; attempt <= maxRetries; attempt++)
-            {
-                try
-                {
-                    Console.WriteLine($"[{DateTime.Now}] Attempt {attempt} for {scenarioName}");
-                    var response = await _httpClient.GetAsync(url);
-                    
-                    if (acceptableStatusCodes != null && Array.IndexOf(acceptableStatusCodes, response.StatusCode) >= 0)
-                    {
-                        Console.WriteLine($"[{DateTime.Now}] Received acceptable status code {(int)response.StatusCode} {response.StatusCode} for {scenarioName}");
-                        return response;
-                    }
-                    
-                    // For other response codes, continue retry logic
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return response;
-                    }
-                    
-                    if (attempt == maxRetries)
-                    {
-                        Console.WriteLine($"[{DateTime.Now}] Giving up after {maxRetries} attempts for {scenarioName}");
-                        return response;
-                    }
-                    
-                    Console.WriteLine($"[{DateTime.Now}] Received status code {(int)response.StatusCode} {response.StatusCode}, retrying...");
-                    await Task.Delay(TimeSpan.FromSeconds(10)); // Longer delay for connection pool tests
-                }
-                catch (TaskCanceledException)
-                {
-                    if (attempt == maxRetries)
-                        throw;
-                    
-                    Console.WriteLine($"[{DateTime.Now}] Request timed out for {scenarioName}, retrying...");
-                    await Task.Delay(TimeSpan.FromSeconds(10));
-                }
-                catch (HttpRequestException ex)
-                {
-                    if (attempt == maxRetries)
-                        throw;
-                    
-                    Console.WriteLine($"[{DateTime.Now}] HTTP request error for {scenarioName}: {ex.Message}, retrying...");
-                    await Task.Delay(TimeSpan.FromSeconds(10));
-                }
-            }
-            
-            throw new InvalidOperationException("Should not reach here due to retry logic");
+            await AssertSuccessfulResponse(response1, "Connection Pool Scenario 1");
+            await AssertSuccessfulResponse(response2, "Connection Pool Scenario 2");
+            await AssertSuccessfulResponse(response3, "Connection Pool Scenario 3");
         }
 
         [Test]
