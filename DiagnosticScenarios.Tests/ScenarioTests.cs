@@ -16,8 +16,7 @@ namespace DiagnosticScenarios.Tests
         public async Task Setup()
         {
             // Use local URL when running in development, Azure URL when running in CI/CD
-            _baseUrl = Environment.GetEnvironmentVariable("WEBAPP_URL") ?? 
-                      "https://localhost:44300"; // Default to local development URL
+            _baseUrl = Environment.GetEnvironmentVariable("WEBAPP_URL") ?? "https://localhost:44300"; // Default to local development URL
 
             Console.WriteLine($"[{DateTime.Now}] Using base URL: {_baseUrl}");
 
