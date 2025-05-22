@@ -36,7 +36,7 @@
             </p>
             
             <asp:Button ID="btnConfigError" runat="server" Text="Simulate Configuration Error" 
-                CssClass="button" OnClick="btnConfigError_Click" />
+                CssClass="button" OnClick="btnStartError_Click" />
             
             <asp:Label ID="lblStatus" runat="server" Text="Ready to simulate configuration error..."></asp:Label>
             

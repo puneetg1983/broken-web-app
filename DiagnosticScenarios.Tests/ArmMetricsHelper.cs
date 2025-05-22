@@ -288,7 +288,23 @@ namespace DiagnosticScenarios.Tests
                     }
 
                     var json = JObject.Parse(content);
-                    var timeseries = json["value"]?[0]?["timeseries"]?[0]?["data"];
+                    
+                    // Log the raw response for debugging
+                    TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Raw metrics response: {json}");
+                    
+                    if (json["value"] == null || !json["value"].HasValues)
+                    {
+                        TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Warning: No 'value' array in metrics response");
+                        if (attempt < maxRetries)
+                        {
+                            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Retrying in {retryDelayMinutes} minute...");
+                            await Task.Delay(TimeSpan.FromMinutes(retryDelayMinutes));
+                            continue;
+                        }
+                        return null;
+                    }
+
+                    var timeseries = json["value"][0]?["timeseries"]?[0]?["data"];
                     
                     if (timeseries == null || !timeseries.HasValues)
                     {

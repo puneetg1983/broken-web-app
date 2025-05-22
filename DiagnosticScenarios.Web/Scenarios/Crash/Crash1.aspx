@@ -36,7 +36,7 @@
             </p>
             
             <asp:Button ID="btnCrash" runat="server" Text="Crash Application" 
-                CssClass="button" OnClick="btnCrash_Click" />
+                CssClass="button" OnClick="btnStartCrash_Click" />
             
             <asp:Label ID="lblStatus" runat="server" Text="Ready to simulate crash..."></asp:Label>
             

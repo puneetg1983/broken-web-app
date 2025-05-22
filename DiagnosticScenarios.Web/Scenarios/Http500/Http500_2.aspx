@@ -36,7 +36,7 @@
             </p>
             
             <asp:Button ID="btnFileError" runat="server" Text="Simulate File Access Error" 
-                CssClass="button" OnClick="btnFileError_Click" />
+                CssClass="button" OnClick="btnStartError_Click" />
             
             <asp:Label ID="lblStatus" runat="server" Text="Ready to simulate file access error..."></asp:Label>
             
