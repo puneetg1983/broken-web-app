@@ -155,8 +155,8 @@ jobs:
         & $nunitPath $testDll --framework=net-4.8 --where "cat==ArmMetrics"
       env:
         WEBAPP_URL: ${{ env.WEBAPP_URL }}
-        RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
-        APP_SERVICE_NAME: ${{ secrets.APP_SERVICE_NAME }}
+        RESOURCE_GROUP_NAME: ${{ env.RESOURCE_GROUP_NAME }}
+        APP_SERVICE_NAME: ${{ env.APP_SERVICE_NAME }}
         SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E34A382294604AB38B20E873BFF2ED08 }}
         RUN_ARM_METRICS_TESTS_LOCALLY: 'true'
           
