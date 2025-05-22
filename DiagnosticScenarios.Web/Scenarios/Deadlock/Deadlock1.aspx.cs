@@ -19,13 +19,7 @@ namespace DiagnosticScenarios.Web.Scenarios.Deadlock
 
         protected void btnStartDeadlock_Click(object sender, EventArgs e)
         {
-            lblStatus.Text = "Starting deadlock simulation...";
-            progress.Visible = true;
-            
-            // Start the deadlock simulation
-            Task.Run(() => PerformDeadlockSimulation());
-            
-            lblStatus.Text = "Deadlock simulation started. Check Application Insights for deadlock detection.";
+            Response.Redirect("Deadlock1Actual.aspx");
         }
 
         private void PerformDeadlockSimulation()

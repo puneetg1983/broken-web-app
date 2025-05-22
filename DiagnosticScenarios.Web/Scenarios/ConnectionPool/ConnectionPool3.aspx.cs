@@ -77,5 +77,10 @@ namespace DiagnosticScenarios.Web.Scenarios.ConnectionPool
             _isRunning = false;
             base.OnUnload(e);
         }
+
+        protected void btnStartConnectionPoolTimeout_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("ConnectionPool3Actual.aspx");
+        }
     }
 } 

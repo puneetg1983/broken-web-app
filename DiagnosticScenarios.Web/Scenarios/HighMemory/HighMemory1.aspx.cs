@@ -18,12 +18,7 @@ namespace DiagnosticScenarios.Web.Scenarios.HighMemory
 
         protected void btnStartHighMemory_Click(object sender, EventArgs e)
         {
-            lblStatus.Text = "Starting memory-intensive operation...";
-            
-            // Start the memory-intensive operation asynchronously
-            Task.Run(() => PerformMemoryIntensiveOperation());
-            
-            lblStatus.Text = "Memory-intensive operation started. Check Task Manager to see memory usage.";
+            Response.Redirect("HighMemory1Actual.aspx");
         }
 
         private void PerformMemoryIntensiveOperation()

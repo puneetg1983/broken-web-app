@@ -18,6 +18,11 @@ namespace DiagnosticScenarios.Web.Scenarios.HighCpu
             }
         }
 
+        protected void btnStartHighCpu_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("HighCpu3Actual.aspx");
+        }
+
         protected void btnStartDeadlock_Click(object sender, EventArgs e)
         {
             try

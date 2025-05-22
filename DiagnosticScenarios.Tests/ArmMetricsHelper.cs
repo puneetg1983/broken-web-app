@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using NUnit.Framework;
 
 namespace DiagnosticScenarios.Tests
 {
@@ -34,7 +35,7 @@ namespace DiagnosticScenarios.Tests
                 throw new Exception("Azure CLI not found. Please install it from: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows");
             }
 
-            Console.WriteLine($"[{DateTime.Now}] Using Azure CLI from: {azPath}");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Using Azure CLI from: {azPath}");
             var accessToken = await GetAzureAccessToken(azPath);
             var appServicePlanName = await GetAppServicePlanName(subscriptionId, resourceGroup, appServiceName, accessToken);
             
@@ -73,7 +74,7 @@ namespace DiagnosticScenarios.Tests
 
         private static async Task<string> GetAzureAccessToken(string azPath)
         {
-            Console.WriteLine($"[{DateTime.Now}] Getting Azure access token...");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Getting Azure access token...");
             var psi = new ProcessStartInfo
             {
                 FileName = azPath,
@@ -104,7 +105,7 @@ namespace DiagnosticScenarios.Tests
                     {
                         throw new Exception("Failed to get access token from Azure CLI");
                     }
-                    Console.WriteLine($"[{DateTime.Now}] Successfully obtained Azure access token");
+                    TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Successfully obtained Azure access token");
                     return accessToken;
                 }
             }
@@ -116,7 +117,7 @@ namespace DiagnosticScenarios.Tests
 
         private static async Task<string> GetAppServicePlanName(string subscriptionId, string resourceGroup, string appServiceName, string accessToken)
         {
-            Console.WriteLine($"[{DateTime.Now}] Getting app service plan name...");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Getting app service plan name...");
             var url = $"https://management.azure.com/subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.Web/sites/{appServiceName}?api-version=2021-02-01";
             
             using (var client = new HttpClient())
@@ -141,7 +142,7 @@ namespace DiagnosticScenarios.Tests
                 }
 
                 var appServicePlanName = serverFarmId.Split('/').Last();
-                Console.WriteLine($"[{DateTime.Now}] Found app service plan: {appServicePlanName}");
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Found app service plan: {appServicePlanName}");
                 return appServicePlanName;
             }
         }
@@ -165,7 +166,7 @@ namespace DiagnosticScenarios.Tests
 
         public async Task EnsureAppIsRunning()
         {
-            Console.WriteLine($"[{DateTime.Now}] Making warmup request to ensure app is running...");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Making warmup request to ensure app is running...");
             int maxRetries = 5;
             int retryDelaySeconds = 50;
             
@@ -178,7 +179,7 @@ namespace DiagnosticScenarios.Tests
                 
                 if (attempt < maxRetries)
                 {
-                    Console.WriteLine($"[{DateTime.Now}] Waiting {retryDelaySeconds} seconds before next warmup attempt...");
+                    TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Waiting {retryDelaySeconds} seconds before next warmup attempt...");
                     await Task.Delay(TimeSpan.FromSeconds(retryDelaySeconds));
                 }
             }
@@ -188,46 +189,46 @@ namespace DiagnosticScenarios.Tests
         {
             try
             {
-                Console.WriteLine($"[{DateTime.Now}] Warmup attempt {attempt} of {maxRetries}");
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Warmup attempt {attempt} of {maxRetries}");
                 var response = await _httpClient.GetAsync(_baseUrl);
                 if (response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($"[{DateTime.Now}] Warmup request succeeded with status code {(int)response.StatusCode} {response.StatusCode}");
+                    TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Warmup request succeeded with status code {(int)response.StatusCode} {response.StatusCode}");
                     return true;
                 }
-                Console.WriteLine($"[{DateTime.Now}] Warmup request returned status code {(int)response.StatusCode} {response.StatusCode}");
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Warmup request returned status code {(int)response.StatusCode} {response.StatusCode}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[{DateTime.Now}] Warmup request failed: {ex.GetType().Name}: {ex.Message}");
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Warmup request failed: {ex.GetType().Name}: {ex.Message}");
             }
 
             if (attempt == maxRetries)
             {
-                Console.WriteLine($"[{DateTime.Now}] WARNING: App may not be ready after {maxRetries} attempts. Tests may fail.");
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] WARNING: App may not be ready after {maxRetries} attempts. Tests may fail.");
             }
             return false;
         }
 
         public async Task RestartWebApp()
         {
-            Console.WriteLine($"[{DateTime.Now}] Restarting web app...");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Restarting web app...");
             var restartUrl = $"https://management.azure.com/subscriptions/{_subscriptionId}/resourceGroups/{_resourceGroup}/providers/Microsoft.Web/sites/{_appServiceName}/restart?api-version=2021-02-01";
             var restartResponse = await _armClient.PostAsync(restartUrl, null);
             
             if (!restartResponse.IsSuccessStatusCode)
             {
-                Console.WriteLine($"[{DateTime.Now}] Warning: Failed to restart web app. Status code: {restartResponse.StatusCode}");
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Warning: Failed to restart web app. Status code: {restartResponse.StatusCode}");
                 return;
             }
 
-            Console.WriteLine($"[{DateTime.Now}] Web app restart initiated successfully");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Web app restart initiated successfully");
             await WaitForAppRestart();
         }
 
         private async Task WaitForAppRestart()
         {
-            Console.WriteLine($"[{DateTime.Now}] Waiting for web app to restart and warm up...");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Waiting for web app to restart and warm up...");
             await Task.Delay(TimeSpan.FromSeconds(DEFAULT_RESTART_WAIT_SECONDS));
             
             for (int attempt = 1; attempt <= DEFAULT_WARMUP_RETRIES; attempt++)
@@ -239,60 +240,121 @@ namespace DiagnosticScenarios.Tests
                 
                 if (attempt < DEFAULT_WARMUP_RETRIES)
                 {
-                    Console.WriteLine($"[{DateTime.Now}] Waiting {DEFAULT_WARMUP_RETRY_DELAY_SECONDS} seconds before next warmup attempt...");
+                    TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Waiting {DEFAULT_WARMUP_RETRY_DELAY_SECONDS} seconds before next warmup attempt...");
                     await Task.Delay(TimeSpan.FromSeconds(DEFAULT_WARMUP_RETRY_DELAY_SECONDS));
                 }
             }
             
-            Console.WriteLine($"[{DateTime.Now}] Warning: Web app may not be fully ready after restart");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Warning: Web app may not be fully ready after restart");
         }
 
-        public async Task<HttpResponseMessage> TriggerScenarioWithResponse(string scenarioPath, bool isPost = false, Dictionary<string, string> formData = null)
+        public async Task<HttpResponseMessage> TriggerScenarioWithResponse(string scenarioPath)
         {
-            Console.WriteLine($"[{DateTime.Now}] Triggering scenario: {scenarioPath}");
-            HttpResponseMessage response;
-            
-            if (isPost && formData != null)
-            {
-                var content = new FormUrlEncodedContent(formData);
-                response = await _httpClient.PostAsync($"{_baseUrl}{scenarioPath}", content);
-            }
-            else
-            {
-                response = await _httpClient.GetAsync($"{_baseUrl}{scenarioPath}");
-            }
-            
-            Console.WriteLine($"[{DateTime.Now}] Scenario response status code: {(int)response.StatusCode} {response.StatusCode}");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Triggering scenario: {scenarioPath}");
+            var response = await _httpClient.GetAsync($"{_baseUrl}{scenarioPath}");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Scenario response status code: {(int)response.StatusCode} {response.StatusCode}");
             return response;
         }
 
         public async Task<double?> GetInstanceMetricValue(string metricName, string aggregation = "Average", int intervalMinutes = 5)
         {
-            var (startTime, endTime) = GetMetricTimeRange(intervalMinutes);
-            var url = BuildMetricsUrl(metricName, aggregation, startTime, endTime);
+            const int maxRetries = 5;
+            const int retryDelayMinutes = 1;
+            const int expectedRecords = 5; // We expect 5 minutes worth of data
             
-            Console.WriteLine($"[{DateTime.Now}] Fetching metrics for {metricName}...");
-            Console.WriteLine($"[{DateTime.Now}] Time range: {startTime:yyyy-MM-ddTHH:mm:ssZ} to {endTime:yyyy-MM-ddTHH:mm:ssZ}");
-            
-            try
+            for (int attempt = 1; attempt <= maxRetries; attempt++)
             {
-                var response = await _armClient.GetAsync(url);
-                var content = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"[{DateTime.Now}] Metrics response: {content}");
-
-                if (!response.IsSuccessStatusCode)
+                var (startTime, endTime) = GetMetricTimeRange(intervalMinutes);
+                var url = BuildMetricsUrl(metricName, aggregation, startTime, endTime);
+                
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Fetching metrics for {metricName} (Attempt {attempt}/{maxRetries})...");
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Time range: {startTime:yyyy-MM-ddTHH:mm:ssZ} to {endTime:yyyy-MM-ddTHH:mm:ssZ}");
+                
+                try
                 {
-                    Console.WriteLine($"[{DateTime.Now}] Warning: Failed to get metrics. Status code: {response.StatusCode}");
+                    var response = await _armClient.GetAsync(url);
+                    var content = await response.Content.ReadAsStringAsync();
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Warning: Failed to get metrics. Status code: {response.StatusCode}");
+                        if (attempt < maxRetries)
+                        {
+                            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Retrying in {retryDelayMinutes} minute...");
+                            await Task.Delay(TimeSpan.FromMinutes(retryDelayMinutes));
+                            continue;
+                        }
+                        return null;
+                    }
+
+                    var json = JObject.Parse(content);
+                    var timeseries = json["value"]?[0]?["timeseries"]?[0]?["data"];
+                    
+                    if (timeseries == null || !timeseries.HasValues)
+                    {
+                        TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Warning: No metric data available for {metricName}");
+                        if (attempt < maxRetries)
+                        {
+                            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Retrying in {retryDelayMinutes} minute...");
+                            await Task.Delay(TimeSpan.FromMinutes(retryDelayMinutes));
+                            continue;
+                        }
+                        return null;
+                    }
+
+                    // Print metrics in a table format
+                    TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Metric values for {metricName}:");
+                    TestContext.Progress.WriteLine("┌─────────────────────┬────────────┐");
+                    TestContext.Progress.WriteLine("│ Timestamp           │ Value      │");
+                    TestContext.Progress.WriteLine("├─────────────────────┼────────────┤");
+                    
+                    var validDataPoints = new List<(string timestamp, double value)>();
+                    foreach (var dataPoint in timeseries)
+                    {
+                        var timestamp = dataPoint["timeStamp"]?.Value<string>();
+                        var average = dataPoint["average"]?.Value<double>();
+                        if (average.HasValue)
+                        {
+                            validDataPoints.Add((timestamp, average.Value));
+                            TestContext.Progress.WriteLine($"│ {timestamp,-19} │ {average.Value,10:F2} │");
+                        }
+                    }
+                    TestContext.Progress.WriteLine("└─────────────────────┴────────────┘");
+
+                    // Check if we have all expected records
+                    if (validDataPoints.Count < expectedRecords)
+                    {
+                        TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Warning: Only got {validDataPoints.Count} records, expected {expectedRecords}. Retrying...");
+                        if (attempt < maxRetries)
+                        {
+                            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Retrying in {retryDelayMinutes} minute...");
+                            await Task.Delay(TimeSpan.FromMinutes(retryDelayMinutes));
+                            continue;
+                        }
+                        TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Failed to get all {expectedRecords} records after {maxRetries} attempts");
+                        return null;
+                    }
+
+                    // Get the first valid value
+                    var firstValue = validDataPoints.First().value;
+                    TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Retrieved {metricName} value: {firstValue:F2}");
+                    return firstValue;
+                }
+                catch (Exception ex)
+                {
+                    TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Error getting metrics: {ex.Message}");
+                    if (attempt < maxRetries)
+                    {
+                        TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Retrying in {retryDelayMinutes} minute...");
+                        await Task.Delay(TimeSpan.FromMinutes(retryDelayMinutes));
+                        continue;
+                    }
                     return null;
                 }
+            }
 
-                return ExtractMetricValue(content, metricName);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[{DateTime.Now}] Error getting metrics: {ex.Message}");
-                return null;
-            }
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Failed to get {metricName} metrics after {maxRetries} attempts");
+            return null;
         }
 
         private (DateTime startTime, DateTime endTime) GetMetricTimeRange(int intervalMinutes)
@@ -304,7 +366,7 @@ namespace DiagnosticScenarios.Tests
 
         private string BuildMetricsUrl(string metricName, string aggregation, DateTime startTime, DateTime endTime)
         {
-            return $"https://management.azure.com/subscriptions/{_subscriptionId}/resourceGroups/{_resourceGroup}/providers/Microsoft.Web/serverfarms/{_appServicePlanName}/providers/Microsoft.Insights/metrics" +
+            return $"https://management.azure.com/subscriptions/{_subscriptionId}/resourceGroups/{_resourceGroup}/providers/Microsoft.Web/sites/{_appServiceName}/providers/Microsoft.Insights/metrics" +
                    $"?api-version=2021-05-01" +
                    $"&metricnames={metricName}" +
                    $"&aggregation={aggregation}" +
@@ -312,34 +374,9 @@ namespace DiagnosticScenarios.Tests
                    $"&timespan={startTime:yyyy-MM-ddTHH:mm:ssZ}/{endTime:yyyy-MM-ddTHH:mm:ssZ}";
         }
 
-        private double? ExtractMetricValue(string content, string metricName)
-        {
-            var json = JObject.Parse(content);
-            var timeseries = json["value"]?[0]?["timeseries"]?[0]?["data"];
-            
-            if (timeseries == null || !timeseries.HasValues)
-            {
-                Console.WriteLine($"[{DateTime.Now}] Warning: No metric data available for {metricName}");
-                return null;
-            }
-
-            foreach (var dataPoint in timeseries)
-            {
-                var average = dataPoint["average"]?.Value<double>();
-                if (average.HasValue)
-                {
-                    Console.WriteLine($"[{DateTime.Now}] Retrieved {metricName} value: {average.Value}");
-                    return average.Value;
-                }
-            }
-
-            Console.WriteLine($"[{DateTime.Now}] Warning: No valid average values found for {metricName}");
-            return null;
-        }
-
         public async Task<(double baseline, double after)> RunResourceIntensiveScenario(ScenarioInfo scenario)
         {
-            Console.WriteLine($"[{DateTime.Now}] Starting {scenario.MetricName} scenario test...");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting {scenario.MetricName} scenario test...");
             
             var baseline = await GetBaselineMetrics(scenario.MetricName);
             await RunScenario(scenario);
@@ -351,40 +388,46 @@ namespace DiagnosticScenarios.Tests
 
         private async Task<double> GetBaselineMetrics(string metricName)
         {
-            Console.WriteLine($"[{DateTime.Now}] Getting baseline {metricName} metrics...");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Getting baseline {metricName} metrics...");
             var baseline = await GetInstanceMetricValue(metricName);
             if (!baseline.HasValue)
             {
                 throw new Exception($"Failed to get baseline {metricName} metrics");
             }
-            Console.WriteLine($"[{DateTime.Now}] Baseline {metricName} Percentage: {baseline.Value}%");
+            if (metricName == "CpuTime")
+            {
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Baseline {metricName}: {baseline.Value:F2} seconds");
+            }
+            else if (metricName == "PrivateBytes")
+            {
+                var baselineMB = baseline.Value / (1024 * 1024);
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Baseline {metricName}: {baselineMB:F2}MB");
+            }
             return baseline.Value;
         }
 
         private async Task RunScenario(ScenarioInfo scenario)
         {
-            Console.WriteLine($"[{DateTime.Now}] Getting the {scenario.MetricName} page...");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Getting the {scenario.MetricName} page...");
             var getResponse = await TriggerScenarioWithResponse(scenario.Path);
             if (!getResponse.IsSuccessStatusCode)
             {
                 throw new Exception($"Failed to get {scenario.MetricName} page");
             }
             
-            var content = await getResponse.Content.ReadAsStringAsync();
-            var formData = ExtractFormData(content, scenario.ButtonId, scenario.ButtonText);
-            
             for (int i = 0; i < scenario.Iterations; i++)
             {
-                Console.WriteLine($"[{DateTime.Now}] Running {scenario.MetricName} scenario iteration {i + 1} of {scenario.Iterations}");
-                var response = await TriggerScenarioWithResponse(scenario.Path, true, formData);
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Running {scenario.MetricName} scenario iteration {i + 1} of {scenario.Iterations}");
+                var response = await TriggerScenarioWithResponse(scenario.Path);
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new Exception($"Failed to trigger {scenario.MetricName} scenario");
                 }
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Waiting {scenario.DelayBetweenIterationsSeconds} seconds before next iteration...");
                 await Task.Delay(TimeSpan.FromSeconds(scenario.DelayBetweenIterationsSeconds));
             }
             
-            Console.WriteLine($"[{DateTime.Now}] Waiting for {scenario.MetricName} metrics to be collected...");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Waiting {scenario.WaitForMetricsMinutes} minute for {scenario.MetricName} metrics to be collected...");
             await Task.Delay(TimeSpan.FromMinutes(scenario.WaitForMetricsMinutes));
         }
 
@@ -400,8 +443,20 @@ namespace DiagnosticScenarios.Tests
 
         private void LogMetricComparison(string metricName, double baseline, double after)
         {
-            Console.WriteLine($"[{DateTime.Now}] {metricName} Percentage after scenario: {after}%");
-            Console.WriteLine($"[{DateTime.Now}] {metricName} Percentage increase: {after - baseline}%");
+            if (metricName == "CpuTime")
+            {
+                var increaseSeconds = after - baseline;
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] {metricName} after scenario: {after:F2} seconds");
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] {metricName} increase: {increaseSeconds:F2} seconds");
+            }
+            else if (metricName == "PrivateBytes")
+            {
+                var afterMB = after / (1024 * 1024);
+                var baselineMB = baseline / (1024 * 1024);
+                var increaseMB = afterMB - baselineMB;
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] {metricName} after scenario: {afterMB:F2}MB");
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] {metricName} increase: {increaseMB:F2}MB");
+            }
         }
 
         private Dictionary<string, string> ExtractFormData(string content, string buttonId, string buttonText)
@@ -423,15 +478,35 @@ namespace DiagnosticScenarios.Tests
 
         public void VerifyMetricIncrease(double after, double baseline, string metricType)
         {
-            if (after <= baseline)
+            if (metricType == "CPU")
             {
-                throw new Exception($"{metricType} usage should increase after running the high {metricType.ToLower()} scenario");
+                // For CPU Time, we expect an increase in seconds
+                if (after <= baseline)
+                {
+                    throw new Exception($"{metricType} time should increase after running the high {metricType.ToLower()} scenario");
+                }
+                var increaseSeconds = after - baseline;
+                if (increaseSeconds <= 5) // Expect at least 5 seconds increase
+                {
+                    throw new Exception($"{metricType} time should increase by at least 5 seconds");
+                }
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] High {metricType} scenario test completed successfully. CPU Time increase: {increaseSeconds:F2} seconds");
             }
-            if (after - baseline <= MINIMUM_METRIC_INCREASE_PERCENTAGE)
+            else if (metricType == "Memory")
             {
-                throw new Exception($"{metricType} usage should increase by at least {MINIMUM_METRIC_INCREASE_PERCENTAGE}%");
+                // For Private Bytes, we expect an increase in bytes
+                if (after <= baseline)
+                {
+                    throw new Exception($"{metricType} usage should increase after running the high {metricType.ToLower()} scenario");
+                }
+                var increaseBytes = after - baseline;
+                var increaseMB = increaseBytes / (1024 * 1024);
+                if (increaseMB <= 10) // Expect at least 10MB increase
+                {
+                    throw new Exception($"{metricType} usage should increase by at least 10MB");
+                }
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] High {metricType} scenario test completed successfully. Memory increase: {increaseMB:F2}MB");
             }
-            Console.WriteLine($"[{DateTime.Now}] High {metricType} scenario test completed successfully");
         }
 
         public void VerifyHttp500Response(HttpResponseMessage response, string content)
@@ -440,18 +515,17 @@ namespace DiagnosticScenarios.Tests
             {
                 throw new Exception($"Expected HTTP 500 status code, but got {(int)response.StatusCode} {response.StatusCode}");
             }
-            Console.WriteLine($"[{DateTime.Now}] HTTP 500 scenario test completed successfully");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] HTTP 500 scenario test completed successfully");
         }
 
-        public void VerifySlowResponse(double responseTimeDays)
+        public void VerifySlowResponse(double responseTimeMs)
         {
-            var responseTimeMs = responseTimeDays * 24 * 60 * 60 * 1000;
-            Console.WriteLine($"[{DateTime.Now}] Response Time: {responseTimeMs}ms (raw value: {responseTimeDays} days)");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Response Time: {responseTimeMs}ms");
             if (responseTimeMs <= 1000)
             {
-                throw new Exception("Response time should be above 1000ms");
+                throw new Exception($"Response time should be above 1000ms, but was {responseTimeMs}ms");
             }
-            Console.WriteLine($"[{DateTime.Now}] Slow Response scenario test completed successfully");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Slow Response scenario test completed successfully");
         }
 
         public void Dispose()

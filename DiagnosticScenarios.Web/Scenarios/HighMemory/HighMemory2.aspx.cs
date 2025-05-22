@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
+using System.Threading;
 
 namespace DiagnosticScenarios.Web.Scenarios.HighMemory
 {
@@ -16,6 +17,11 @@ namespace DiagnosticScenarios.Web.Scenarios.HighMemory
             {
                 lblStatus.Text = "Ready to simulate event handler leak...";
             }
+        }
+
+        protected void btnStartHighMemory_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("HighMemory2Actual.aspx");
         }
 
         protected void btnStartLeak_Click(object sender, EventArgs e)

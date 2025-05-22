@@ -46,5 +46,10 @@ namespace DiagnosticScenarios.Web.Scenarios.SlowDatabase
                 progress.Visible = false;
             }
         }
+
+        protected void btnStartSlowQuery_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("SlowDatabase1Actual.aspx");
+        }
     }
 } 

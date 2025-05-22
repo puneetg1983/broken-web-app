@@ -19,6 +19,11 @@ namespace DiagnosticScenarios.Web.Scenarios.ConnectionPool
             }
         }
 
+        protected void btnStartConnectionPoolExhaustion_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("ConnectionPool1Actual.aspx");
+        }
+
         protected void btnStartConnectionPool_Click(object sender, EventArgs e)
         {
             try

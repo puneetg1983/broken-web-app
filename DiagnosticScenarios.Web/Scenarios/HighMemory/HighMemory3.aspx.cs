@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
+using System.Threading;
 
 namespace DiagnosticScenarios.Web.Scenarios.HighMemory
 {
@@ -68,6 +69,11 @@ namespace DiagnosticScenarios.Web.Scenarios.HighMemory
                 btnStartFragmentation.Enabled = true;
                 progress.Visible = false;
             }
+        }
+
+        protected void btnStartHighMemory_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("HighMemory3Actual.aspx");
         }
     }
 } 

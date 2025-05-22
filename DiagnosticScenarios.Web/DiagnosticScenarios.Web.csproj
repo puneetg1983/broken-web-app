@@ -88,6 +88,29 @@
     <Content Include="Scenarios\ConnectionPool\ConnectionPool2.aspx" />
     <Content Include="Scenarios\ConnectionPool\ConnectionPool3.aspx" />
     <Content Include="Scenarios\Deadlock\Deadlock1.aspx" />
+    <Content Include="Scenarios\HighCpu\HighCpu1Actual.aspx" />
+    <Content Include="Scenarios\HighCpu\HighCpu2Actual.aspx" />
+    <Content Include="Scenarios\HighCpu\HighCpu3Actual.aspx" />
+    <Content Include="Scenarios\HighMemory\HighMemory1Actual.aspx" />
+    <Content Include="Scenarios\HighMemory\HighMemory2Actual.aspx" />
+    <Content Include="Scenarios\HighMemory\HighMemory3Actual.aspx" />
+    <Content Include="Scenarios\Http500\Http500_1Actual.aspx" />
+    <Content Include="Scenarios\Http500\Http500_2Actual.aspx" />
+    <Content Include="Scenarios\Http500\Http500_3Actual.aspx" />
+    <Content Include="Scenarios\SlowResponse\SlowResponse1Actual.aspx" />
+    <Content Include="Scenarios\SlowResponse\SlowResponse2Actual.aspx" />
+    <Content Include="Scenarios\SlowResponse\SlowResponse3Actual.aspx" />
+    <Content Include="Scenarios\ConnectionPool\ConnectionPool1Actual.aspx" />
+    <Content Include="Scenarios\ConnectionPool\ConnectionPool2Actual.aspx" />
+    <Content Include="Scenarios\ConnectionPool\ConnectionPool3Actual.aspx" />
+    <Content Include="Scenarios\Crash\Crash1Actual.aspx" />
+    <Content Include="Scenarios\Crash\Crash2Actual.aspx" />
+    <Content Include="Scenarios\Crash\Crash3Actual.aspx" />
+    <Content Include="Scenarios\SlowDatabase\SlowDatabase1Actual.aspx" />
+    <Content Include="Scenarios\SlowDatabase\SlowDatabase2Actual.aspx" />
+    <Content Include="Scenarios\SlowDependency\SlowDependency1Actual.aspx" />
+    <Content Include="Scenarios\SlowDependency\SlowDependency2Actual.aspx" />
+    <Content Include="Scenarios\Deadlock\Deadlock1Actual.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Default.aspx.cs">
@@ -257,6 +280,167 @@
     </Compile>
     <Compile Include="Scenarios\Deadlock\Deadlock1.aspx.designer.cs">
       <DependentUpon>Deadlock1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\HighCpu\HighCpu1Actual.aspx.cs">
+      <DependentUpon>HighCpu1Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\HighCpu\HighCpu1Actual.aspx.designer.cs">
+      <DependentUpon>HighCpu1Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\HighCpu\HighCpu2Actual.aspx.cs">
+      <DependentUpon>HighCpu2Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\HighCpu\HighCpu2Actual.aspx.designer.cs">
+      <DependentUpon>HighCpu2Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\HighCpu\HighCpu3Actual.aspx.cs">
+      <DependentUpon>HighCpu3Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\HighCpu\HighCpu3Actual.aspx.designer.cs">
+      <DependentUpon>HighCpu3Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\HighMemory\HighMemory1Actual.aspx.cs">
+      <DependentUpon>HighMemory1Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\HighMemory\HighMemory1Actual.aspx.designer.cs">
+      <DependentUpon>HighMemory1Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\HighMemory\HighMemory2Actual.aspx.cs">
+      <DependentUpon>HighMemory2Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\HighMemory\HighMemory2Actual.aspx.designer.cs">
+      <DependentUpon>HighMemory2Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\HighMemory\HighMemory3Actual.aspx.cs">
+      <DependentUpon>HighMemory3Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\HighMemory\HighMemory3Actual.aspx.designer.cs">
+      <DependentUpon>HighMemory3Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\Http500\Http500_1Actual.aspx.cs">
+      <DependentUpon>Http500_1Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\Http500\Http500_1Actual.aspx.designer.cs">
+      <DependentUpon>Http500_1Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\Http500\Http500_2Actual.aspx.cs">
+      <DependentUpon>Http500_2Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\Http500\Http500_2Actual.aspx.designer.cs">
+      <DependentUpon>Http500_2Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\Http500\Http500_3Actual.aspx.cs">
+      <DependentUpon>Http500_3Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\Http500\Http500_3Actual.aspx.designer.cs">
+      <DependentUpon>Http500_3Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\SlowResponse\SlowResponse1Actual.aspx.cs">
+      <DependentUpon>SlowResponse1Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\SlowResponse\SlowResponse1Actual.aspx.designer.cs">
+      <DependentUpon>SlowResponse1Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\SlowResponse\SlowResponse2Actual.aspx.cs">
+      <DependentUpon>SlowResponse2Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\SlowResponse\SlowResponse2Actual.aspx.designer.cs">
+      <DependentUpon>SlowResponse2Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\SlowResponse\SlowResponse3Actual.aspx.cs">
+      <DependentUpon>SlowResponse3Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\SlowResponse\SlowResponse3Actual.aspx.designer.cs">
+      <DependentUpon>SlowResponse3Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\ConnectionPool\ConnectionPool1Actual.aspx.cs">
+      <DependentUpon>ConnectionPool1Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\ConnectionPool\ConnectionPool1Actual.aspx.designer.cs">
+      <DependentUpon>ConnectionPool1Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\ConnectionPool\ConnectionPool2Actual.aspx.cs">
+      <DependentUpon>ConnectionPool2Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\ConnectionPool\ConnectionPool2Actual.aspx.designer.cs">
+      <DependentUpon>ConnectionPool2Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\ConnectionPool\ConnectionPool3Actual.aspx.cs">
+      <DependentUpon>ConnectionPool3Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\ConnectionPool\ConnectionPool3Actual.aspx.designer.cs">
+      <DependentUpon>ConnectionPool3Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\Crash\Crash1Actual.aspx.cs">
+      <DependentUpon>Crash1Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\Crash\Crash1Actual.aspx.designer.cs">
+      <DependentUpon>Crash1Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\Crash\Crash2Actual.aspx.cs">
+      <DependentUpon>Crash2Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\Crash\Crash2Actual.aspx.designer.cs">
+      <DependentUpon>Crash2Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\Crash\Crash3Actual.aspx.cs">
+      <DependentUpon>Crash3Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\Crash\Crash3Actual.aspx.designer.cs">
+      <DependentUpon>Crash3Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\SlowDatabase\SlowDatabase1Actual.aspx.cs">
+      <DependentUpon>SlowDatabase1Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\SlowDatabase\SlowDatabase1Actual.aspx.designer.cs">
+      <DependentUpon>SlowDatabase1Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\SlowDatabase\SlowDatabase2Actual.aspx.cs">
+      <DependentUpon>SlowDatabase2Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\SlowDatabase\SlowDatabase2Actual.aspx.designer.cs">
+      <DependentUpon>SlowDatabase2Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\SlowDependency\SlowDependency1Actual.aspx.cs">
+      <DependentUpon>SlowDependency1Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\SlowDependency\SlowDependency1Actual.aspx.designer.cs">
+      <DependentUpon>SlowDependency1Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\SlowDependency\SlowDependency2Actual.aspx.cs">
+      <DependentUpon>SlowDependency2Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\SlowDependency\SlowDependency2Actual.aspx.designer.cs">
+      <DependentUpon>SlowDependency2Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\Deadlock\Deadlock1Actual.aspx.cs">
+      <DependentUpon>Deadlock1Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\Deadlock\Deadlock1Actual.aspx.designer.cs">
+      <DependentUpon>Deadlock1Actual.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -17,6 +17,11 @@ namespace DiagnosticScenarios.Web.Scenarios.SlowDependency
             }
         }
 
+        protected void btnStartSlowApi_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("SlowDependency1Actual.aspx");
+        }
+
         protected async void btnStartSlowDependency_Click(object sender, EventArgs e)
         {
             try

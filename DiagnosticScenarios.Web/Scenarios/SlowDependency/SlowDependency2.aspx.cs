@@ -60,5 +60,10 @@ namespace DiagnosticScenarios.Web.Scenarios.SlowDependency
                 client.Timeout = TimeSpan.FromSeconds(100);
             }
         }
+
+        protected void btnStartSlowFileSystem_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("SlowDependency2Actual.aspx");
+        }
     }
 } 

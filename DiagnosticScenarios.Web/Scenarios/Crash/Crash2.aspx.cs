@@ -14,6 +14,11 @@ namespace DiagnosticScenarios.Web.Scenarios.Crash
             }
         }
 
+        protected void btnStartStackOverflow_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("Crash2Actual.aspx");
+        }
+
         protected void btnStackOverflow_Click(object sender, EventArgs e)
         {
             try
