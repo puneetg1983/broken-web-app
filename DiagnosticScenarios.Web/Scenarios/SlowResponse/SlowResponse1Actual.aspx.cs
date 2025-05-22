@@ -7,8 +7,8 @@ namespace DiagnosticScenarios.Web.Scenarios.SlowResponse
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Simulate a slow response by waiting for 2 seconds
-            Thread.Sleep(2000);
+            // Simulate a slow response by waiting for 3 seconds
+            Thread.Sleep(3000);
         }
     }
 } 

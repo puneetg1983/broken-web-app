@@ -19,7 +19,10 @@ namespace DiagnosticScenarios.Web.Scenarios.Http500
             {
                 // Log the error and rethrow to trigger HTTP 500
                 System.Diagnostics.Debug.WriteLine($"Database connection error: {ex.Message}");
-                throw;
+                Response.StatusCode = 500;
+                Response.StatusDescription = "Internal Server Error";
+                Response.Write($"<h1>Internal Server Error</h1><p>{ex.Message}</p>");
+                Response.End();
             }
         }
     }

@@ -459,23 +459,6 @@ namespace DiagnosticScenarios.Tests
             }
         }
 
-        private Dictionary<string, string> ExtractFormData(string content, string buttonId, string buttonText)
-        {
-            return new Dictionary<string, string>
-            {
-                { "__VIEWSTATE", ExtractField(content, "__VIEWSTATE") },
-                { "__VIEWSTATEGENERATOR", ExtractField(content, "__VIEWSTATEGENERATOR") },
-                { "__EVENTVALIDATION", ExtractField(content, "__EVENTVALIDATION") },
-                { buttonId, buttonText }
-            };
-        }
-
-        private string ExtractField(string content, string fieldId)
-        {
-            var match = Regex.Match(content, $@"id=""{fieldId}"" value=""([^""]+)""");
-            return match.Success ? match.Groups[1].Value : string.Empty;
-        }
-
         public void VerifyMetricIncrease(double after, double baseline, string metricType)
         {
             if (metricType == "CPU")

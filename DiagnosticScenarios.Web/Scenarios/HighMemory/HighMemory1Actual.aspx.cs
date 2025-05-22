@@ -10,10 +10,15 @@ namespace DiagnosticScenarios.Web.Scenarios.HighMemory
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Allocate 100MB of memory in 1MB chunks
-            for (int i = 0; i < 100; i++)
+            // Allocate 500MB of memory in 10MB chunks
+            for (int i = 0; i < 50; i++)
             {
-                _memoryLeak.Add(new byte[1024 * 1024]); // 1MB
+                _memoryLeak.Add(new byte[10 * 1024 * 1024]); // 10MB
+                // Fill the array with data to prevent optimization
+                for (int j = 0; j < _memoryLeak[i].Length; j++)
+                {
+                    _memoryLeak[i][j] = (byte)(j % 256);
+                }
                 Thread.Sleep(100); // Small delay to make the allocation visible
             }
         }

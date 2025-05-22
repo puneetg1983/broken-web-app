@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Always remember that this project is a .NET 4.8 Framework project and not .NET CORE. All tasks should be executed considering this in mind.

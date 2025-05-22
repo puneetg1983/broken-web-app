@@ -33,12 +33,12 @@ namespace DiagnosticScenarios.Tests
                 Assert.Ignore("Skipping ARM metrics tests. Set RUN_ARM_METRICS_TESTS_LOCALLY=true to run them locally.");
             }
 
-            await InitializeEnvironmentVariables();
+            InitializeEnvironmentVariables();
             await InitializeHelper();
             await EnsureAppIsRunning();
         }
 
-        private async Task InitializeEnvironmentVariables()
+        private void InitializeEnvironmentVariables()
         {
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Initializing environment variables...");
             _baseUrl = Environment.GetEnvironmentVariable("WEBAPP_URL") ?? "https://localhost:44300";
@@ -82,6 +82,10 @@ namespace DiagnosticScenarios.Tests
 
         private async Task EnsureAppIsRunning()
         {
+            if (_helper == null)
+            {
+                throw new InvalidOperationException("Helper is not initialized");
+            }
             await _helper.EnsureAppIsRunning();
         }
 

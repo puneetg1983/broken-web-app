@@ -26,7 +26,12 @@ namespace DiagnosticScenarios.Web.Scenarios.HighCpu
                         // Perform CPU-intensive calculations
                         for (int j = 0; j < 1000000; j++)
                         {
-                            Math.Sqrt(j) * Math.Sin(j) * Math.Cos(j);
+                            var result = Math.Sqrt(j) * Math.Sin(j) * Math.Cos(j);
+                            // Use the result to prevent compiler optimization
+                            if (result > 1000000)
+                            {
+                                break;
+                            }
                         }
                     }
                 });
