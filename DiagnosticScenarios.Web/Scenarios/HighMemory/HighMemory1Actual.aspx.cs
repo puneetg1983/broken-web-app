@@ -12,8 +12,7 @@ namespace DiagnosticScenarios.Web.Scenarios.HighMemory
         {
             try
             {
-                // Allocate 500MB of memory in 5MB chunks with more gradual allocation
-                for (int i = 0; i < 50; i++)
+                for (int i = 0; i < 10; i++)
                 {
                     try
                     {
