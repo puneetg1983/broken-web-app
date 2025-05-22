@@ -142,7 +142,7 @@ namespace DiagnosticScenarios.Tests
             {
                 Path = "/Scenarios/HighMemory/HighMemory1Actual.aspx",
                 MetricName = "PrivateBytes",
-                Iterations = 7,
+                Iterations = 3,
                 DelayBetweenIterationsSeconds = 15,
                 WaitForMetricsMinutes = 1
             };

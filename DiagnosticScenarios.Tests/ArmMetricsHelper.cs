@@ -335,10 +335,11 @@ namespace DiagnosticScenarios.Tests
                         return null;
                     }
 
-                    // Get the first valid value
-                    var firstValue = validDataPoints.First().value;
-                    TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Retrieved {metricName} value: {firstValue:F2}");
-                    return firstValue;
+                    // Get the average of the last 3 values
+                    var lastThreeValues = validDataPoints.Skip(Math.Max(0, validDataPoints.Count - 3)).Select(x => x.value).ToList();
+                    var averageValue = lastThreeValues.Average();
+                    TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Retrieved {metricName} value (average of last 3): {averageValue:F2}");
+                    return averageValue;
                 }
                 catch (Exception ex)
                 {
