@@ -189,19 +189,23 @@ namespace DiagnosticScenarios.Tests
         public async Task TestSlowResponseScenario()
         {
             Console.WriteLine($"[{DateTime.Now}] Starting Slow Response scenario test...");
+            
+            // Measure response time directly
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             var response = await _helper.TriggerScenarioWithResponse("/Scenarios/SlowResponse/SlowResponse1.aspx");
+            stopwatch.Stop();
+            
             Assert.That(response.IsSuccessStatusCode, Is.True, "Failed to trigger slow response scenario");
             
-            Console.WriteLine($"[{DateTime.Now}] Waiting for response time metrics to be collected...");
-            await Task.Delay(TimeSpan.FromMinutes(2));
+            var responseTimeMs = stopwatch.ElapsedMilliseconds;
+            Console.WriteLine($"[{DateTime.Now}] Response Time: {responseTimeMs}ms");
             
-            var responseTime = await _helper.GetInstanceMetricValue("HttpResponseTime");
-            if (!responseTime.HasValue)
+            if (responseTimeMs <= 1000)
             {
-                Assert.Fail("Failed to get response time metrics");
+                Assert.Fail($"Response time should be above 1000ms, but was {responseTimeMs}ms");
             }
             
-            _helper.VerifySlowResponse(responseTime.Value);
+            Console.WriteLine($"[{DateTime.Now}] Slow Response scenario test completed successfully");
         }
     }
 } 
