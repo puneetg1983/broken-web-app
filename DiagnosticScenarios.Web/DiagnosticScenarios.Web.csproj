@@ -113,6 +113,7 @@
     <Content Include="Scenarios\SlowDependency\SlowDependency1Actual.aspx" />
     <Content Include="Scenarios\SlowDependency\SlowDependency2Actual.aspx" />
     <Content Include="Scenarios\Deadlock\Deadlock1Actual.aspx" />
+    <Content Include="ProcessMetrics.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Default.aspx.cs">
@@ -457,6 +458,13 @@
     </Compile>
     <Compile Include="Scenarios\Deadlock\Deadlock1Actual.aspx.designer.cs">
       <DependentUpon>Deadlock1Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ProcessMetrics.aspx.cs">
+      <DependentUpon>ProcessMetrics.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProcessMetrics.aspx.designer.cs">
+      <DependentUpon>ProcessMetrics.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

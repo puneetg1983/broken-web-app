@@ -57,7 +57,7 @@ namespace DiagnosticScenarios.Tests
         {
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Environment variables:");
             TestContext.Progress.WriteLine($"  WEBAPP_URL: {_baseUrl}");
-            TestContext.Progress.WriteLine($"  AZURE_SUBSCRIPTION_ID: {ArmMetricsHelper.GetSubscriptionId()}");
+            TestContext.Progress.WriteLine($"  SUBSCRIPTION_ID: {ArmMetricsHelper.GetSubscriptionId()}");
             TestContext.Progress.WriteLine($"  RESOURCE_GROUP_NAME: {Environment.GetEnvironmentVariable("RESOURCE_GROUP_NAME")}");
             TestContext.Progress.WriteLine($"  APP_SERVICE_NAME: {Environment.GetEnvironmentVariable("APP_SERVICE_NAME")}");
         }

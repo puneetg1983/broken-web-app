@@ -5,7 +5,7 @@ param(
 
 # Set environment variables for ARM metrics tests
 $env:WEBAPP_URL = "https://broken-webapp-aspnet-fmfzf8fdakanh8gm.canadacentral-01.azurewebsites.net"
-$env:AZURE_SUBSCRIPTION_ID = "6b6db65f-680e-4650-b97d-e82ed6a0f583"
+$env:SUBSCRIPTION_ID = "6b6db65f-680e-4650-b97d-e82ed6a0f583"
 $env:RESOURCE_GROUP_NAME = "broken-web-apps"
 $env:APP_SERVICE_NAME = "broken-webapp-aspnet"
 $env:RUN_ARM_METRICS_TESTS_LOCALLY = "true"
@@ -18,10 +18,10 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # Check if we're on the correct subscription
-$currentSub = (az account show --query id -o tsv)
-if ($currentSub -ne $env:AZURE_SUBSCRIPTION_ID) {
-    Write-Host "Switching to subscription $($env:AZURE_SUBSCRIPTION_ID)..."
-    az account set --subscription $env:AZURE_SUBSCRIPTION_ID
+$currentSub = az account show --query id -o tsv
+if ($currentSub -ne $env:SUBSCRIPTION_ID) {
+    Write-Host "Switching to subscription $($env:SUBSCRIPTION_ID)..."
+    az account set --subscription $env:SUBSCRIPTION_ID
 }
 
 # Find MSBuild

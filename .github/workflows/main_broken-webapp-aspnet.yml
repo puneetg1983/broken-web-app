@@ -157,7 +157,7 @@ jobs:
         WEBAPP_URL: ${{ env.WEBAPP_URL }}
         RESOURCE_GROUP_NAME: ${{ env.RESOURCE_GROUP_NAME }}
         APP_SERVICE_NAME: ${{ env.APP_SERVICE_NAME }}
-        AZURE_SUBSCRIPTION_ID: "6b6db65f-680e-4650-b97d-e82ed6a0f583"
+        SUBSCRIPTION_ID: "6b6db65f-680e-4650-b97d-e82ed6a0f583"
         RUN_ARM_METRICS_TESTS_LOCALLY: 'true'
 
     - name: Run HTTP Response Tests
@@ -170,5 +170,5 @@ jobs:
         WEBAPP_URL: ${{ env.WEBAPP_URL }}
         RESOURCE_GROUP_NAME: ${{ env.RESOURCE_GROUP_NAME }}
         APP_SERVICE_NAME: ${{ env.APP_SERVICE_NAME }}
-        AZURE_SUBSCRIPTION_ID: "6b6db65f-680e-4650-b97d-e82ed6a0f583"
+        SUBSCRIPTION_ID: "6b6db65f-680e-4650-b97d-e82ed6a0f583"
         RUN_ARM_METRICS_TESTS_LOCALLY: 'true'

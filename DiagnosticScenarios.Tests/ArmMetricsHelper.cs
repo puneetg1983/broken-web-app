@@ -61,8 +61,8 @@ namespace DiagnosticScenarios.Tests
 
         public static string GetSubscriptionId()
         {
-            return Environment.GetEnvironmentVariable("AZURE_SUBSCRIPTION_ID") ?? 
-                   throw new Exception("AZURE_SUBSCRIPTION_ID environment variable is not set");
+            return Environment.GetEnvironmentVariable("SUBSCRIPTION_ID") ??
+                throw new Exception("SUBSCRIPTION_ID environment variable is not set");
         }
 
         private static string FindAzureCliPath()
