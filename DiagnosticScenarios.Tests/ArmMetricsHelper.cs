@@ -269,6 +269,7 @@ namespace DiagnosticScenarios.Tests
                 
                 TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Fetching metrics for {metricName} (Attempt {attempt}/{maxRetries})...");
                 TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Time range: {startTime:yyyy-MM-ddTHH:mm:ssZ} to {endTime:yyyy-MM-ddTHH:mm:ssZ}");
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Full ARM Metrics URL: {url}");
                 
                 try
                 {
@@ -278,6 +279,8 @@ namespace DiagnosticScenarios.Tests
                     if (!response.IsSuccessStatusCode)
                     {
                         TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Warning: Failed to get metrics. Status code: {response.StatusCode}");
+                        TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Response headers: {string.Join(", ", response.Headers.Select(h => $"{h.Key}: {string.Join(", ", h.Value)}"))}");
+                        TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Response content: {content}");
                         if (attempt < maxRetries)
                         {
                             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Retrying in {retryDelayMinutes} minute...");
@@ -291,10 +294,12 @@ namespace DiagnosticScenarios.Tests
                     
                     // Log the raw response for debugging
                     TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Raw metrics response: {json}");
+                    TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Response headers: {string.Join(", ", response.Headers.Select(h => $"{h.Key}: {string.Join(", ", h.Value)}"))}");
                     
                     if (json["value"] == null || !json["value"].HasValues)
                     {
                         TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Warning: No 'value' array in metrics response");
+                        TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Full response content: {content}");
                         if (attempt < maxRetries)
                         {
                             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Retrying in {retryDelayMinutes} minute...");
