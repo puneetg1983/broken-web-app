@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
@@ -8,41 +9,38 @@ namespace DiagnosticScenarios.Web.Scenarios.SlowDependency
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            var sw = Stopwatch.StartNew();
             try
             {
                 // Simulate a slow file system operation
                 string tempPath = Path.GetTempPath();
                 string testFile = Path.Combine(tempPath, "slow_file_test.txt");
 
-                // Create a large file
-                using (var writer = new StreamWriter(testFile))
-                {
-                    // Write a large amount of data
-                    for (int i = 0; i < 1000000; i++)
-                    {
-                        writer.WriteLine($"Line {i}: This is a test line to simulate slow file system operations.");
-                    }
-                }
+                // Create a file with some content
+                File.WriteAllText(testFile, "Test content");
 
-                // Simulate slow file reading
-                using (var reader = new StreamReader(testFile))
+                // Simulate slow file operations
+                for (int i = 0; i < 10; i++)
                 {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        // Process each line slowly
-                        Thread.Sleep(1);
-                    }
+                    // Read the file
+                    string content = File.ReadAllText(testFile);
+                    
+                    // Simulate processing
+                    Thread.Sleep(500);
+                    
+                    // Write back to the file
+                    File.WriteAllText(testFile, content + $"\nIteration {i}");
                 }
 
                 // Clean up
                 File.Delete(testFile);
+                sw.Stop();
+                Response.Write($"<div>SlowDependency2Actual executed successfully. Elapsed: {sw.ElapsedMilliseconds} ms</div>");
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
-                // Log the error
-                System.Diagnostics.Debug.WriteLine($"File system error: {ex.Message}");
-                throw;
+                sw.Stop();
+                Response.Write($"<div style='color:red'>Exception: {ex.Message}<br/>{ex.StackTrace}<br/>Elapsed: {sw.ElapsedMilliseconds} ms</div>");
             }
         }
     }

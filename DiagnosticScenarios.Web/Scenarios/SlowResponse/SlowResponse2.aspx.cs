@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace DiagnosticScenarios.Web.Scenarios.SlowResponse
 {
@@ -6,9 +7,13 @@ namespace DiagnosticScenarios.Web.Scenarios.SlowResponse
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack)
+            {
+                lblStatus.Text = "Ready to start long-running task.";
+            }
         }
 
-        protected void btnStartSlowResponse_Click(object sender, EventArgs e)
+        protected void btnStartLongTask_Click(object sender, EventArgs e)
         {
             Response.Redirect("SlowResponse2Actual.aspx");
         }

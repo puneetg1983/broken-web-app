@@ -179,12 +179,15 @@
         <div class="scenario-group">
             <h2>Slow Response Scenarios</h2>
             <a href="Scenarios/SlowResponse/SlowResponse1.aspx">Slow Response Scenario 1 - Thread Sleep</a>
+            <a href="Scenarios/SlowResponse/SlowResponse2.aspx">Slow Response Scenario 2 - Long Running Task</a>
+            <a href="Scenarios/SlowResponse/SlowResponse3.aspx">Slow Response Scenario 3 - Async Delay</a>
         </div>
 
         <div class="scenario-group">
             <h2>Slow Dependency Call Scenarios</h2>
             <a href="Scenarios/SlowDependency/SlowDependency1.aspx">Slow Dependency Scenario 1 - External API Delay</a>
             <a href="Scenarios/SlowDependency/SlowDependency2.aspx">Slow Dependency Scenario 2 - Timeout</a>
+            <a href="Scenarios/SlowDependency/SlowDependency3.aspx">Slow Dependency Scenario 3 - Retry Logic</a>
         </div>
 
         <div class="scenario-group">

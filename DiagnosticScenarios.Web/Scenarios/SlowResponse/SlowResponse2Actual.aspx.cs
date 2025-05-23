@@ -1,5 +1,7 @@
 using System;
-using System.Threading;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DiagnosticScenarios.Web.Scenarios.SlowResponse
 {
@@ -7,33 +9,40 @@ namespace DiagnosticScenarios.Web.Scenarios.SlowResponse
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Simulate slow database operations
-            SimulateDatabaseOperations();
-        }
-
-        private void SimulateDatabaseOperations()
-        {
-            // Simulate database connection delay
-            Thread.Sleep(1000);
-
-            // Simulate complex query execution
-            for (int i = 0; i < 5; i++)
+            if (!IsPostBack)
             {
-                // Simulate query execution time
-                Thread.Sleep(500);
-
-                // Simulate data processing
-                ProcessQueryResults();
+                // Simulate a long-running task by processing a large amount of data
+                ProcessLargeDataset();
             }
         }
 
-        private void ProcessQueryResults()
+        private void ProcessLargeDataset()
         {
-            // Simulate processing of query results
-            for (int i = 0; i < 1000; i++)
+            try
             {
-                // Simulate data transformation
-                double result = Math.Sqrt(i) * Math.Sin(i);
+                // Create a large dataset
+                var data = new List<int>();
+                for (int i = 0; i < 1000000; i++)
+                {
+                    data.Add(i);
+                }
+
+                // Perform complex operations on the dataset
+                var result = data
+                    .Where(x => x % 2 == 0)
+                    .Select(x => x * x)
+                    .OrderByDescending(x => x)
+                    .Take(1000)
+                    .Sum();
+
+                // Simulate additional processing time
+                System.Threading.Thread.Sleep(5000);
+
+                lblStatus.Text = $"Long-running task completed. Processed {data.Count} items and calculated sum: {result}";
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = $"Error during long-running task: {ex.Message}";
             }
         }
     }

@@ -13,7 +13,7 @@ namespace DiagnosticScenarios.Tests
 {
     [TestFixture]
     [NonParallelizable]
-    [Category("ArmMetrics")]
+    [Category("ResourceMetrics")]
     public class ArmMetricsScenarioTests
     {
         private const int DEFAULT_METRICS_WAIT_SECONDS = 30;
@@ -114,9 +114,9 @@ namespace DiagnosticScenarios.Tests
 
         [Test]
         [Order(1)]
-        public async Task TestHighCpuScenario()
+        public async Task TestHighCpuInfiniteLoopScenario()
         {
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting High CPU scenario test...");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting High CPU Infinite Loop scenario test...");
             
             var scenario = new ScenarioInfo
             {
@@ -124,7 +124,7 @@ namespace DiagnosticScenarios.Tests
                 MetricName = "CpuTime",
                 Iterations = 5,
                 DelayBetweenIterationsSeconds = 5,
-                WaitForMetricsMinutes = 1
+                WaitForMetricsMinutes = 2
             };
 
             var (baseline, after) = await _helper.RunResourceIntensiveScenario(scenario);
@@ -134,9 +134,49 @@ namespace DiagnosticScenarios.Tests
 
         [Test]
         [Order(2)]
-        public async Task TestHighMemoryScenario()
+        public async Task TestHighCpuThreadContentionScenario()
         {
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting High Memory scenario test...");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting High CPU Thread Contention scenario test...");
+            
+            var scenario = new ScenarioInfo
+            {
+                Path = "/Scenarios/HighCpu/HighCpu2Actual.aspx",
+                MetricName = "CpuTime",
+                Iterations = 5,
+                DelayBetweenIterationsSeconds = 5,
+                WaitForMetricsMinutes = 2
+            };
+
+            var (baseline, after) = await _helper.RunResourceIntensiveScenario(scenario);
+            _helper.VerifyMetricIncrease(after, baseline, "CPU");
+            await _helper.RestartWebApp();
+        }
+
+        [Test]
+        [Order(3)]
+        public async Task TestHighCpuDeadlockScenario()
+        {
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting High CPU Deadlock scenario test...");
+            
+            var scenario = new ScenarioInfo
+            {
+                Path = "/Scenarios/HighCpu/HighCpu3Actual.aspx",
+                MetricName = "CpuTime",
+                Iterations = 5,
+                DelayBetweenIterationsSeconds = 5,
+                WaitForMetricsMinutes = 2
+            };
+
+            var (baseline, after) = await _helper.RunResourceIntensiveScenario(scenario);
+            _helper.VerifyMetricIncrease(after, baseline, "CPU");
+            await _helper.RestartWebApp();
+        }
+
+        [Test]
+        [Order(4)]
+        public async Task TestHighMemoryLeakScenario()
+        {
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting High Memory Leak scenario test...");
             
             var scenario = new ScenarioInfo
             {
@@ -144,7 +184,7 @@ namespace DiagnosticScenarios.Tests
                 MetricName = "PrivateBytes",
                 Iterations = 3,
                 DelayBetweenIterationsSeconds = 15,
-                WaitForMetricsMinutes = 1
+                WaitForMetricsMinutes = 2
             };
 
             var (baseline, after) = await _helper.RunResourceIntensiveScenario(scenario);
@@ -153,39 +193,43 @@ namespace DiagnosticScenarios.Tests
         }
 
         [Test]
-        [Order(3)]
-        public async Task TestHttp500Scenario()
+        [Order(5)]
+        public async Task TestHighMemoryEventHandlerLeakScenario()
         {
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting HTTP 500 scenario test...");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting High Memory Event Handler Leak scenario test...");
             
-            var response = await _helper.TriggerScenarioWithResponse("/Scenarios/Http500/Http500_1Actual.aspx");
-            var responseContent = await response.Content.ReadAsStringAsync();
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Response content: {responseContent}");
-            
-            _helper.VerifyHttp500Response(response, responseContent);
+            var scenario = new ScenarioInfo
+            {
+                Path = "/Scenarios/HighMemory/HighMemory2Actual.aspx",
+                MetricName = "PrivateBytes",
+                Iterations = 3,
+                DelayBetweenIterationsSeconds = 15,
+                WaitForMetricsMinutes = 2
+            };
+
+            var (baseline, after) = await _helper.RunResourceIntensiveScenario(scenario);
+            _helper.VerifyMetricIncrease(after, baseline, "Memory");
+            await _helper.RestartWebApp();
         }
 
         [Test]
-        [Order(4)]
-        public async Task TestSlowResponseScenario()
+        [Order(6)]
+        public async Task TestHighMemoryLohFragmentationScenario()
         {
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting Slow Response scenario test...");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting High Memory LOH Fragmentation scenario test...");
             
-            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-            var response = await _helper.TriggerScenarioWithResponse("/Scenarios/SlowResponse/SlowResponse1Actual.aspx");
-            stopwatch.Stop();
-            
-            Assert.That(response.IsSuccessStatusCode, Is.True, "Failed to trigger slow response scenario");
-            
-            var responseTimeMs = stopwatch.ElapsedMilliseconds;
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Response Time: {responseTimeMs}ms");
-            
-            if (responseTimeMs <= 1000)
+            var scenario = new ScenarioInfo
             {
-                Assert.Fail($"Response time should be above 1000ms, but was {responseTimeMs}ms");
-            }
-            
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Slow Response scenario test completed successfully");
+                Path = "/Scenarios/HighMemory/HighMemory3Actual.aspx",
+                MetricName = "PrivateBytes",
+                Iterations = 3,
+                DelayBetweenIterationsSeconds = 15,
+                WaitForMetricsMinutes = 2
+            };
+
+            var (baseline, after) = await _helper.RunResourceIntensiveScenario(scenario);
+            _helper.VerifyMetricIncrease(after, baseline, "Memory");
+            await _helper.RestartWebApp();
         }
     }
 } 

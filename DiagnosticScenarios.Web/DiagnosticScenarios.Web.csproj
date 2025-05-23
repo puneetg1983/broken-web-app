@@ -72,6 +72,8 @@
     <Content Include="Scenarios\HighMemory\HighMemory2.aspx" />
     <Content Include="Scenarios\HighMemory\HighMemory3.aspx" />
     <Content Include="Scenarios\SlowResponse\SlowResponse1.aspx" />
+    <Content Include="Scenarios\SlowResponse\SlowResponse2.aspx" />
+    <Content Include="Scenarios\SlowResponse\SlowResponse3.aspx" />
     <Content Include="Scenarios\SlowDependency\SlowDependency1.aspx" />
     <Content Include="Scenarios\SlowDependency\SlowDependency2.aspx" />
     <Content Include="Scenarios\SlowDatabase\SlowDatabase1.aspx" />
@@ -168,6 +170,20 @@
     </Compile>
     <Compile Include="Scenarios\SlowResponse\SlowResponse1.aspx.designer.cs">
       <DependentUpon>SlowResponse1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\SlowResponse\SlowResponse2.aspx.cs">
+      <DependentUpon>SlowResponse2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\SlowResponse\SlowResponse2.aspx.designer.cs">
+      <DependentUpon>SlowResponse2.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\SlowResponse\SlowResponse3.aspx.cs">
+      <DependentUpon>SlowResponse3.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\SlowResponse\SlowResponse3.aspx.designer.cs">
+      <DependentUpon>SlowResponse3.aspx</DependentUpon>
     </Compile>
     <Compile Include="Scenarios\SlowDependency\SlowDependency1.aspx.cs">
       <DependentUpon>SlowDependency1.aspx</DependentUpon>

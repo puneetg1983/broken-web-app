@@ -152,7 +152,20 @@ jobs:
         Write-Host "Running ARM metrics tests..."
         $nunitPath = Join-Path $env:GITHUB_WORKSPACE "tools\NUnit.ConsoleRunner.3.16.3\tools\nunit3-console.exe"
         $testDll = Join-Path $env:GITHUB_WORKSPACE "DiagnosticScenarios.Tests\bin\Release\DiagnosticScenarios.Tests.dll"
-        & $nunitPath $testDll --framework=net-4.8 --where "cat==ArmMetrics"
+        & $nunitPath $testDll --framework=net-4.8 --where "cat==ResourceMetrics"
+      env:
+        WEBAPP_URL: ${{ env.WEBAPP_URL }}
+        RESOURCE_GROUP_NAME: ${{ env.RESOURCE_GROUP_NAME }}
+        APP_SERVICE_NAME: ${{ env.APP_SERVICE_NAME }}
+        AZURE_SUBSCRIPTION_ID: "6b6db65f-680e-4650-b97d-e82ed6a0f583"
+        RUN_ARM_METRICS_TESTS_LOCALLY: 'true'
+
+    - name: Run HTTP Response Tests
+      run: |
+        Write-Host "Running HTTP response tests..."
+        $nunitPath = Join-Path $env:GITHUB_WORKSPACE "tools\NUnit.ConsoleRunner.3.16.3\tools\nunit3-console.exe"
+        $testDll = Join-Path $env:GITHUB_WORKSPACE "DiagnosticScenarios.Tests\bin\Release\DiagnosticScenarios.Tests.dll"
+        & $nunitPath $testDll --framework=net-4.8 --where "cat==HttpResponse"
       env:
         WEBAPP_URL: ${{ env.WEBAPP_URL }}
         RESOURCE_GROUP_NAME: ${{ env.RESOURCE_GROUP_NAME }}

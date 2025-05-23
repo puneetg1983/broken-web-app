@@ -1,3 +1,8 @@
+param(
+    [Parameter(Mandatory=$true)]
+    [string]$TestCategory
+)
+
 # Set environment variables for ARM metrics tests
 $env:WEBAPP_URL = "https://broken-webapp-aspnet-fmfzf8fdakanh8gm.canadacentral-01.azurewebsites.net"
 $env:AZURE_SUBSCRIPTION_ID = "6b6db65f-680e-4650-b97d-e82ed6a0f583"
@@ -95,4 +100,11 @@ if ($null -eq $nunitConsole) {
 }
 
 Write-Host "Using NUnit Console Runner from: $nunitConsole"
-& $nunitConsole $testDll --where "cat==ArmMetrics" --noheader --noresult 
+
+# Run tests for the specified category
+Write-Host "Running $TestCategory tests..."
+& $nunitConsole $testDll --where "cat==$TestCategory" --noheader --noresult
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "$TestCategory tests failed"
+    exit 1
+} 
