@@ -42,15 +42,15 @@ namespace DiagnosticScenarios.Tests
         {
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Initializing environment variables...");
             _baseUrl = Environment.GetEnvironmentVariable("WEBAPP_URL") ?? "https://localhost:44300";
-            var subscriptionId = Environment.GetEnvironmentVariable("SUBSCRIPTION_ID");
+            var subscriptionId = ArmMetricsHelper.GetSubscriptionId();
             var resourceGroup = Environment.GetEnvironmentVariable("RESOURCE_GROUP_NAME");
             var appServiceName = Environment.GetEnvironmentVariable("APP_SERVICE_NAME");
 
             LogEnvironmentVariables();
 
-            if (string.IsNullOrEmpty(subscriptionId) || string.IsNullOrEmpty(resourceGroup) || string.IsNullOrEmpty(appServiceName))
+            if (string.IsNullOrEmpty(resourceGroup) || string.IsNullOrEmpty(appServiceName))
             {
-                Assert.Fail("Required environment variables are not set: SUBSCRIPTION_ID, RESOURCE_GROUP_NAME, APP_SERVICE_NAME");
+                Assert.Fail("Required environment variables are not set: RESOURCE_GROUP_NAME, APP_SERVICE_NAME");
             }
         }
 
@@ -58,7 +58,7 @@ namespace DiagnosticScenarios.Tests
         {
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Environment variables:");
             TestContext.Progress.WriteLine($"  WEBAPP_URL: {_baseUrl}");
-            TestContext.Progress.WriteLine($"  SUBSCRIPTION_ID: {Environment.GetEnvironmentVariable("SUBSCRIPTION_ID")}");
+            TestContext.Progress.WriteLine($"  AZURE_SUBSCRIPTION_ID: {ArmMetricsHelper.GetSubscriptionId()}");
             TestContext.Progress.WriteLine($"  RESOURCE_GROUP_NAME: {Environment.GetEnvironmentVariable("RESOURCE_GROUP_NAME")}");
             TestContext.Progress.WriteLine($"  APP_SERVICE_NAME: {Environment.GetEnvironmentVariable("APP_SERVICE_NAME")}");
         }
@@ -69,7 +69,7 @@ namespace DiagnosticScenarios.Tests
             {
                 _helper = await ArmMetricsHelper.CreateAsync(
                     _baseUrl,
-                    Environment.GetEnvironmentVariable("SUBSCRIPTION_ID"),
+                    ArmMetricsHelper.GetSubscriptionId(),
                     Environment.GetEnvironmentVariable("RESOURCE_GROUP_NAME"),
                     Environment.GetEnvironmentVariable("APP_SERVICE_NAME")
                 );

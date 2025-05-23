@@ -59,6 +59,12 @@ namespace DiagnosticScenarios.Tests
             return Environment.GetEnvironmentVariable("RUN_ARM_METRICS_TESTS_LOCALLY")?.ToLower() == "true";
         }
 
+        public static string GetSubscriptionId()
+        {
+            return Environment.GetEnvironmentVariable("AZURE_SUBSCRIPTION_ID") ?? 
+                   throw new Exception("AZURE_SUBSCRIPTION_ID environment variable is not set");
+        }
+
         private static string FindAzureCliPath()
         {
             string[] possibleAzPaths = new[]
@@ -105,6 +111,24 @@ namespace DiagnosticScenarios.Tests
                     {
                         throw new Exception("Failed to get access token from Azure CLI");
                     }
+
+                    // Log token details without exposing the actual token
+                    var tokenParts = accessToken.Split('.');
+                    if (tokenParts.Length == 3)
+                    {
+                        try
+                        {
+                            var header = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(tokenParts[0].PadRight(4 * ((tokenParts[0].Length + 3) / 4), '=')));
+                            var payload = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(tokenParts[1].PadRight(4 * ((tokenParts[1].Length + 3) / 4), '=')));
+                            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Token header: {header}");
+                            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Token payload: {payload}");
+                        }
+                        catch (Exception ex)
+                        {
+                            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Could not decode token parts: {ex.Message}");
+                        }
+                    }
+
                     TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Successfully obtained Azure access token");
                     return accessToken;
                 }
@@ -273,7 +297,10 @@ namespace DiagnosticScenarios.Tests
                 
                 try
                 {
-                    var response = await _armClient.GetAsync(url);
+                    var request = new HttpRequestMessage(HttpMethod.Get, url);
+                    TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Request headers: {string.Join(", ", request.Headers.Select(h => $"{h.Key}: {string.Join(", ", h.Value)}"))}");
+
+                    var response = await _armClient.SendAsync(request);
                     var content = await response.Content.ReadAsStringAsync();
 
                     if (!response.IsSuccessStatusCode)
