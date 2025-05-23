@@ -17,7 +17,7 @@ namespace DiagnosticScenarios.Web.Scenarios.Crash
             }
         }
 
-        protected void btnStartOutOfMemory_Click(object sender, EventArgs e)
+        protected void btnOutOfMemory_Click(object sender, EventArgs e)
         {
             Response.Redirect("Crash3Actual.aspx");
         }
