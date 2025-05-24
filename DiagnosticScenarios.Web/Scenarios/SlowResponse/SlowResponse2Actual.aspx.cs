@@ -26,7 +26,7 @@ namespace DiagnosticScenarios.Web.Scenarios.SlowResponse
                 // Perform complex operations on the dataset
                 var result = data
                     .Where(x => x % 2 == 0)
-                    .Select(x => x * x)
+                    .Select(x => (long)x * x)
                     .OrderByDescending(x => x)
                     .Take(1000)
                     .Sum();

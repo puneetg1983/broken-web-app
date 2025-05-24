@@ -274,8 +274,9 @@ namespace DiagnosticScenarios.Tests
 
         public async Task<HttpResponseMessage> TriggerScenarioWithResponse(string scenarioPath)
         {
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Triggering scenario: {scenarioPath}");
-            var response = await _httpClient.GetAsync($"{_baseUrl}{scenarioPath}");
+            var fullUrl = $"{_baseUrl}{scenarioPath}";
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Triggering scenario: {scenarioPath} (Full URL: {fullUrl})");
+            var response = await _httpClient.GetAsync(fullUrl);
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Scenario response status code: {(int)response.StatusCode} {response.StatusCode}");
             return response;
         }

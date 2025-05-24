@@ -4,10 +4,12 @@ param(
 )
 
 # Set environment variables for ARM metrics tests
-$env:WEBAPP_URL = "https://broken-webapp-aspnet-fmfzf8fdakanh8gm.canadacentral-01.azurewebsites.net"
+$alias = $env:ALIAS
+if (-not $alias) { $alias = 'local' }
+$env:WEBAPP_URL = "https://broken-webapp-aspnet-$alias.azurewebsites.net"
 $env:SUBSCRIPTION_ID = "6b6db65f-680e-4650-b97d-e82ed6a0f583"
 $env:RESOURCE_GROUP_NAME = "broken-web-apps"
-$env:APP_SERVICE_NAME = "broken-webapp-aspnet"
+$env:APP_SERVICE_NAME = "broken-webapp-aspnet-$alias"
 $env:RUN_SPECIALIZED_TESTS = "true"
 
 # Check if user is logged into Azure
