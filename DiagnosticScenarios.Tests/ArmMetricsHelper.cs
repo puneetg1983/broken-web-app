@@ -475,9 +475,6 @@ namespace DiagnosticScenarios.Tests
                 TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Waiting {scenario.DelayBetweenIterationsSeconds} seconds before next iteration...");
                 await Task.Delay(TimeSpan.FromSeconds(scenario.DelayBetweenIterationsSeconds));
             }
-            
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Waiting {scenario.WaitForMetricsMinutes} minute for {scenario.MetricName} metrics to be collected...");
-            await Task.Delay(TimeSpan.FromMinutes(scenario.WaitForMetricsMinutes));
         }
 
         private async Task<double> GetAfterMetrics(string metricName)
