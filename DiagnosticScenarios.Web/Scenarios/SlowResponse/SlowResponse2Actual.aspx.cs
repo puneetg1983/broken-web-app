@@ -9,11 +9,7 @@ namespace DiagnosticScenarios.Web.Scenarios.SlowResponse
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                // Simulate a long-running task by processing a large amount of data
-                ProcessLargeDataset();
-            }
+            ProcessLargeDataset();
         }
 
         private void ProcessLargeDataset()
@@ -35,8 +31,8 @@ namespace DiagnosticScenarios.Web.Scenarios.SlowResponse
                     .Take(1000)
                     .Sum();
 
-                // Simulate additional processing time
-                System.Threading.Thread.Sleep(5000);
+                // Simulate additional processing time - increased to 3 seconds to ensure consistent response time
+                System.Threading.Thread.Sleep(3000);
 
                 lblStatus.Text = $"Long-running task completed. Processed {data.Count} items and calculated sum: {result}";
             }
