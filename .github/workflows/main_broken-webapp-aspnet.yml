@@ -11,7 +11,7 @@ on:
 
 env:
   APP_SERVICE_NAME: broken-webapp-aspnet-${{ vars.ALIAS }}
-  WEBAPP_URL: https://${{ env.APP_SERVICE_NAME }}.azurewebsites.net
+  WEBAPP_URL: https://broken-webapp-aspnet-${{ vars.ALIAS }}.azurewebsites.net
   CONFIGURATION: 'Release'
   SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E34A382294604AB38B20E873BFF2ED08 }}
   RESOURCE_GROUP_NAME: ${{ vars.RESOURCE_GROUP_NAME }}
