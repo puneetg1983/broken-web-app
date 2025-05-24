@@ -10,11 +10,11 @@ on:
   workflow_dispatch:
 
 env:
-  WEBAPP_URL: https://broken-webapp-aspnet-fmfzf8fdakanh8gm.canadacentral-01.azurewebsites.net
+  APP_SERVICE_NAME: broken-webapp-aspnet-${{ vars.ALIAS }}
+  WEBAPP_URL: https://${{ env.APP_SERVICE_NAME }}.azurewebsites.net
   CONFIGURATION: 'Release'
   SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E34A382294604AB38B20E873BFF2ED08 }}
   RESOURCE_GROUP_NAME: ${{ vars.RESOURCE_GROUP_NAME }}
-  APP_SERVICE_NAME: broken-webapp-aspnet
 
 jobs:
   build:
@@ -73,10 +73,8 @@ jobs:
       with:
         subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
-        template: ./main_broken-webapp.bicep
-        parameters: >
-          appServiceName=${{ env.APP_SERVICE_NAME }}
-          alias=${{ vars.ALIAS }}
+        template: ./infra/main_broken-webapp.bicep
+        parameters: appServiceName=${{ env.APP_SERVICE_NAME }} alias=${{ vars.ALIAS }}
 
     - name: Deploy to Azure Web App
       id: deploy-to-webapp

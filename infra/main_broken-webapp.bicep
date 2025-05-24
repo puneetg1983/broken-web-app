@@ -1,8 +1,6 @@
 param appServiceName string
-param alias string
 
-var webAppName = '${appServiceName}-${alias}'
-var appServicePlanName = webAppName
+var appServicePlanName = appServiceName
 var location = resourceGroup().location
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
@@ -19,7 +17,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
 }
 
 resource webApp 'Microsoft.Web/sites@2022-03-01' = {
-  name: webAppName
+  name: appServiceName
   location: location
   kind: 'app'
   properties: {
