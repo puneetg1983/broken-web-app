@@ -8,7 +8,7 @@ $env:WEBAPP_URL = "https://broken-webapp-aspnet-fmfzf8fdakanh8gm.canadacentral-0
 $env:SUBSCRIPTION_ID = "6b6db65f-680e-4650-b97d-e82ed6a0f583"
 $env:RESOURCE_GROUP_NAME = "broken-web-apps"
 $env:APP_SERVICE_NAME = "broken-webapp-aspnet"
-$env:RUN_ARM_METRICS_TESTS_LOCALLY = "true"
+$env:RUN_SPECIALIZED_TESTS = "true"
 
 # Check if user is logged into Azure
 $account = az account show 2>&1

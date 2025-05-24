@@ -56,7 +56,7 @@ namespace DiagnosticScenarios.Tests
 
         public static bool ShouldRunTests()
         {
-            return Environment.GetEnvironmentVariable("RUN_ARM_METRICS_TESTS_LOCALLY")?.ToLower() == "true";
+            return Environment.GetEnvironmentVariable("RUN_SPECIALIZED_TESTS")?.ToLower() == "true";
         }
 
         public static string GetSubscriptionId()

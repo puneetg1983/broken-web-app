@@ -16,6 +16,11 @@ namespace DiagnosticScenarios.Tests
         [OneTimeSetUp]
         public void Setup()
         {
+            if (!ArmMetricsHelper.ShouldRunTests())
+            {
+                Assert.Ignore("Skipping CrashMetrics tests. Set RUN_SPECIALIZED_TESTS=true to run them locally.");
+            }
+
             _baseUrl = Environment.GetEnvironmentVariable("WEBAPP_URL") ?? "https://localhost:44300";
             _helper = new ProcessMetricsHelper(_baseUrl);
         }

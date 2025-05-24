@@ -29,7 +29,7 @@ namespace DiagnosticScenarios.Tests
         {
             if (!ArmMetricsHelper.ShouldRunTests())
             {
-                Assert.Ignore("Skipping ARM metrics tests. Set RUN_ARM_METRICS_TESTS_LOCALLY=true to run them locally.");
+                Assert.Ignore("Skipping ARM metrics tests. Set RUN_SPECIALIZED_TESTS=true to run them locally.");
             }
 
             InitializeEnvironmentVariables();
