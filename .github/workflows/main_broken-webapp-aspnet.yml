@@ -79,7 +79,7 @@ jobs:
         subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
         template: ./infra/main_broken-webapp.bicep
-        parameters: appServiceName=${{ env.APP_SERVICE_NAME }} alias=${{ vars.ALIAS }}
+        parameters: appServiceName=${{ env.APP_SERVICE_NAME }}
 
     - name: Deploy to Azure Web App
       id: deploy-to-webapp
