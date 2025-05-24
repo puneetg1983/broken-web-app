@@ -13,7 +13,7 @@ env:
   WEBAPP_URL: https://broken-webapp-aspnet-fmfzf8fdakanh8gm.canadacentral-01.azurewebsites.net
   CONFIGURATION: 'Release'
   SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E34A382294604AB38B20E873BFF2ED08 }}
-  RESOURCE_GROUP_NAME: broken-web-apps 
+  RESOURCE_GROUP_NAME: ${{ vars.RESOURCE_GROUP_NAME }}
   APP_SERVICE_NAME: broken-webapp-aspnet
 
 jobs:
@@ -67,12 +67,22 @@ jobs:
         client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_F0C7A6A53CD145789775B830B9CB8AAF }}
         tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D8A248E844C24894B15CE3E2EC150853 }}
         subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E34A382294604AB38B20E873BFF2ED08 }}
-    
+
+    - name: Deploy Bicep (Web App & App Service Plan)
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
+        resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
+        template: ./main_broken-webapp.bicep
+        parameters: >
+          appServiceName=${{ env.APP_SERVICE_NAME }}
+          alias=${{ vars.ALIAS }}
+
     - name: Deploy to Azure Web App
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v3
       with:
-        app-name: 'broken-webapp-aspnet'
+        app-name: '${{ env.APP_SERVICE_NAME }}-${{ vars.ALIAS }}'
         slot-name: 'Production'
         package: .
 
@@ -157,7 +167,7 @@ jobs:
         WEBAPP_URL: ${{ env.WEBAPP_URL }}
         RESOURCE_GROUP_NAME: ${{ env.RESOURCE_GROUP_NAME }}
         APP_SERVICE_NAME: ${{ env.APP_SERVICE_NAME }}
-        SUBSCRIPTION_ID: "6b6db65f-680e-4650-b97d-e82ed6a0f583"
+        SUBSCRIPTION_ID: ${{ env.SUBSCRIPTION_ID }}
         RUN_SPECIALIZED_TESTS: 'true'
 
     - name: Run Crash Metrics Tests
@@ -170,7 +180,7 @@ jobs:
         WEBAPP_URL: ${{ env.WEBAPP_URL }}
         RESOURCE_GROUP_NAME: ${{ env.RESOURCE_GROUP_NAME }}
         APP_SERVICE_NAME: ${{ env.APP_SERVICE_NAME }}
-        SUBSCRIPTION_ID: "6b6db65f-680e-4650-b97d-e82ed6a0f583"
+        SUBSCRIPTION_ID: ${{ env.SUBSCRIPTION_ID }}
         RUN_SPECIALIZED_TESTS: 'true'
 
   http-response-tests:
@@ -208,7 +218,7 @@ jobs:
       with:
         client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_F0C7A6A53CD145789775B830B9CB8AAF }}
         tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D8A248E844C24894B15CE3E2EC150853 }}
-        subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E34A382294604AB38B20E873BFF2ED08 }}
+        subscription-id: ${{ env.SUBSCRIPTION_ID }}
 
     - name: Run HTTP Response Tests
       run: |
@@ -220,5 +230,5 @@ jobs:
         WEBAPP_URL: ${{ env.WEBAPP_URL }}
         RESOURCE_GROUP_NAME: ${{ env.RESOURCE_GROUP_NAME }}
         APP_SERVICE_NAME: ${{ env.APP_SERVICE_NAME }}
-        SUBSCRIPTION_ID: "6b6db65f-680e-4650-b97d-e82ed6a0f583"
+        SUBSCRIPTION_ID: ${{ env.SUBSCRIPTION_ID }}
         RUN_SPECIALIZED_TESTS: 'true'
