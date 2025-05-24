@@ -48,9 +48,8 @@
                 <p>This scenario simulates a stack overflow by using infinite recursion.</p>
                 <p>Click the button below to trigger the stack overflow.</p>
             </div>
-
-            <asp:Button ID="btnTriggerStackOverflow" runat="server" Text="Trigger Stack Overflow" 
-                       CssClass="button" OnClick="btnTriggerStackOverflow_Click" />
+            
+            <asp:Button  CssClass="button" ID="btnTriggerActual" runat="server" Text="Trigger Actual Scenario" OnClick="btnTriggerActual_Click" />
             
             <div class="warning">
                 <p>Warning: This will crash the application. Make sure you have saved any important work before proceeding.</p>

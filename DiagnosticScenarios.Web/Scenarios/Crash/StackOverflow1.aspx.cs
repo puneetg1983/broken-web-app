@@ -9,16 +9,9 @@ namespace DiagnosticScenarios.Web.Scenarios.Crash
             // No special initialization needed
         }
 
-        protected void btnTriggerStackOverflow_Click(object sender, EventArgs e)
+        protected void btnTriggerActual_Click(object sender, EventArgs e)
         {
-            // Trigger a stack overflow by using infinite recursion
-            RecursiveMethod(0);
-        }
-
-        private void RecursiveMethod(int depth)
-        {
-            // This will eventually cause a stack overflow
-            RecursiveMethod(depth + 1);
+            Response.Redirect("StackOverflow1Actual.aspx");
         }
     }
 } 

@@ -17,6 +17,7 @@ namespace DiagnosticScenarios.Web
             {
                 ProcessId = process.Id,
                 ProcessName = process.ProcessName,
+                MachineName = Environment.MachineName,
                 CpuTime = process.TotalProcessorTime.TotalSeconds,
                 PrivateBytes = process.PrivateMemorySize64,
                 WorkingSet = process.WorkingSet64,

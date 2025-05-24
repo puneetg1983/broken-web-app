@@ -47,10 +47,9 @@
                 <h2>Description</h2>
                 <p>This scenario simulates an unhandled exception that will crash the application.</p>
                 <p>Click the button below to trigger the unhandled exception.</p>
-            </div>
-
-            <asp:Button ID="btnTriggerException" runat="server" Text="Trigger Unhandled Exception" 
-                       CssClass="button" OnClick="btnTriggerException_Click" />
+            <%--</div>--%>
+            
+            <asp:Button ID="btnTriggerActual"  CssClass="button" runat="server" Text="Trigger Actual Scenario" OnClick="btnTriggerActual_Click" />
             
             <div class="warning">
                 <p>Warning: This will crash the application. Make sure you have saved any important work before proceeding.</p>

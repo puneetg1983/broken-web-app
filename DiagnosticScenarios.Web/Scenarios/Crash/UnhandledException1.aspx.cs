@@ -9,11 +9,9 @@ namespace DiagnosticScenarios.Web.Scenarios.Crash
             // No special initialization needed
         }
 
-        protected void btnTriggerException_Click(object sender, EventArgs e)
+        protected void btnTriggerActual_Click(object sender, EventArgs e)
         {
-            // Trigger an unhandled exception by accessing a null reference
-            string nullString = null;
-            int length = nullString.Length; // This will throw a NullReferenceException
+            Response.Redirect("UnhandledException1Actual.aspx");
         }
     }
 } 
