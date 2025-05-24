@@ -56,6 +56,8 @@ jobs:
       contents: read #This is required for actions/checkout
 
     steps:
+    - uses: actions/checkout@v4
+    
     - name: Download artifact from build job
       uses: actions/download-artifact@v4
       with:
@@ -67,6 +69,9 @@ jobs:
         client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_F0C7A6A53CD145789775B830B9CB8AAF }}
         tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D8A248E844C24894B15CE3E2EC150853 }}
         subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E34A382294604AB38B20E873BFF2ED08 }}
+
+    - name: List folder structure for debugging
+      run: dir /s
 
     - name: Deploy Bicep (Web App & App Service Plan)
       uses: azure/arm-deploy@v1
