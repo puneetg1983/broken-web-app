@@ -34,11 +34,11 @@ jobs:
     - name: Publish Web Project
       run: msbuild DiagnosticScenarios.Web/DiagnosticScenarios.Web.csproj /p:Configuration=${{ env.CONFIGURATION }} /p:Platform="Any CPU" /p:DeployOnBuild=true /p:PublishProfile=FolderProfile /p:publishUrl=./publish
       
-    - name: Upload Artifact
+    - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v4
       with:
-        name: webapp
-        path: ./publish
+        name: ASP-app
+        path: '/published/**'
 
   deploy:
     needs: build
@@ -46,10 +46,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Download Artifact
+    - name: Download artifact from build job
       uses: actions/download-artifact@v4
       with:
-        name: webapp
+        name: ASP-app
         
     - name: Azure Login
       uses: azure/login@v2
