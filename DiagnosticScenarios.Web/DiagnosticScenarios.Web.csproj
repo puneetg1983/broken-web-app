@@ -86,6 +86,7 @@
     <Content Include="Scenarios\Http500\Http500_1.aspx" />
     <Content Include="Scenarios\Http500\Http500_2.aspx" />
     <Content Include="Scenarios\Http500\Http500_3.aspx" />
+    <Content Include="Scenarios\Http500\Http500_4.aspx" />
     <Content Include="Scenarios\ConnectionPool\ConnectionPool1.aspx" />
     <Content Include="Scenarios\ConnectionPool\ConnectionPool2.aspx" />
     <Content Include="Scenarios\ConnectionPool\ConnectionPool3.aspx" />
@@ -99,6 +100,7 @@
     <Content Include="Scenarios\Http500\Http500_1Actual.aspx" />
     <Content Include="Scenarios\Http500\Http500_2Actual.aspx" />
     <Content Include="Scenarios\Http500\Http500_3Actual.aspx" />
+    <Content Include="Scenarios\Http500\Http500_4Actual.aspx" />
     <Content Include="Scenarios\SlowResponse\SlowResponse1Actual.aspx" />
     <Content Include="Scenarios\SlowResponse\SlowResponse2Actual.aspx" />
     <Content Include="Scenarios\SlowResponse\SlowResponse3Actual.aspx" />
@@ -272,6 +274,13 @@
     <Compile Include="Scenarios\Http500\Http500_3.aspx.designer.cs">
       <DependentUpon>Http500_3.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Scenarios\Http500\Http500_4.aspx.cs">
+      <DependentUpon>Http500_4.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\Http500\Http500_4.aspx.designer.cs">
+      <DependentUpon>Http500_4.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Scenarios\ConnectionPool\ConnectionPool1.aspx.cs">
       <DependentUpon>ConnectionPool1.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -362,6 +371,13 @@
     </Compile>
     <Compile Include="Scenarios\Http500\Http500_3Actual.aspx.designer.cs">
       <DependentUpon>Http500_3Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\Http500\Http500_4Actual.aspx.cs">
+      <DependentUpon>Http500_4Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\Http500\Http500_4Actual.aspx.designer.cs">
+      <DependentUpon>Http500_4Actual.aspx</DependentUpon>
     </Compile>
     <Compile Include="Scenarios\SlowResponse\SlowResponse1Actual.aspx.cs">
       <DependentUpon>SlowResponse1Actual.aspx</DependentUpon>
@@ -482,6 +498,9 @@
     </Compile>
     <Compile Include="Scenarios\Crash\UnhandledException1Actual.aspx.designer.cs">
       <DependentUpon>UnhandledException1Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

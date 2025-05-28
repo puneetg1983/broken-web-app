@@ -1,0 +1,103 @@
+name: Deploy - Invalid Zip App
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  APP_SERVICE_NAME: webapp-broken-invalidzip
+  WEBAPP_URL: ${{ secrets.WEBAPP_URL }}
+  CONFIGURATION: Release
+  SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+  RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.0.2
+      
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.5
+      
+    - name: Restore NuGet Packages
+      run: nuget restore DiagnosticScenarios.sln
+      
+    - name: Build Solution
+      run: msbuild DiagnosticScenarios.sln /p:Configuration=${{ env.CONFIGURATION }} /p:Platform="Any CPU" /p:ProductVersion=1.0.0 /p:AssemblyVersion=1.0.0.0 /p:FileVersion=1.0.0.0
+      
+    - name: Publish Web Project
+      run: msbuild DiagnosticScenarios.Web/DiagnosticScenarios.Web.csproj /p:Configuration=${{ env.CONFIGURATION }} /p:Platform="Any CPU" /p:DeployOnBuild=true /p:PublishProfile=FolderProfile /p:publishUrl=./publish
+      
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: webapp
+        path: ./publish
+
+  deploy:
+    needs: build
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download Artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: webapp
+        
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        subscription-id: ${{ env.SUBSCRIPTION_ID }}
+        
+    - name: List Folder Structure
+      run: |
+        Write-Host "Current directory: $(Get-Location)"
+        Get-ChildItem -Recurse | Select-Object FullName
+        
+    - name: Deploy Bicep Template
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
+        resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
+        template: ./infra/main_broken-webapp-aspnet-invalidzip.bicep
+        parameters: webAppName=${{ env.APP_SERVICE_NAME }}
+        
+    - name: Deploy Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.APP_SERVICE_NAME }}
+        package: .
+
+  test:
+    needs: deploy
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.0.2
+      
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.5
+      
+    - name: Restore NuGet Packages
+      run: nuget restore DiagnosticScenarios.sln
+      
+    - name: Build Solution
+      run: msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU"
+      
+    - name: Install NUnit Console Runner
+      run: nuget install NUnit.ConsoleRunner -Version 3.16.3 -OutputDirectory ./tools
+      
+    - name: Run Tests
+      run: ./tools/NUnit.ConsoleRunner.3.16.3/tools/nunit3-console.exe DiagnosticScenarios.Tests/bin/Release/DiagnosticScenarios.Tests.dll --where "cat==InvalidZip"
+      env:
+        WEBAPP_URL: ${{ secrets.WEBAPP_URL }} 

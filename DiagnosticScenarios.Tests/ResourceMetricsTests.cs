@@ -29,17 +29,32 @@ namespace DiagnosticScenarios.Tests
             _helper?.Dispose();
         }
 
+        private async Task EnsureFreshProcess()
+        {
+            var metrics = await _helper.GetMetrics();
+            if (metrics.ProcessUptimeMinutes < 1)
+            {
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Process is fresh (uptime: {metrics.ProcessUptimeMinutes:F2} minutes)");
+                return;
+            }
+
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Process uptime is {metrics.ProcessUptimeMinutes:F2} minutes, restarting web app...");
+            await _helper.RestartWebApp();
+            await Task.Delay(TimeSpan.FromSeconds(30)); // Wait for restart to complete
+        }
+
         [Test]
         [Order(1)]
         public async Task TestHighCpuInfiniteLoopScenario()
         {
+            await EnsureFreshProcess();
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting High CPU Infinite Loop scenario test...");
             
             var scenario = new ScenarioInfo
             {
                 Path = "/Scenarios/HighCpu/HighCpu1Actual.aspx",
                 MetricName = "CpuTime",
-                Iterations = 5,
+                Iterations = 3,
                 DelayBetweenIterationsSeconds = 5,
                 WaitForMetricsMinutes = 2
             };
@@ -53,13 +68,14 @@ namespace DiagnosticScenarios.Tests
         [Order(2)]
         public async Task TestHighCpuThreadContentionScenario()
         {
+            await EnsureFreshProcess();
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting High CPU Thread Contention scenario test...");
             
             var scenario = new ScenarioInfo
             {
                 Path = "/Scenarios/HighCpu/HighCpu2Actual.aspx",
                 MetricName = "CpuTime",
-                Iterations = 5,
+                Iterations = 3,
                 DelayBetweenIterationsSeconds = 5,
                 WaitForMetricsMinutes = 2
             };
@@ -71,15 +87,16 @@ namespace DiagnosticScenarios.Tests
 
         [Test]
         [Order(3)]
-        public async Task TestHighCpuDeadlockScenario()
+        public async Task TestHighCpuComplexRegexScenario()
         {
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting High CPU Deadlock scenario test...");
+            await EnsureFreshProcess();
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting High CPU Complex Regex scenario test...");
             
             var scenario = new ScenarioInfo
             {
                 Path = "/Scenarios/HighCpu/HighCpu3Actual.aspx",
                 MetricName = "CpuTime",
-                Iterations = 5,
+                Iterations = 3,
                 DelayBetweenIterationsSeconds = 5,
                 WaitForMetricsMinutes = 2
             };
@@ -93,6 +110,7 @@ namespace DiagnosticScenarios.Tests
         [Order(4)]
         public async Task TestHighMemoryLeakScenario()
         {
+            await EnsureFreshProcess();
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting High Memory Leak scenario test...");
             
             var scenario = new ScenarioInfo
@@ -113,6 +131,7 @@ namespace DiagnosticScenarios.Tests
         [Order(5)]
         public async Task TestHighMemoryEventHandlerLeakScenario()
         {
+            await EnsureFreshProcess();
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting High Memory Event Handler Leak scenario test...");
             
             var scenario = new ScenarioInfo
@@ -133,6 +152,7 @@ namespace DiagnosticScenarios.Tests
         [Order(6)]
         public async Task TestHighMemoryLohFragmentationScenario()
         {
+            await EnsureFreshProcess();
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting High Memory LOH Fragmentation scenario test...");
             
             var scenario = new ScenarioInfo

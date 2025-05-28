@@ -133,13 +133,13 @@ namespace DiagnosticScenarios.Tests
         {
             // These pages are interactive and require button clicks to start the simulation
             // We'll just verify the pages load successfully
-            var response1 = await GetWithRetryAsync($"{_baseUrl}/Scenarios/HighCpu/HighCpu1.aspx", "High CPU Scenario 1");
-            var response2 = await GetWithRetryAsync($"{_baseUrl}/Scenarios/HighCpu/HighCpu2.aspx", "High CPU Scenario 2");
-            var response3 = await GetWithRetryAsync($"{_baseUrl}/Scenarios/HighCpu/HighCpu3.aspx", "High CPU Scenario 3");
+            var response1 = await GetWithRetryAsync($"{_baseUrl}/Scenarios/HighCpu/HighCpu1.aspx", "High CPU Scenario 1 - Infinite Loop");
+            var response2 = await GetWithRetryAsync($"{_baseUrl}/Scenarios/HighCpu/HighCpu2.aspx", "High CPU Scenario 2 - Thread Contention");
+            var response3 = await GetWithRetryAsync($"{_baseUrl}/Scenarios/HighCpu/HighCpu3.aspx", "High CPU Scenario 3 - Complex Regex");
 
-            await AssertSuccessfulResponse(response1, "High CPU Scenario 1");
-            await AssertSuccessfulResponse(response2, "High CPU Scenario 2");
-            await AssertSuccessfulResponse(response3, "High CPU Scenario 3");
+            await AssertSuccessfulResponse(response1, "High CPU Scenario 1 - Infinite Loop");
+            await AssertSuccessfulResponse(response2, "High CPU Scenario 2 - Thread Contention");
+            await AssertSuccessfulResponse(response3, "High CPU Scenario 3 - Complex Regex");
         }
 
         [Test]

@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Deploy - High CPU App
+name: Deploy - Thread Leak App
 
 on:
   push:
@@ -10,7 +10,11 @@ on:
   workflow_dispatch:
 
 env:
-  WEBAPP_URL: https://broken-webapp-aspnet-highcpu.azurewebsites.net
+  APP_SERVICE_NAME: broken-webapp-aspnet-threadleak-${{ vars.ALIAS }}
+  WEBAPP_URL: https://broken-webapp-aspnet-threadleak-${{ vars.ALIAS }}.azurewebsites.net
+  CONFIGURATION: 'Release'
+  SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E34A382294604AB38B20E873BFF2ED08 }}
+  RESOURCE_GROUP_NAME: ${{ vars.RESOURCE_GROUP_NAME }}
 
 jobs:
   build:
@@ -52,6 +56,8 @@ jobs:
       contents: read #This is required for actions/checkout
 
     steps:
+    - uses: actions/checkout@v4
+    
     - name: Download artifact from build job
       uses: actions/download-artifact@v4
       with:
@@ -63,12 +69,23 @@ jobs:
         client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_F0C7A6A53CD145789775B830B9CB8AAF }}
         tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D8A248E844C24894B15CE3E2EC150853 }}
         subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E34A382294604AB38B20E873BFF2ED08 }}
-    
+
+    - name: List folder structure for debugging
+      run: Get-ChildItem -Recurse
+
+    - name: Deploy Bicep (Web App & App Service Plan)
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
+        resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
+        template: ./infra/main_broken-webapp-aspnet-threadleak.bicep
+        parameters: appServiceName=${{ env.APP_SERVICE_NAME }}
+
     - name: Deploy to Azure Web App
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v3
       with:
-        app-name: 'broken-webapp-aspnet-highcpu'
+        app-name: '${{ env.APP_SERVICE_NAME }}'
         slot-name: 'Production'
         package: .
 

@@ -22,5 +22,13 @@ resource webApp 'Microsoft.Web/sites@2022-03-01' = {
   kind: 'app'
   properties: {
     serverFarmId: appServicePlan.id
+    siteConfig: {
+      appSettings: [
+        {
+          name: 'WEBAPP_CRASH_ON_STARTUP'
+          value: 'true'
+        }
+      ]
+    }
   }
 } 

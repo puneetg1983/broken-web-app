@@ -1,5 +1,4 @@
 param appServiceName string
-
 var appServicePlanName = appServiceName
 var location = resourceGroup().location
 
@@ -10,7 +9,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
     name: 'S1'
     tier: 'Standard'
   }
-  kind: 'app'
+  kind: 'windows'
   properties: {
     reserved: false
   }
@@ -19,8 +18,17 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
 resource webApp 'Microsoft.Web/sites@2022-03-01' = {
   name: appServiceName
   location: location
-  kind: 'app'
+  kind: 'windows'
   properties: {
     serverFarmId: appServicePlan.id
+    siteConfig: {
+      appSettings: [
+        {
+          name: 'WEBAPP_MISSING_DEPENDENCY'
+          value: 'true'
+        }
+      ]
+      netFrameworkVersion: 'v4.8'
+    }
   }
 } 

@@ -1,9 +1,9 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="HighCpu3.aspx.cs" Inherits="DiagnosticScenarios.Web.Scenarios.HighCpu.HighCpu3" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Http500_4.aspx.cs" Inherits="DiagnosticScenarios.Web.Scenarios.Http500.Http500_4" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>High CPU Scenario 3 - Complex Regex</title>
+    <title>HTTP 500 Scenario 4 - Invalid Connection String</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         .container { max-width: 800px; margin: 0 auto; }
@@ -28,20 +28,20 @@
 <body>
     <form id="form1" runat="server">
         <div class="container">
-            <h1>High CPU Scenario 3 - Complex Regex</h1>
+            <h1>HTTP 500 Scenario 4 - Invalid Connection String</h1>
             <p class="description">
-                This scenario demonstrates high CPU usage through complex regular expression operations.
-                It will perform multiple regex matches with nested patterns and backtracking,
-                causing significant CPU utilization while still returning a response.
+                This scenario demonstrates an HTTP 500 error caused by an invalid connection string in web.config.
+                Clicking the button will attempt to read and use an invalid connection string,
+                resulting in a configuration error and an HTTP 500 response.
             </p>
             
-            <asp:Button ID="btnStartHighCpu" runat="server" Text="Start High CPU" 
-                CssClass="button" OnClick="btnStartHighCpu_Click" />
+            <asp:Button ID="btnInvalidConnectionString" runat="server" Text="Simulate Invalid Connection String Error" 
+                CssClass="button" OnClick="btnStartError_Click" />
             
-            <asp:Label ID="lblStatus" runat="server" Text="Ready to simulate high CPU usage..."></asp:Label>
+            <asp:Label ID="lblStatus" runat="server" Text="Ready to simulate invalid connection string error..."></asp:Label>
             
             <div id="progress" runat="server" class="progress">
-                Running complex regex operations... This will cause high CPU usage.
+                Simulating invalid connection string error... This will cause an HTTP 500 error.
             </div>
         </div>
     </form>

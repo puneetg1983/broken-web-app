@@ -137,6 +137,19 @@ namespace DiagnosticScenarios.Tests
 
         [Test]
         [Order(4)]
+        public async Task TestHttp500InvalidConnectionStringScenario()
+        {
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting HTTP 500 Invalid Connection String scenario test...");
+            
+            var response = await _helper.TriggerScenarioWithResponse("/Scenarios/Http500/Http500_4Actual.aspx");
+            var responseContent = await response.Content.ReadAsStringAsync();
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Response content: {responseContent}");
+            
+            _helper.VerifyHttp500Response(response, responseContent);
+        }
+
+        [Test]
+        [Order(5)]
         public async Task TestBasicSlowResponseScenario()
         {
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting Basic Slow Response scenario test...");
@@ -159,7 +172,7 @@ namespace DiagnosticScenarios.Tests
         }
 
         [Test]
-        [Order(5)]
+        [Order(6)]
         public async Task TestComplexSlowResponseScenario()
         {
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting Complex Slow Response scenario test...");
@@ -182,7 +195,7 @@ namespace DiagnosticScenarios.Tests
         }
 
         [Test]
-        [Order(6)]
+        [Order(7)]
         public async Task TestSlowApiDependencyScenario()
         {
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting Slow API Dependency scenario test...");
@@ -205,7 +218,7 @@ namespace DiagnosticScenarios.Tests
         }
 
         [Test]
-        [Order(7)]
+        [Order(8)]
         public async Task TestSlowFileSystemDependencyScenario()
         {
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting Slow File System Dependency scenario test...");

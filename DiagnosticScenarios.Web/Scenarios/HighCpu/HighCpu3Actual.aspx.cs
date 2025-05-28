@@ -1,5 +1,5 @@
 using System;
-using System.Threading;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DiagnosticScenarios.Web.Scenarios.HighCpu
@@ -8,28 +8,51 @@ namespace DiagnosticScenarios.Web.Scenarios.HighCpu
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Start recursive calculations in parallel
+            // Generate a large text with nested patterns
+            string text = GenerateComplexText();
+            
+            // Run multiple regex operations in parallel
             Parallel.For(0, 10, i =>
             {
-                RecursiveCalculation(30); // Start with depth 30
+                RunComplexRegexOperations(text);
             });
         }
 
-        private void RecursiveCalculation(int depth)
+        private string GenerateComplexText()
         {
-            if (depth <= 0)
-                return;
-
-            // Perform some CPU-intensive calculations
-            double result = 0;
-            for (int i = 0; i < 1000000; i++)
+            // Generate a text with nested patterns that will cause regex backtracking
+            var text = new System.Text.StringBuilder();
+            for (int i = 0; i < 1000; i++)
             {
-                result += Math.Sqrt(i) * Math.Sin(i);
+                text.Append("((((a+)+)+)+)+");
+                text.Append("((((b+)+)+)+)+");
+                text.Append("((((c+)+)+)+)+");
             }
+            return text.ToString();
+        }
 
-            // Recursive calls
-            RecursiveCalculation(depth - 1);
-            RecursiveCalculation(depth - 1);
+        private void RunComplexRegexOperations(string text)
+        {
+            // Complex regex patterns that will cause significant backtracking
+            string[] patterns = new[]
+            {
+                @"((a+)+)+",
+                @"((b+)+)+",
+                @"((c+)+)+",
+                @"(a|b|c)*",
+                @"(a+)(b+)(c+)",
+                @"(a|b|c){10,}",
+                @"(a+)(b+)(c+)(d+)(e+)",
+                @"(a|b|c|d|e){5,}",
+                @"(a+)(b+)(c+)(d+)(e+)(f+)",
+                @"(a|b|c|d|e|f){6,}"
+            };
+
+            foreach (var pattern in patterns)
+            {
+                var regex = new Regex(pattern, RegexOptions.Compiled);
+                regex.Matches(text);
+            }
         }
     }
 } 
