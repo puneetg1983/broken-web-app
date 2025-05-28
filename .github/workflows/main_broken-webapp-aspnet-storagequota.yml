@@ -89,7 +89,7 @@ jobs:
       with:
         app-name: '${{ env.APP_SERVICE_NAME }}'
         slot-name: 'Production'
-        package: ./published
+        package: ./
 
   test:
     runs-on: windows-latest

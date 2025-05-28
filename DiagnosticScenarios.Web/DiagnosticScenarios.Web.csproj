@@ -119,6 +119,8 @@
     <Content Include="ProcessMetrics.aspx" />
     <Content Include="Scenarios\Crash\StackOverflow1Actual.aspx" />
     <Content Include="Scenarios\Crash\UnhandledException1Actual.aspx" />
+    <Content Include="Scenarios\HighConnections\HighConnections1.aspx" />
+    <Content Include="Scenarios\HighConnections\HighConnections1Actual.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Default.aspx.cs">
@@ -502,6 +504,20 @@
     </Compile>
     <Compile Include="Scenarios\Crash\UnhandledException1Actual.aspx.designer.cs">
       <DependentUpon>UnhandledException1Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\HighConnections\HighConnections1.aspx.cs">
+      <DependentUpon>HighConnections1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\HighConnections\HighConnections1.aspx.designer.cs">
+      <DependentUpon>HighConnections1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\HighConnections\HighConnections1Actual.aspx.cs">
+      <DependentUpon>HighConnections1Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\HighConnections\HighConnections1Actual.aspx.designer.cs">
+      <DependentUpon>HighConnections1Actual.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

@@ -37,7 +37,9 @@ jobs:
         msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore
         Write-Host "Publishing web project..."
         msbuild DiagnosticScenarios.Web\DiagnosticScenarios.Web.csproj /p:Configuration=Release /p:Platform="Any CPU" /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
-    
+        Write-Host "Removing required dependency..."
+        Remove-Item -Path "./published/bin/System.Web.dll" -Force
+
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v4
       with:
@@ -45,11 +47,14 @@ jobs:
         path: '/published/**'
 
   deploy:
-    needs: build
     runs-on: windows-latest
+    needs: build
+    permissions:
+      id-token: write #This is required for requesting the JWT
+      contents: read #This is required for actions/checkout
     steps:
     - uses: actions/checkout@v4
-    
+  
     - name: Download artifact from build job
       uses: actions/download-artifact@v4
       with:
@@ -62,23 +67,16 @@ jobs:
         tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D8A248E844C24894B15CE3E2EC150853 }}
         subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E34A382294604AB38B20E873BFF2ED08 }}
         
-    - name: List Folder Structure
-      run: |
-        Write-Host "Current directory: $(Get-Location)"
-        Get-ChildItem -Recurse | Select-Object FullName
-        
+    - name: List folder structure for debugging
+        run: Get-ChildItem -Recurse
+
     - name: Deploy Bicep (Web App & App Service Plan)
       uses: azure/arm-deploy@v1
       with:
         subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
         template: ./infra/main_broken-webapp-aspnet-missingdependency.bicep
-        parameters: webAppName=${{ env.APP_SERVICE_NAME }}
-        
-    - name: Remove Required Dependency
-      run: |
-        Write-Host "Removing required dependency..."
-        Remove-Item -Path "./webapp/bin/System.Web.dll" -Force
+        parameters: appServiceName=${{ env.APP_SERVICE_NAME }}
         
     - name: Deploy to Azure Web App
       id: deploy-to-webapp
@@ -86,7 +84,7 @@ jobs:
       with:
         app-name: '${{ env.APP_SERVICE_NAME }}'
         slot-name: 'Production'
-        package: ./published
+        package: ./
 
   test:
     needs: deploy
