@@ -54,9 +54,15 @@ namespace DiagnosticScenarios.Tests
             _armClient = CreateArmClient(accessToken);
         }
 
-        public static bool ShouldRunTests()
+        public static bool ShouldRunTests(string category)
         {
-            return Environment.GetEnvironmentVariable("RUN_SPECIALIZED_TESTS")?.ToLower() == "true";
+            var runTests = Environment.GetEnvironmentVariable("RUN_SPECIALIZED_TESTS");
+            if (string.IsNullOrEmpty(runTests))
+            {
+                return false;
+            }
+
+            return runTests.Equals(category, StringComparison.OrdinalIgnoreCase);
         }
 
         public static string GetSubscriptionId()

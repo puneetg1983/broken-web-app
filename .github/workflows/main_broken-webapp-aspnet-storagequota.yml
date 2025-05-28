@@ -121,4 +121,5 @@ jobs:
         $testDll = Join-Path $env:GITHUB_WORKSPACE "DiagnosticScenarios.Tests\bin\Release\DiagnosticScenarios.Tests.dll"
         & $nunitPath $testDll --framework=net-4.8 --where "cat==StorageQuota"
       env:
-        WEBAPP_URL: ${{ env.WEBAPP_URL }} 
+        WEBAPP_URL: ${{ env.WEBAPP_URL }}
+        RUN_SPECIALIZED_TESTS: StorageQuota 

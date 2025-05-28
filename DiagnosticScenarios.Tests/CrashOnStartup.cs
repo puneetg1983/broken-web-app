@@ -6,8 +6,8 @@ using NUnit.Framework;
 namespace DiagnosticScenarios.Tests
 {
     [TestFixture]
-    [Category("HangOnStartup")]
-    public class StartupScenarioTests
+    [Category("CrashOnStartup")]
+    public class CrashOnStartup
     {
         private string _baseUrl;
         private HttpClient _httpClient;
@@ -15,9 +15,9 @@ namespace DiagnosticScenarios.Tests
         [OneTimeSetUp]
         public void Setup()
         {
-            if (!ArmMetricsHelper.ShouldRunTests("HangOnStartup"))
+            if (!ArmMetricsHelper.ShouldRunTests("CrashOnStartup"))
             {
-                Assert.Ignore("Skipping HangOnStartup tests. Set RUN_SPECIALIZED_TESTS=HangOnStartup to run them locally.");
+                Assert.Ignore("Skipping CrashOnStartup tests. Set RUN_SPECIALIZED_TESTS=CrashOnStartup to run them locally.");
             }
             _baseUrl = Environment.GetEnvironmentVariable("WEBAPP_URL") ?? 
                       throw new InvalidOperationException("WEBAPP_URL environment variable is not set. Please set it in your GitHub repository secrets.");
@@ -25,28 +25,25 @@ namespace DiagnosticScenarios.Tests
         }
 
         [Test]
-        public async Task TestHangOnStartupScenario()
+        public async Task TestCrashOnStartupScenario()
         {
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Testing Hang on Startup scenario...");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Testing Crash on Startup scenario...");
             
             try
             {
-                // Set a timeout of 30 seconds for the request
-                _httpClient.Timeout = TimeSpan.FromSeconds(30);
-                
                 // Attempt to access the default page
                 var response = await _httpClient.GetAsync(_baseUrl);
+                var responseContent = await response.Content.ReadAsStringAsync();
                 
-                // If we get here, the request didn't hang as expected
-                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Unexpected response received:");
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Response received:");
                 TestContext.Progress.WriteLine($"Status Code: {(int)response.StatusCode} {response.StatusCode}");
-                TestContext.Progress.WriteLine($"Response Content: {await response.Content.ReadAsStringAsync()}");
-                Assert.Fail("The request should have timed out due to the app hanging on startup");
-            }
-            catch (TaskCanceledException)
-            {
-                // This is the expected behavior - the request should time out
-                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Request timed out as expected");
+                TestContext.Progress.WriteLine($"Response Content: {responseContent}");
+                
+                // The app should return a 500 error due to crashing on startup
+                Assert.That(response.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.InternalServerError), 
+                    $"Expected 500 Internal Server Error, but got {(int)response.StatusCode} {response.StatusCode}");
+                
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Received 500 error as expected");
             }
             catch (Exception ex)
             {

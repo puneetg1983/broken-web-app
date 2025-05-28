@@ -128,6 +128,9 @@
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
     <Compile Include="Scenarios\HighCpu\HighCpu1.aspx.cs">
       <DependentUpon>HighCpu1.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -499,9 +502,6 @@
     </Compile>
     <Compile Include="Scenarios\Crash\UnhandledException1Actual.aspx.designer.cs">
       <DependentUpon>UnhandledException1Actual.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Global.asax.cs">
-      <DependentUpon>Global.asax</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

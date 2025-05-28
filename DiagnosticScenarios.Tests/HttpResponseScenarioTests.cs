@@ -27,7 +27,7 @@ namespace DiagnosticScenarios.Tests
         [OneTimeSetUp]
         public async Task Setup()
         {
-            if (!ArmMetricsHelper.ShouldRunTests())
+            if (!ArmMetricsHelper.ShouldRunTests("HttpResponse"))
             {
                 Assert.Ignore("Skipping ARM metrics tests. Set RUN_SPECIALIZED_TESTS=true to run them locally.");
             }

@@ -171,20 +171,20 @@ jobs:
         RESOURCE_GROUP_NAME: ${{ env.RESOURCE_GROUP_NAME }}
         APP_SERVICE_NAME: ${{ env.APP_SERVICE_NAME }}
         SUBSCRIPTION_ID: ${{ env.SUBSCRIPTION_ID }}
-        RUN_SPECIALIZED_TESTS: 'true'
+        RUN_SPECIALIZED_TESTS: ResourceMetrics
 
     - name: Run Crash Metrics Tests
       run: |
         Write-Host "Running crash metrics tests..."
         $nunitPath = Join-Path $env:GITHUB_WORKSPACE "tools\NUnit.ConsoleRunner.3.16.3\tools\nunit3-console.exe"
         $testDll = Join-Path $env:GITHUB_WORKSPACE "DiagnosticScenarios.Tests\bin\Release\DiagnosticScenarios.Tests.dll"
-        & $nunitPath $testDll --framework=net-4.8 --where "cat==CrashMetrics"
+        & $nunitPath $testDll --framework=net-4.8 --where "cat==CrashTests"
       env:
         WEBAPP_URL: ${{ env.WEBAPP_URL }}
         RESOURCE_GROUP_NAME: ${{ env.RESOURCE_GROUP_NAME }}
         APP_SERVICE_NAME: ${{ env.APP_SERVICE_NAME }}
         SUBSCRIPTION_ID: ${{ env.SUBSCRIPTION_ID }}
-        RUN_SPECIALIZED_TESTS: 'true'
+        RUN_SPECIALIZED_TESTS: CrashTests
 
   http-response-tests:
     runs-on: windows-latest
@@ -234,4 +234,4 @@ jobs:
         RESOURCE_GROUP_NAME: ${{ env.RESOURCE_GROUP_NAME }}
         APP_SERVICE_NAME: ${{ env.APP_SERVICE_NAME }}
         SUBSCRIPTION_ID: ${{ env.SUBSCRIPTION_ID }}
-        RUN_SPECIALIZED_TESTS: 'true'
+        RUN_SPECIALIZED_TESTS: HttpResponse

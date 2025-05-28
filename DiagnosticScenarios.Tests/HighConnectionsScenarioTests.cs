@@ -15,6 +15,10 @@ namespace DiagnosticScenarios.Tests
 
         public HighConnectionsScenarioTests()
         {
+            if (!ArmMetricsHelper.ShouldRunTests("HighConnections"))
+            {
+                Assert.Ignore("Skipping HighConnectionsScenarioTests tests. Set RUN_SPECIALIZED_TESTS=HighConnections to run them locally.");
+            }
             _baseUrl = Environment.GetEnvironmentVariable("WEBAPP_URL") ?? 
                 throw new Exception("WEBAPP_URL environment variable is not set");
             _httpClient = new HttpClient();

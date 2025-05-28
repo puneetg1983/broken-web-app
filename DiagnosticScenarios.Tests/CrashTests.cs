@@ -7,8 +7,8 @@ namespace DiagnosticScenarios.Tests
 {
     [TestFixture]
     [NonParallelizable]
-    [Category("CrashMetrics")]
-    public class CrashMetricsTests
+    [Category("CrashTests")]
+    public class CrashTests
     {
         private ProcessMetricsHelper _helper;
         private string _baseUrl;
@@ -16,9 +16,9 @@ namespace DiagnosticScenarios.Tests
         [OneTimeSetUp]
         public void Setup()
         {
-            if (!ArmMetricsHelper.ShouldRunTests())
+            if (!ArmMetricsHelper.ShouldRunTests("CrashTests"))
             {
-                Assert.Ignore("Skipping CrashMetrics tests. Set RUN_SPECIALIZED_TESTS=true to run them locally.");
+                Assert.Ignore("Skipping CrashTests tests. Set RUN_SPECIALIZED_TESTS='CrashTests' to run them locally.");
             }
 
             _baseUrl = Environment.GetEnvironmentVariable("WEBAPP_URL") ?? "https://localhost:44300";

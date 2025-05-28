@@ -15,7 +15,7 @@ namespace DiagnosticScenarios.Tests
         [OneTimeSetUp]
         public void Setup()
         {
-            if (!ArmMetricsHelper.ShouldRunTests())
+            if (!ArmMetricsHelper.ShouldRunTests("ResourceMetrics"))
             {
                 Assert.Ignore("Skipping ResourceMetrics tests. Set RUN_SPECIALIZED_TESTS=true to run them locally.");
             }

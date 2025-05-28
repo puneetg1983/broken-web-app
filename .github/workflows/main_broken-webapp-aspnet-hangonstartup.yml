@@ -116,9 +116,10 @@ jobs:
 
     - name: Run Tests
       run: |
-        Write-Host "Running tests..."
+        Write-Host "Running Hang on Startup tests..."
         $nunitPath = Join-Path $env:GITHUB_WORKSPACE "tools\NUnit.ConsoleRunner.3.16.3\tools\nunit3-console.exe"
         $testDll = Join-Path $env:GITHUB_WORKSPACE "DiagnosticScenarios.Tests\bin\Release\DiagnosticScenarios.Tests.dll"
-        & $nunitPath $testDll --framework=net-4.8 --where "cat == HangOnStartup"
+        & $nunitPath $testDll --framework=net-4.8 --where "cat==HangOnStartup"
       env:
-        WEBAPP_URL: ${{ env.WEBAPP_URL }} 
+        WEBAPP_URL: ${{ env.WEBAPP_URL }}
+        RUN_SPECIALIZED_TESTS: HangOnStartup 

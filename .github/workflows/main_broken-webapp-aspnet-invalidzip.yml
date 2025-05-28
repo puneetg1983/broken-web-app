@@ -111,4 +111,5 @@ jobs:
     - name: Run Tests
       run: ./tools/NUnit.ConsoleRunner.3.16.3/tools/nunit3-console.exe DiagnosticScenarios.Tests/bin/Release/DiagnosticScenarios.Tests.dll --where "cat==InvalidZip"
       env:
-        WEBAPP_URL: ${{ secrets.WEBAPP_URL }} 
+        WEBAPP_URL: ${{ secrets.WEBAPP_URL }}
+        RUN_SPECIALIZED_TESTS: InvalidZip 

@@ -15,6 +15,10 @@ namespace DiagnosticScenarios.Tests
         [OneTimeSetUp]
         public void Setup()
         {
+            if (!ArmMetricsHelper.ShouldRunTests("StorageQuota"))
+            {
+                Assert.Ignore("Skipping StorageQuotaScenarioTests tests. Set RUN_SPECIALIZED_TESTS=true to run them locally.");
+            }
             _client = new HttpClient();
             _baseUrl = Environment.GetEnvironmentVariable("WEBAPP_URL") ?? "http://localhost:5000";
         }

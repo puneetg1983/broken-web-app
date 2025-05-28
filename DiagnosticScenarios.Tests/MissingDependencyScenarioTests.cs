@@ -15,6 +15,10 @@ namespace DiagnosticScenarios.Tests
         [OneTimeSetUp]
         public void Setup()
         {
+            if (!ArmMetricsHelper.ShouldRunTests("MissingDependency"))
+            {
+                Assert.Ignore("Skipping MissingDependencyScenarioTests tests. Set RUN_SPECIALIZED_TESTS=true to run them locally.");
+            }
             _httpClient = new HttpClient();
             _baseUrl = Environment.GetEnvironmentVariable("WEBAPP_URL");
             
