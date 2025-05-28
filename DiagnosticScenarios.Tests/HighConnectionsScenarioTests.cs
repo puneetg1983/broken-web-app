@@ -42,7 +42,7 @@ namespace DiagnosticScenarios.Tests
             var initialConnections = initialMetrics.TcpConnections.TotalConnections;
 
             // Trigger the high connections scenario
-            var response = await _httpClient.GetAsync($"{_baseUrl}/Scenarios/HighConnections/HighConnections.aspx");
+            var response = await _httpClient.GetAsync($"{_baseUrl}/Scenarios/HighConnections/HighConnections1.aspx");
             Assert.That(response.IsSuccessStatusCode, Is.True, "Failed to trigger high connections scenario");
 
             // Wait for connections to be established

@@ -71,11 +71,21 @@ jobs:
         template: ./infra/main_broken-webapp-aspnet-invalidzip.bicep
         parameters: webAppName=${{ env.APP_SERVICE_NAME }}
         
-    - name: Deploy Web App
-      uses: azure/webapps-deploy@v2
+    - name: Create Invalid Zip
+      run: |
+        Write-Host "Creating invalid zip file..."
+        Compress-Archive -Path ./webapp/* -DestinationPath ./invalid.zip -Force
+        # Corrupt the zip file by removing some bytes
+        $bytes = [System.IO.File]::ReadAllBytes("./invalid.zip")
+        [System.IO.File]::WriteAllBytes("./invalid.zip", $bytes[0..($bytes.Length-100)])
+        
+    - name: Deploy to Azure Web App
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v3
       with:
-        app-name: ${{ env.APP_SERVICE_NAME }}
-        package: .
+        app-name: '${{ env.APP_SERVICE_NAME }}'
+        slot-name: 'Production'
+        package: ./invalid.zip
 
   test:
     needs: deploy
