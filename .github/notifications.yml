@@ -1,3 +1,0 @@
-notifications:
-  email:
-    on_failure: never 

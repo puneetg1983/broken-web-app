@@ -221,7 +221,7 @@ jobs:
       with:
         client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_F0C7A6A53CD145789775B830B9CB8AAF }}
         tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D8A248E844C24894B15CE3E2EC150853 }}
-        subscription-id: ${{ env.SUBSCRIPTION_ID }}
+        subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E34A382294604AB38B20E873BFF2ED08 }}
 
     - name: Run HTTP Response Tests
       run: |
