@@ -7,15 +7,18 @@ on:
   workflow_dispatch:
 
 env:
-  APP_SERVICE_NAME: webapp-broken-missingdependency
-  WEBAPP_URL: ${{ secrets.WEBAPP_URL }}
-  CONFIGURATION: Release
-  SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
-  RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
+  APP_SERVICE_NAME: webapp-broken-missingdependency-${{ vars.ALIAS }}
+  WEBAPP_URL: https://broken-webapp-aspnet-missingdependency-${{ vars.ALIAS }}.azurewebsites.net
+  CONFIGURATION: 'Release'
+  SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E34A382294604AB38B20E873BFF2ED08 }}
+  RESOURCE_GROUP_NAME: ${{ vars.RESOURCE_GROUP_NAME }}
 
 jobs:
   build:
     runs-on: windows-latest
+    permissions:
+      contents: read #This is required for actions/checkout
+
     steps:
     - uses: actions/checkout@v4
     
@@ -26,14 +29,15 @@ jobs:
       uses: NuGet/setup-nuget@v1.0.5
       
     - name: Restore NuGet Packages
-      run: nuget restore DiagnosticScenarios.sln
+      run: nuget restore
       
-    - name: Build Solution
-      run: msbuild DiagnosticScenarios.sln /p:Configuration=${{ env.CONFIGURATION }} /p:Platform="Any CPU" /p:ProductVersion=1.0.0 /p:AssemblyVersion=1.0.0.0 /p:FileVersion=1.0.0.0
-      
-    - name: Publish Web Project
-      run: msbuild DiagnosticScenarios.Web/DiagnosticScenarios.Web.csproj /p:Configuration=${{ env.CONFIGURATION }} /p:Platform="Any CPU" /p:DeployOnBuild=true /p:PublishProfile=FolderProfile /p:publishUrl=./publish
-      
+    - name: Publish to folder
+      run: |
+        Write-Host "Building solution..."
+        msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore
+        Write-Host "Publishing web project..."
+        msbuild DiagnosticScenarios.Web\DiagnosticScenarios.Web.csproj /p:Configuration=Release /p:Platform="Any CPU" /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
+    
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v4
       with:
@@ -82,7 +86,7 @@ jobs:
       with:
         app-name: '${{ env.APP_SERVICE_NAME }}'
         slot-name: 'Production'
-        package: ./webapp
+        package: ./published
 
   test:
     needs: deploy
