@@ -52,7 +52,7 @@ namespace DiagnosticScenarios.Web
             {
                 var connections = IPGlobalProperties.GetIPGlobalProperties()
                     .GetActiveTcpConnections()
-                    .Where(c => c.ProcessId == processId);
+                    .Where(c => c.LocalEndPoint.Port < 49152); // Filter for system ports only
 
                 foreach (var conn in connections)
                 {

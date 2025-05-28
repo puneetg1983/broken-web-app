@@ -6,6 +6,7 @@ using NUnit.Framework;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace DiagnosticScenarios.Tests
 {
@@ -116,19 +117,7 @@ namespace DiagnosticScenarios.Tests
             }
 
             var content = await response.Content.ReadAsStringAsync();
-            var json = JObject.Parse(content);
-
-            return new ProcessMetrics
-            {
-                ProcessId = json["ProcessId"].Value<int>(),
-                ProcessName = json["ProcessName"].Value<string>(),
-                CpuTime = json["CpuTime"].Value<double>(),
-                PrivateBytes = json["PrivateBytes"].Value<long>(),
-                WorkingSet = json["WorkingSet"].Value<long>(),
-                ThreadCount = json["ThreadCount"].Value<int>(),
-                HandleCount = json["HandleCount"].Value<int>(),
-                Timestamp = json["Timestamp"].Value<DateTime>()
-            };
+            return JsonConvert.DeserializeObject<ProcessMetrics>(content);
         }
 
         public async Task RestartWebApp()
@@ -329,11 +318,24 @@ namespace DiagnosticScenarios.Tests
     {
         public int ProcessId { get; set; }
         public string ProcessName { get; set; }
+        public string MachineName { get; set; }
         public double CpuTime { get; set; }
         public long PrivateBytes { get; set; }
         public long WorkingSet { get; set; }
         public int ThreadCount { get; set; }
         public int HandleCount { get; set; }
+        public double ProcessUptimeMinutes { get; set; }
+        public TcpConnectionStats TcpConnections { get; set; }
         public DateTime Timestamp { get; set; }
+    }
+
+    public class TcpConnectionStats
+    {
+        public int TotalConnections { get; set; }
+        public int IncomingConnections { get; set; }
+        public int OutgoingConnections { get; set; }
+        public int EstablishedConnections { get; set; }
+        public int TimeWaitConnections { get; set; }
+        public int CloseWaitConnections { get; set; }
     }
 } 

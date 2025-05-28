@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Default.aspx" />
+    <Content Include="Global.asax" />
     <Content Include="Web.config" />
     <Content Include="Scenarios\HighCpu\HighCpu1.aspx" />
     <Content Include="Scenarios\HighCpu\HighCpu2.aspx" />
@@ -531,4 +532,4 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-</Project> 
+</Project>

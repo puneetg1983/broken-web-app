@@ -1,3 +1,4 @@
+@description('Deploys a broken web app scenario for storage quota')
 param appServiceName string
 
 var appServicePlanName = appServiceName
@@ -32,4 +33,5 @@ resource webApp 'Microsoft.Web/sites@2022-03-01' = {
 }
 
 output webAppName string = webApp.name
-output webAppHostName string = webApp.properties.defaultHostName 
+output webAppHostName string = webApp.properties.defaultHostName
+output webAppId string = webApp.id 

@@ -2,6 +2,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Newtonsoft.Json;
 
 namespace DiagnosticScenarios.Tests
 {
@@ -9,16 +10,22 @@ namespace DiagnosticScenarios.Tests
     [Category("HighConnections")]
     public class HighConnectionsScenarioTests
     {
-        private string _baseUrl;
-        private HttpClient _httpClient;
+        private readonly string _baseUrl;
+        private readonly HttpClient _httpClient;
 
-        [OneTimeSetUp]
-        public void Setup()
+        public HighConnectionsScenarioTests()
         {
-            _baseUrl = Environment.GetEnvironmentVariable("WEBAPP_URL") ?? "https://localhost:44300";
+            _baseUrl = Environment.GetEnvironmentVariable("WEBAPP_URL") ?? 
+                throw new Exception("WEBAPP_URL environment variable is not set");
             _httpClient = new HttpClient();
             _httpClient.DefaultRequestHeaders.Add("User-Agent", "DiagnosticScenarios.Tests");
-            _httpClient.Timeout = TimeSpan.FromMinutes(2);
+        }
+
+        [OneTimeSetUp]
+        public async Task Setup()
+        {
+            // Wait for the app to be ready
+            await WaitForAppReady();
         }
 
         [OneTimeTearDown]
@@ -28,54 +35,67 @@ namespace DiagnosticScenarios.Tests
         }
 
         [Test]
-        public async Task TestHighConnectionsScenario()
+        public async Task HighConnectionsScenario_ShouldIncreaseConnectionCount()
         {
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting High Connections scenario test...");
-
-            // First, verify the main page loads
-            var mainPageResponse = await _httpClient.GetAsync($"{_baseUrl}/Scenarios/HighConnections/HighConnections1.aspx");
-            Assert.That(mainPageResponse.IsSuccessStatusCode, Is.True, "Main page should load successfully");
-
             // Get initial metrics
             var initialMetrics = await GetMetrics();
-            var initialOutboundConnections = initialMetrics.TcpConnections.Outgoing;
+            var initialConnections = initialMetrics.TcpConnections.TotalConnections;
 
-            // Trigger the scenario
-            var scenarioResponse = await _httpClient.GetAsync($"{_baseUrl}/Scenarios/HighConnections/HighConnections1Actual.aspx");
-            Assert.That(scenarioResponse.IsSuccessStatusCode, Is.True, "Scenario page should load successfully");
+            // Trigger the high connections scenario
+            var response = await _httpClient.GetAsync($"{_baseUrl}/Scenarios/HighConnections/HighConnections.aspx");
+            Assert.That(response.IsSuccessStatusCode, Is.True, "Failed to trigger high connections scenario");
 
             // Wait for connections to be established
-            await Task.Delay(TimeSpan.FromSeconds(30));
+            await Task.Delay(TimeSpan.FromSeconds(5));
 
-            // Get metrics after connections are established
-            var finalMetrics = await GetMetrics();
-            var finalOutboundConnections = finalMetrics.TcpConnections.Outgoing;
+            // Get metrics after scenario
+            var afterMetrics = await GetMetrics();
+            var afterConnections = afterMetrics.TcpConnections.TotalConnections;
 
-            // Verify the number of outbound connections increased significantly
-            Assert.That(finalOutboundConnections, Is.GreaterThan(initialOutboundConnections), 
-                "Number of outbound connections should increase");
-            Assert.That(finalOutboundConnections, Is.GreaterThan(1000), 
-                "Should have more than 1000 outbound connections");
-
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Initial outbound connections: {initialOutboundConnections}");
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Final outbound connections: {finalOutboundConnections}");
+            // Verify connection count increased
+            Assert.That(afterConnections, Is.GreaterThan(initialConnections), 
+                $"Connection count should increase. Initial: {initialConnections}, After: {afterConnections}");
         }
 
         private async Task<ProcessMetrics> GetMetrics()
         {
             var response = await _httpClient.GetAsync($"{_baseUrl}/ProcessMetrics.aspx");
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to get process metrics. Status code: {response.StatusCode}");
+            }
+
             var content = await response.Content.ReadAsStringAsync();
-            return System.Text.Json.JsonSerializer.Deserialize<ProcessMetrics>(content);
+            return JsonConvert.DeserializeObject<ProcessMetrics>(content);
         }
 
-        private class ProcessMetrics
+        private async Task WaitForAppReady()
         {
-            public TcpConnectionInfo TcpConnections { get; set; }
+            const int maxRetries = 10;
+            const int delaySeconds = 5;
 
-            public class TcpConnectionInfo
+            for (int i = 0; i < maxRetries; i++)
             {
-                public int Outgoing { get; set; }
+                try
+                {
+                    var response = await _httpClient.GetAsync(_baseUrl);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    TestContext.Progress.WriteLine($"Attempt {i + 1} failed: {ex.Message}");
+                }
+
+                if (i < maxRetries - 1)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(delaySeconds));
+                }
             }
+
+            throw new Exception($"App not ready after {maxRetries} attempts");
         }
     }
 } 

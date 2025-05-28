@@ -8,7 +8,6 @@ namespace DiagnosticScenarios.Web.Scenarios.HighCpu
     {
         private static readonly object _lockA = new object();
         private static readonly object _lockB = new object();
-        private static bool _isRunning = false;
 
         protected void Page_Load(object sender, EventArgs e)
         {
