@@ -67,6 +67,9 @@ resource defaultPageTest 'Microsoft.Insights/webtests@2022-06-15' = {
         Id: 'us-fl-mia-edge'
       }
     ]
+    Configuration: {
+      WebTest: '${webAppUrl}/default.aspx'
+    }
     Request: {
       RequestUrl: '${webAppUrl}/default.aspx'
       HttpVerb: 'GET'
@@ -106,6 +109,9 @@ resource http500Test1 'Microsoft.Insights/webtests@2022-06-15' = {
         Id: 'us-fl-mia-edge'
       }
     ]
+    Configuration: {
+      WebTest: '${webAppUrl}/Scenarios/Http500/Http500_1Actual.aspx'
+    }
     Request: {
       RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_1Actual.aspx'
       HttpVerb: 'GET'
@@ -145,6 +151,9 @@ resource http500Test2 'Microsoft.Insights/webtests@2022-06-15' = {
         Id: 'us-fl-mia-edge'
       }
     ]
+    Configuration: {
+      WebTest: '${webAppUrl}/Scenarios/Http500/Http500_2Actual.aspx'
+    }
     Request: {
       RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_2Actual.aspx'
       HttpVerb: 'GET'
@@ -184,6 +193,9 @@ resource http500Test3 'Microsoft.Insights/webtests@2022-06-15' = {
         Id: 'us-fl-mia-edge'
       }
     ]
+    Configuration: {
+      WebTest: '${webAppUrl}/Scenarios/Http500/Http500_3Actual.aspx'
+    }
     Request: {
       RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_3Actual.aspx'
       HttpVerb: 'GET'
@@ -223,6 +235,9 @@ resource http500Test4 'Microsoft.Insights/webtests@2022-06-15' = {
         Id: 'us-fl-mia-edge'
       }
     ]
+    Configuration: {
+      WebTest: '${webAppUrl}/Scenarios/Http500/Http500_4Actual.aspx'
+    }
     Request: {
       RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_4Actual.aspx'
       HttpVerb: 'GET'
@@ -262,6 +277,9 @@ resource http500PageTest1 'Microsoft.Insights/webtests@2022-06-15' = {
         Id: 'us-fl-mia-edge'
       }
     ]
+    Configuration: {
+      WebTest: '${webAppUrl}/Scenarios/Http500/Http500_1.aspx'
+    }
     Request: {
       RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_1.aspx'
       HttpVerb: 'GET'
@@ -301,6 +319,9 @@ resource http500PageTest2 'Microsoft.Insights/webtests@2022-06-15' = {
         Id: 'us-fl-mia-edge'
       }
     ]
+    Configuration: {
+      WebTest: '${webAppUrl}/Scenarios/Http500/Http500_2.aspx'
+    }
     Request: {
       RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_2.aspx'
       HttpVerb: 'GET'
@@ -340,6 +361,9 @@ resource http500PageTest3 'Microsoft.Insights/webtests@2022-06-15' = {
         Id: 'us-fl-mia-edge'
       }
     ]
+    Configuration: {
+      WebTest: '${webAppUrl}/Scenarios/Http500/Http500_3.aspx'
+    }
     Request: {
       RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_3.aspx'
       HttpVerb: 'GET'
@@ -379,6 +403,9 @@ resource http500PageTest4 'Microsoft.Insights/webtests@2022-06-15' = {
         Id: 'us-fl-mia-edge'
       }
     ]
+    Configuration: {
+      WebTest: '${webAppUrl}/Scenarios/Http500/Http500_4.aspx'
+    }
     Request: {
       RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_4.aspx'
       HttpVerb: 'GET'

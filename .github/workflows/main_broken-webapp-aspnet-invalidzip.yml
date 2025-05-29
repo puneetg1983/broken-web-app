@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
 
 env:
-  APP_SERVICE_NAME: webapp-broken-invalidzip
-  WEBAPP_URL: ${{ secrets.WEBAPP_URL }}
-  CONFIGURATION: Release
-  SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
-  RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
+  APP_SERVICE_NAME: webapp-broken-invalidzip-${{ vars.ALIAS }}
+  WEBAPP_URL: https://broken-webapp-aspnet-invalidzip-${{ vars.ALIAS }}.azurewebsites.net
+  CONFIGURATION: 'Release'
+  SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E34A382294604AB38B20E873BFF2ED08 }}
+  RESOURCE_GROUP_NAME: ${{ vars.RESOURCE_GROUP_NAME }}
 
 jobs:
   build:
@@ -68,13 +68,13 @@ jobs:
         Write-Host "Current directory: $(Get-Location)"
         Get-ChildItem -Recurse | Select-Object FullName
         
-    - name: Deploy Bicep Template
+    - name: Deploy Bicep (Web App & App Service Plan)
       uses: azure/arm-deploy@v1
       with:
         subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
         template: ./infra/main_broken-webapp-aspnet-invalidzip.bicep
-        parameters: webAppName=${{ env.APP_SERVICE_NAME }}
+        parameters: appServiceName=${{ env.APP_SERVICE_NAME }}
         
     - name: Create Invalid Zip
       run: |
