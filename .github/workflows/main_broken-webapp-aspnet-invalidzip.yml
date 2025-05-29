@@ -62,12 +62,7 @@ jobs:
         client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_F0C7A6A53CD145789775B830B9CB8AAF }}
         tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D8A248E844C24894B15CE3E2EC150853 }}
         subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E34A382294604AB38B20E873BFF2ED08 }}
-        
-    - name: List Folder Structure
-      run: |
-        Write-Host "Current directory: $(Get-Location)"
-        Get-ChildItem -Recurse | Select-Object FullName
-        
+
     - name: Deploy Bicep (Web App & App Service Plan)
       uses: azure/arm-deploy@v1
       with:
@@ -79,7 +74,9 @@ jobs:
     - name: Create Invalid Zip
       run: |
         Write-Host "Creating invalid zip file..."
-        Compress-Archive -Path ./broken-web-app/* -DestinationPath ./invalid.zip -Force
+        Write-Host "Current directory: $(Get-Location)"
+        Get-ChildItem -Recurse | Select-Object FullName
+        Compress-Archive -Path ./* -DestinationPath ./invalid.zip -Force
         # Corrupt the zip file by removing some bytes
         $bytes = [System.IO.File]::ReadAllBytes("./invalid.zip")
         [System.IO.File]::WriteAllBytes("./invalid.zip", $bytes[0..($bytes.Length-100)])

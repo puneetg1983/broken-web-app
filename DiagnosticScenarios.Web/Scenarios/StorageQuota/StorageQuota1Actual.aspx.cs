@@ -15,43 +15,18 @@ namespace DiagnosticScenarios.Web.Scenarios.StorageQuota
         protected void Page_Load(object sender, EventArgs e)
         {
             int fileCount = 0;
-            try
+            lblStatus.Text = "Starting storage quota exceeded simulation...";
+            Response.Flush();
+
+            // Create files until we hit the quota
+            while (true)
             {
-                lblStatus.Text = "Starting storage quota exceeded simulation...";
+                string fileName = Path.Combine(TempPath, $"{FilePrefix}{fileCount}.dat");
+                CreateLargeFile(fileName, FileSizeMB);
+                fileCount++;
+
+                lblStatus.Text = $"Created {fileCount} files ({fileCount * FileSizeMB} MB total)...";
                 Response.Flush();
-
-                // Create files until we hit the quota
-                while (true)
-                {
-                    string fileName = Path.Combine(TempPath, $"{FilePrefix}{fileCount}.dat");
-                    CreateLargeFile(fileName, FileSizeMB);
-                    fileCount++;
-
-                    lblStatus.Text = $"Created {fileCount} files ({fileCount * FileSizeMB} MB total)...";
-                    Response.Flush();
-                }
-            }
-            catch (IOException ex)
-            {
-                if (ex.Message.Contains("There is not enough space on the disk"))
-                {
-                    // Set the status code to 500 and throw the exception
-                    Response.StatusCode = 500;
-                    Response.StatusDescription = "Internal Server Error";
-                    throw new Exception($"Storage quota exceeded! Created {fileCount} files before running out of space.", ex);
-                }
-                else
-                {
-                    Response.StatusCode = 500;
-                    Response.StatusDescription = "Internal Server Error";
-                    throw new Exception($"Error: {ex.Message}", ex);
-                }
-            }
-            catch (Exception ex)
-            {
-                Response.StatusCode = 500;
-                Response.StatusDescription = "Internal Server Error";
-                throw new Exception($"Error: {ex.Message}", ex);
             }
         }
 

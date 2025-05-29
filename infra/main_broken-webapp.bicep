@@ -68,7 +68,7 @@ resource defaultPageTest 'Microsoft.Insights/webtests@2022-06-15' = {
       }
     ]
     Configuration: {
-      WebTest: '${webAppUrl}/default.aspx'
+      WebTest: loadTextContent('webtests/default.aspx.webtest')
     }
     Request: {
       RequestUrl: '${webAppUrl}/default.aspx'
@@ -110,7 +110,7 @@ resource http500Test1 'Microsoft.Insights/webtests@2022-06-15' = {
       }
     ]
     Configuration: {
-      WebTest: '${webAppUrl}/Scenarios/Http500/Http500_1Actual.aspx'
+      WebTest: loadTextContent('webtests/http500_1.webtest')
     }
     Request: {
       RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_1Actual.aspx'
@@ -152,7 +152,7 @@ resource http500Test2 'Microsoft.Insights/webtests@2022-06-15' = {
       }
     ]
     Configuration: {
-      WebTest: '${webAppUrl}/Scenarios/Http500/Http500_2Actual.aspx'
+      WebTest: loadTextContent('webtests/http500_2.webtest')
     }
     Request: {
       RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_2Actual.aspx'
@@ -194,7 +194,7 @@ resource http500Test3 'Microsoft.Insights/webtests@2022-06-15' = {
       }
     ]
     Configuration: {
-      WebTest: '${webAppUrl}/Scenarios/Http500/Http500_3Actual.aspx'
+      WebTest: loadTextContent('webtests/http500_3.webtest')
     }
     Request: {
       RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_3Actual.aspx'
@@ -236,7 +236,7 @@ resource http500Test4 'Microsoft.Insights/webtests@2022-06-15' = {
       }
     ]
     Configuration: {
-      WebTest: '${webAppUrl}/Scenarios/Http500/Http500_4Actual.aspx'
+      WebTest: loadTextContent('webtests/http500_4.webtest')
     }
     Request: {
       RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_4Actual.aspx'
@@ -278,7 +278,7 @@ resource http500PageTest1 'Microsoft.Insights/webtests@2022-06-15' = {
       }
     ]
     Configuration: {
-      WebTest: '${webAppUrl}/Scenarios/Http500/Http500_1.aspx'
+      WebTest: loadTextContent('webtests/http500_page1.webtest')
     }
     Request: {
       RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_1.aspx'
@@ -320,7 +320,7 @@ resource http500PageTest2 'Microsoft.Insights/webtests@2022-06-15' = {
       }
     ]
     Configuration: {
-      WebTest: '${webAppUrl}/Scenarios/Http500/Http500_2.aspx'
+      WebTest: loadTextContent('webtests/http500_page2.webtest')
     }
     Request: {
       RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_2.aspx'
@@ -362,7 +362,7 @@ resource http500PageTest3 'Microsoft.Insights/webtests@2022-06-15' = {
       }
     ]
     Configuration: {
-      WebTest: '${webAppUrl}/Scenarios/Http500/Http500_3.aspx'
+      WebTest: loadTextContent('webtests/http500_page3.webtest')
     }
     Request: {
       RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_3.aspx'
@@ -404,7 +404,7 @@ resource http500PageTest4 'Microsoft.Insights/webtests@2022-06-15' = {
       }
     ]
     Configuration: {
-      WebTest: '${webAppUrl}/Scenarios/Http500/Http500_4.aspx'
+      WebTest: loadTextContent('webtests/http500_page4.webtest')
     }
     Request: {
       RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_4.aspx'
