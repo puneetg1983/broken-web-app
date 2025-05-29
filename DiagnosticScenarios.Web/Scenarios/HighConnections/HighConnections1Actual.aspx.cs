@@ -1,38 +1,44 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.UI;
 
 namespace DiagnosticScenarios.Web.Scenarios.HighConnections
 {
     public partial class HighConnections1Actual : System.Web.UI.Page
     {
-        private static readonly List<TcpClient> _activeConnections = new List<TcpClient>();
+        private static readonly List<WebClient> _activeConnections = new List<WebClient>();
         private const int TargetConnections = 2000;
         private const int ConnectionTimeout = 5000; // 5 seconds
         private static readonly object _lock = new object();
         private static readonly string[] _endpoints = new[]
         {
-            "www.microsoft.com:80",
-            "www.google.com:80",
-            "www.amazon.com:80",
-            "www.github.com:80",
-            "www.azure.com:80"
+            "http://www.microsoft.com",
+            "http://www.google.com",
+            "http://www.amazon.com",
+            "http://www.github.com",
+            "http://www.azure.com"
         };
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
+            ThreadPool.QueueUserWorkItem(async state =>
             {
-                lblStatus.Text = "Starting to create outbound connections...";
-                Task.Run(() => CreateConnections());
-            }
+                try
+                {
+                    await CreateConnectionsAsync();
+                }
+                catch (Exception ex)
+                {
+                    UpdateStatus($"Error: {ex.Message}");
+                }
+            });
         }
 
-        private async Task CreateConnections()
+        private async Task CreateConnectionsAsync()
         {
             try
             {
@@ -47,7 +53,7 @@ namespace DiagnosticScenarios.Web.Scenarios.HighConnections
 
                     for (int i = 0; i < currentBatch; i++)
                     {
-                        tasks.Add(CreateSingleConnection());
+                        tasks.Add(Task.Run(()=> { CreateSingleConnection(); }));
                     }
 
                     await Task.WhenAll(tasks);
@@ -57,16 +63,15 @@ namespace DiagnosticScenarios.Web.Scenarios.HighConnections
                     UpdateStatus($"Created {totalCreated} outbound connections out of {TargetConnections}");
 
                     // Small delay between batches
-                    await Task.Delay(1000);
+                    await Task.Delay(5);
                 }
 
                 UpdateStatus($"Successfully created {totalCreated} outbound connections. Connections will be maintained for 5 minutes.");
                 
-                // Keep connections alive for 5 minutes
-                await Task.Delay(TimeSpan.FromMinutes(5));
+                // await Task.Delay(TimeSpan.FromSeconds(1));
 
                 // Clean up connections
-                CleanupConnections();
+                // CleanupConnections();
             }
             catch (Exception ex)
             {
@@ -74,29 +79,13 @@ namespace DiagnosticScenarios.Web.Scenarios.HighConnections
             }
         }
 
-        private async Task CreateSingleConnection()
+        private void CreateSingleConnection()
         {
             try
             {
                 var endpoint = _endpoints[new Random().Next(_endpoints.Length)];
-                var parts = endpoint.Split(':');
-                var host = parts[0];
-                var port = int.Parse(parts[1]);
-
-                var client = new TcpClient();
-                var connectTask = client.ConnectAsync(host, port);
-                
-                if (await Task.WhenAny(connectTask, Task.Delay(ConnectionTimeout)) == connectTask)
-                {
-                    lock (_lock)
-                    {
-                        _activeConnections.Add(client);
-                    }
-                }
-                else
-                {
-                    client.Dispose();
-                }
+                var client = new WebClient();                
+                client.OpenRead(new Uri(endpoint));               
             }
             catch
             {

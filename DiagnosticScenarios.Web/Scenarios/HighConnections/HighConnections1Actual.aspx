@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="HighConnections1Actual.aspx.cs" Inherits="DiagnosticScenarios.Web.Scenarios.HighConnections.HighConnections1Actual" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="HighConnections1Actual.aspx.cs" Inherits="DiagnosticScenarios.Web.Scenarios.HighConnections.HighConnections1Actual" Async="true" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">

@@ -4,3 +4,5 @@ globs:
 alwaysApply: true
 ---
 Always remember that this project is a .NET 4.8 Framework project and not .NET CORE. All tasks should be executed considering this in mind.
+
+MSBuild is present in 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe' and 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\amd64\MSBuild.exe' directory

@@ -6,10 +6,7 @@ namespace DiagnosticScenarios.Web.Scenarios.RuntimeVersion
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                lblStatus.Text = "Ready to simulate incompatible runtime version. Click the button to start.";
-            }
+            
         }
 
         protected void btnTriggerError_Click(object sender, EventArgs e)

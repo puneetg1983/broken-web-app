@@ -65,6 +65,10 @@
   <ItemGroup>
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="Scenarios\MissingDependency\MissingDependency1.aspx" />
+    <Content Include="Scenarios\MissingDependency\MissingDependency1Actual.aspx" />
+    <Content Include="Scenarios\RuntimeVersion\RuntimeVersion1.aspx" />
+    <Content Include="Scenarios\RuntimeVersion\RuntimeVersion1Actual.aspx" />
     <Content Include="Web.config" />
     <Content Include="Scenarios\HighCpu\HighCpu1.aspx" />
     <Content Include="Scenarios\HighCpu\HighCpu2.aspx" />
@@ -176,6 +180,22 @@
     </Compile>
     <Compile Include="Scenarios\HighMemory\HighMemory3.aspx.designer.cs">
       <DependentUpon>HighMemory3.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\MissingDependency\MissingDependency1.aspx.cs">
+      <DependentUpon>MissingDependency1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\MissingDependency\MissingDependency1Actual.aspx.cs">
+      <DependentUpon>MissingDependency1Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\RuntimeVersion\RuntimeVersion1.aspx.cs">
+      <DependentUpon>RuntimeVersion1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\RuntimeVersion\RuntimeVersion1Actual.aspx.cs">
+      <DependentUpon>RuntimeVersion1Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Scenarios\SlowResponse\SlowResponse1.aspx.cs">
       <DependentUpon>SlowResponse1.aspx</DependentUpon>

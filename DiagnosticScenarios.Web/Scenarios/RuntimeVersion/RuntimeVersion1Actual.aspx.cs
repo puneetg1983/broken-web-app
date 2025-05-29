@@ -22,13 +22,11 @@ namespace DiagnosticScenarios.Web.Scenarios.RuntimeVersion
                     throw new MissingMethodException("Method AddByteOffset not found");
                 }
 
-                // If we get here, something went wrong with our simulation
-                lblStatus.Text = "Error: Runtime version check failed to trigger expected error";
+                
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // This is the expected behavior
-                lblStatus.Text = $"Runtime version error: {ex.Message}";
                 throw; // Re-throw to ensure the application fails
             }
         }
