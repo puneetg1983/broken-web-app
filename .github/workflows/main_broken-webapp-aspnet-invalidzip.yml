@@ -28,12 +28,13 @@ jobs:
     - name: Restore NuGet Packages
       run: nuget restore DiagnosticScenarios.sln
       
-    - name: Build Solution
-      run: msbuild DiagnosticScenarios.sln /p:Configuration=${{ env.CONFIGURATION }} /p:Platform="Any CPU" /p:ProductVersion=1.0.0 /p:AssemblyVersion=1.0.0.0 /p:FileVersion=1.0.0.0
-      
-    - name: Publish Web Project
-      run: msbuild DiagnosticScenarios.Web/DiagnosticScenarios.Web.csproj /p:Configuration=${{ env.CONFIGURATION }} /p:Platform="Any CPU" /p:DeployOnBuild=true /p:PublishProfile=FolderProfile /p:publishUrl=./publish
-      
+    - name: Publish to folder
+      run: |
+        Write-Host "Building solution..."
+        msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore
+        Write-Host "Publishing web project..."
+        msbuild DiagnosticScenarios.Web\DiagnosticScenarios.Web.csproj /p:Configuration=Release /p:Platform="Any CPU" /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
+
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v4
       with:
@@ -74,7 +75,7 @@ jobs:
     - name: Create Invalid Zip
       run: |
         Write-Host "Creating invalid zip file..."
-        Compress-Archive -Path ./webapp/* -DestinationPath ./invalid.zip -Force
+        Compress-Archive -Path ./broken-web-app/* -DestinationPath ./invalid.zip -Force
         # Corrupt the zip file by removing some bytes
         $bytes = [System.IO.File]::ReadAllBytes("./invalid.zip")
         [System.IO.File]::WriteAllBytes("./invalid.zip", $bytes[0..($bytes.Length-100)])

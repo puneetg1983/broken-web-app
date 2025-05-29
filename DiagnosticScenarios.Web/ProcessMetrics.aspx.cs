@@ -2,7 +2,10 @@ using System;
 using System.Diagnostics;
 using System.Web;
 using System.Web.Script.Serialization;
-using System.Net.NetworkInformation;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Net;
 using System.Linq;
 
 namespace DiagnosticScenarios.Web
@@ -15,7 +18,7 @@ namespace DiagnosticScenarios.Web
             Response.Cache.SetCacheability(HttpCacheability.NoCache);
 
             var process = Process.GetCurrentProcess();
-            var tcpStats = GetTcpConnectionStats(process.Id);
+            var servicePointStats = GetServicePointStats();
 
             var metrics = new
             {
@@ -28,14 +31,11 @@ namespace DiagnosticScenarios.Web
                 ThreadCount = process.Threads.Count,
                 HandleCount = process.HandleCount,
                 ProcessUptimeMinutes = (DateTime.UtcNow - process.StartTime).TotalMinutes,
-                TcpConnections = new
+                ServicePointConnections = new
                 {
-                    Total = tcpStats.TotalConnections,
-                    Incoming = tcpStats.IncomingConnections,
-                    Outgoing = tcpStats.OutgoingConnections,
-                    Established = tcpStats.EstablishedConnections,
-                    TimeWait = tcpStats.TimeWaitConnections,
-                    CloseWait = tcpStats.CloseWaitConnections
+                    ServicePointCount = servicePointStats.ServicePointCount,
+                    DefaultConnectionLimit = ServicePointManager.DefaultConnectionLimit,
+                    ServicePoints = servicePointStats.ServicePoints
                 },
                 Timestamp = DateTime.UtcNow
             };
@@ -45,61 +45,100 @@ namespace DiagnosticScenarios.Web
             Response.End();
         }
 
-        private TcpConnectionStats GetTcpConnectionStats(int processId)
+        private ServicePointStats GetServicePointStats()
         {
-            var stats = new TcpConnectionStats();
+            var stats = new ServicePointStats();
             try
             {
-                var connections = IPGlobalProperties.GetIPGlobalProperties()
-                    .GetActiveTcpConnections()
-                    .Where(c => c.LocalEndPoint.Port < 49152); // Filter for system ports only
-
-                foreach (var conn in connections)
+                var tableField = typeof(ServicePointManager).GetField("s_ServicePointTable", 
+                    BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+                
+                if (tableField != null)
                 {
-                    stats.TotalConnections++;
-                    
-                    // Determine if connection is incoming or outgoing
-                    if (conn.LocalEndPoint.Port < conn.RemoteEndPoint.Port)
-                    {
-                        stats.OutgoingConnections++;
-                    }
-                    else
-                    {
-                        stats.IncomingConnections++;
-                    }
+                    var table = (Hashtable)tableField.GetValue(null);
+                    var keys = table.Keys.Cast<object>().ToList();
+                    stats.ServicePointCount = keys.Count;
 
-                    // Track connection states
-                    switch (conn.State)
+                    foreach (var key in keys)
                     {
-                        case TcpState.Established:
-                            stats.EstablishedConnections++;
-                            break;
-                        case TcpState.TimeWait:
-                            stats.TimeWaitConnections++;
-                            break;
-                        case TcpState.CloseWait:
-                            stats.CloseWaitConnections++;
-                            break;
+                        var val = ((WeakReference)table[key]);
+                        if (val?.Target == null) continue;
+
+                        var servicePoint = val.Target as ServicePoint;
+                        if (servicePoint == null) continue;
+
+                        var servicePointInfo = GetServicePointInfo(servicePoint);
+                        if (servicePointInfo != null)
+                        {
+                            stats.ServicePoints.Add(servicePointInfo);
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Log the error but don't throw - we want to return partial metrics
-                System.Diagnostics.Debug.WriteLine($"Error getting TCP stats: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error getting ServicePoint stats: {ex.Message}");
             }
 
             return stats;
         }
 
-        private class TcpConnectionStats
+        private ServicePointInfo GetServicePointInfo(ServicePoint sp)
         {
+            try
+            {
+                var spType = sp.GetType();
+                var privateOrPublicInstanceField = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance;
+                var connectionGroupField = spType.GetField("m_ConnectionGroupList", privateOrPublicInstanceField);
+                
+                if (connectionGroupField == null) return null;
+
+                var value = (Hashtable)connectionGroupField.GetValue(sp);
+                var connectionGroups = value.Keys.Cast<object>().ToList();
+                var totalConnections = 0;
+
+                foreach (var key in connectionGroups)
+                {
+                    var connectionGroup = value[key];
+                    var groupType = connectionGroup.GetType();
+                    var listField = groupType.GetField("m_ConnectionList", privateOrPublicInstanceField);
+                    
+                    if (listField != null)
+                    {
+                        var listValue = (ArrayList)listField.GetValue(connectionGroup);
+                        totalConnections += listValue.Count;
+                    }
+                }
+
+                return new ServicePointInfo
+                {
+                    Address = sp.Address.ToString(),
+                    ConnectionLimit = sp.ConnectionLimit,
+                    CurrentConnections = sp.CurrentConnections,
+                    ConnectionGroupCount = connectionGroups.Count,
+                    TotalConnections = totalConnections
+                };
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting ServicePoint info: {ex.Message}");
+                return null;
+            }
+        }
+
+        private class ServicePointStats
+        {
+            public int ServicePointCount { get; set; }
+            public List<ServicePointInfo> ServicePoints { get; set; } = new List<ServicePointInfo>();
+        }
+
+        private class ServicePointInfo
+        {
+            public string Address { get; set; }
+            public int ConnectionLimit { get; set; }
+            public int CurrentConnections { get; set; }
+            public int ConnectionGroupCount { get; set; }
             public int TotalConnections { get; set; }
-            public int IncomingConnections { get; set; }
-            public int OutgoingConnections { get; set; }
-            public int EstablishedConnections { get; set; }
-            public int TimeWaitConnections { get; set; }
-            public int CloseWaitConnections { get; set; }
         }
     }
 } 

@@ -1,7 +1,6 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using System.Diagnostics;
 using System.IO;
@@ -312,30 +311,5 @@ namespace DiagnosticScenarios.Tests
             _httpClient?.Dispose();
             _armClient?.Dispose();
         }
-    }
-
-    public class ProcessMetrics
-    {
-        public int ProcessId { get; set; }
-        public string ProcessName { get; set; }
-        public string MachineName { get; set; }
-        public double CpuTime { get; set; }
-        public long PrivateBytes { get; set; }
-        public long WorkingSet { get; set; }
-        public int ThreadCount { get; set; }
-        public int HandleCount { get; set; }
-        public double ProcessUptimeMinutes { get; set; }
-        public TcpConnectionStats TcpConnections { get; set; }
-        public DateTime Timestamp { get; set; }
-    }
-
-    public class TcpConnectionStats
-    {
-        public int TotalConnections { get; set; }
-        public int IncomingConnections { get; set; }
-        public int OutgoingConnections { get; set; }
-        public int EstablishedConnections { get; set; }
-        public int TimeWaitConnections { get; set; }
-        public int CloseWaitConnections { get; set; }
     }
 } 

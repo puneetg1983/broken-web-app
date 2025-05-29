@@ -35,16 +35,22 @@ namespace DiagnosticScenarios.Web.Scenarios.StorageQuota
             {
                 if (ex.Message.Contains("There is not enough space on the disk"))
                 {
-                    // Throw a new exception with the status message to ensure proper error propagation
+                    // Set the status code to 500 and throw the exception
+                    Response.StatusCode = 500;
+                    Response.StatusDescription = "Internal Server Error";
                     throw new Exception($"Storage quota exceeded! Created {fileCount} files before running out of space.", ex);
                 }
                 else
                 {
+                    Response.StatusCode = 500;
+                    Response.StatusDescription = "Internal Server Error";
                     throw new Exception($"Error: {ex.Message}", ex);
                 }
             }
             catch (Exception ex)
             {
+                Response.StatusCode = 500;
+                Response.StatusDescription = "Internal Server Error";
                 throw new Exception($"Error: {ex.Message}", ex);
             }
         }

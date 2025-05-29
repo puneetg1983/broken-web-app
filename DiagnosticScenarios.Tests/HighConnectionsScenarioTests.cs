@@ -3,6 +3,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Newtonsoft.Json;
+using System.Linq;
+using DiagnosticScenarios.Tests.Helpers;
+using System.Collections.Generic;
 
 namespace DiagnosticScenarios.Tests
 {
@@ -47,8 +50,8 @@ namespace DiagnosticScenarios.Tests
             // Get initial metrics
             TestContext.Progress.WriteLine("Getting initial metrics...");
             var initialMetrics = await GetMetrics();
-            var initialConnections = initialMetrics.TcpConnections.TotalConnections;
-            TestContext.Progress.WriteLine($"Initial connection count: {initialConnections}");
+            var initialTotalConnections = GetTotalServicePointConnections(initialMetrics);
+            TestContext.Progress.WriteLine($"Initial total connection count: {initialTotalConnections}");
 
             // First get the page with the button
             TestContext.Progress.WriteLine("Accessing initial page (HighConnections1.aspx)...");
@@ -69,15 +72,20 @@ namespace DiagnosticScenarios.Tests
             // Get metrics after scenario
             TestContext.Progress.WriteLine("Getting metrics after scenario...");
             var afterMetrics = await GetMetrics();
-            var afterConnections = afterMetrics.TcpConnections.TotalConnections;
-            TestContext.Progress.WriteLine($"After scenario connection count: {afterConnections}");
+            var afterTotalConnections = GetTotalServicePointConnections(afterMetrics);
+            TestContext.Progress.WriteLine($"After scenario total connection count: {afterTotalConnections}");
 
             // Verify connection count increased
-            TestContext.Progress.WriteLine($"Comparing connection counts - Initial: {initialConnections}, After: {afterConnections}");
-            Assert.That(afterConnections, Is.GreaterThan(initialConnections), 
-                $"Connection count should increase. Initial: {initialConnections}, After: {afterConnections}");
+            TestContext.Progress.WriteLine($"Comparing connection counts - Initial: {initialTotalConnections}, After: {afterTotalConnections}");
+            Assert.That(afterTotalConnections, Is.GreaterThan(initialTotalConnections), 
+                $"Connection count should increase. Initial: {initialTotalConnections}, After: {afterTotalConnections}");
             
             TestContext.Progress.WriteLine("Test completed successfully");
+        }
+
+        private int GetTotalServicePointConnections(ProcessMetrics metrics)
+        {
+            return metrics.ServicePointConnections.ServicePoints.Sum(sp => sp.TotalConnections);
         }
 
         private async Task<ProcessMetrics> GetMetrics()
@@ -145,5 +153,36 @@ namespace DiagnosticScenarios.Tests
             TestContext.Progress.WriteLine(error);
             throw new Exception(error);
         }
+    }
+
+    public class ProcessMetrics
+    {
+        public int ProcessId { get; set; }
+        public string ProcessName { get; set; }
+        public string MachineName { get; set; }
+        public double CpuTime { get; set; }
+        public long PrivateBytes { get; set; }
+        public long WorkingSet { get; set; }
+        public int ThreadCount { get; set; }
+        public int HandleCount { get; set; }
+        public double ProcessUptimeMinutes { get; set; }
+        public ServicePointConnections ServicePointConnections { get; set; }
+        public DateTime Timestamp { get; set; }
+    }
+
+    public class ServicePointConnections
+    {
+        public int ServicePointCount { get; set; }
+        public int DefaultConnectionLimit { get; set; }
+        public List<ServicePointInfo> ServicePoints { get; set; }
+    }
+
+    public class ServicePointInfo
+    {
+        public string Address { get; set; }
+        public int ConnectionLimit { get; set; }
+        public int CurrentConnections { get; set; }
+        public int ConnectionGroupCount { get; set; }
+        public int TotalConnections { get; set; }
     }
 } 
