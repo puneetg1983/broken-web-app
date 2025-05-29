@@ -14,35 +14,7 @@ env:
   RESOURCE_GROUP_NAME: ${{ vars.RESOURCE_GROUP_NAME }}
 
 jobs:
-  build:
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v1.0.2
-      
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v1.0.5
-      
-    - name: Restore NuGet Packages
-      run: nuget restore DiagnosticScenarios.sln
-      
-    - name: Publish to folder
-      run: |
-        Write-Host "Building solution..."
-        msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore
-        Write-Host "Publishing web project..."
-        msbuild DiagnosticScenarios.Web\DiagnosticScenarios.Web.csproj /p:Configuration=Release /p:Platform="Any CPU" /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
-
-    - name: Upload artifact for deployment job
-      uses: actions/upload-artifact@v4
-      with:
-        name: ASP-app
-        path: '/published/**'
-
   deploy:
-    needs: build
     runs-on: windows-latest
     permissions:
       id-token: write #This is required for requesting the JWT
@@ -70,24 +42,6 @@ jobs:
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
         template: ./infra/main_broken-webapp-aspnet-invalidzip.bicep
         parameters: appServiceName=${{ env.APP_SERVICE_NAME }}
-        
-    - name: Create Invalid Zip
-      run: |
-        Write-Host "Creating invalid zip file..."
-        Write-Host "Current directory: $(Get-Location)"
-        Get-ChildItem -Recurse | Select-Object FullName
-        Compress-Archive -Path ./* -DestinationPath ./invalid.zip -Force
-        # Corrupt the zip file by removing some bytes
-        $bytes = [System.IO.File]::ReadAllBytes("./invalid.zip")
-        [System.IO.File]::WriteAllBytes("./invalid.zip", $bytes[0..($bytes.Length-100)])
-        
-    - name: Deploy to Azure Web App
-      id: deploy-to-webapp
-      uses: azure/webapps-deploy@v3
-      with:
-        app-name: '${{ env.APP_SERVICE_NAME }}'
-        slot-name: 'Production'
-        package: ./invalid.zip
 
   test:
     needs: deploy
@@ -113,5 +67,5 @@ jobs:
     - name: Run Tests
       run: ./tools/NUnit.ConsoleRunner.3.16.3/tools/nunit3-console.exe DiagnosticScenarios.Tests/bin/Release/DiagnosticScenarios.Tests.dll --where "cat==InvalidZip"
       env:
-        WEBAPP_URL: ${{ secrets.WEBAPP_URL }}
+        WEBAPP_URL: ${{ env.WEBAPP_URL }}
         RUN_SPECIALIZED_TESTS: InvalidZip 

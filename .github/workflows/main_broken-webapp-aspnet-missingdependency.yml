@@ -37,9 +37,10 @@ jobs:
         msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore
         Write-Host "Publishing web project..."
         msbuild DiagnosticScenarios.Web\DiagnosticScenarios.Web.csproj /p:Configuration=Release /p:Platform="Any CPU" /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
+        Write-Host "Listing all files in published folder..."
+        Get-ChildItem -Recurse -Path "$env:GITHUB_WORKSPACE\published"
         Write-Host "Removing required dependency..."
-        Get-ChildItem -Recurse
-        Remove-Item -Path "./published/bin/System.Web.dll" -Force
+        Remove-Item -Path "$env:GITHUB_WORKSPACE\published\bin\System.Web.dll" -Force
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v4
@@ -67,11 +68,7 @@ jobs:
         client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_F0C7A6A53CD145789775B830B9CB8AAF }}
         tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D8A248E844C24894B15CE3E2EC150853 }}
         subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E34A382294604AB38B20E873BFF2ED08 }}
-        
-    - name: List folder structure for debugging
-      run: |
-        Write-Host "Listing folder structure..."
-        Get-ChildItem -Recurse
+
 
     - name: Deploy Bicep (Web App & App Service Plan)
       uses: azure/arm-deploy@v1
@@ -113,5 +110,5 @@ jobs:
     - name: Run Tests
       run: ./tools/NUnit.ConsoleRunner.3.16.3/tools/nunit3-console.exe DiagnosticScenarios.Tests/bin/Release/DiagnosticScenarios.Tests.dll --where "cat==MissingDependency"
       env:
-        WEBAPP_URL: ${{ secrets.WEBAPP_URL }}
+        WEBAPP_URL: ${{ env.WEBAPP_URL }}
         RUN_SPECIALIZED_TESTS: MissingDependency 

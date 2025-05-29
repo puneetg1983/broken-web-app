@@ -24,14 +24,8 @@ resource webApp 'Microsoft.Web/sites@2022-03-01' = {
     siteConfig: {
       appSettings: [
         {
-          name: 'WEBAPP_INVALID_ZIP'
-          value: 'true'
-        }, {
           name: 'WEBSITE_RUN_FROM_PACKAGE'
-          value: '1'
-        }, {
-          name: 'WEBSITE_RUN_FROM_PACKAGE_URL'
-          value: 'https://github.com/Azure-Samples/dotnet-framework-azure-web-app/archive/refs/heads/main.zip'
+          value: 'https://demowebcampnew.azurewebsites.net/newrelicagent.zip'
         }
       ]
       netFrameworkVersion: 'v4.8'
