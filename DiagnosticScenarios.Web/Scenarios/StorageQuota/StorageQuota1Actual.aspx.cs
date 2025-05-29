@@ -35,19 +35,17 @@ namespace DiagnosticScenarios.Web.Scenarios.StorageQuota
             {
                 if (ex.Message.Contains("There is not enough space on the disk"))
                 {
-                    lblStatus.Text = $"Storage quota exceeded! Created {fileCount} files before running out of space.";
-                    throw; // Re-throw to ensure the application fails
+                    // Throw a new exception with the status message to ensure proper error propagation
+                    throw new Exception($"Storage quota exceeded! Created {fileCount} files before running out of space.", ex);
                 }
                 else
                 {
-                    lblStatus.Text = $"Error: {ex.Message}";
-                    throw;
+                    throw new Exception($"Error: {ex.Message}", ex);
                 }
             }
             catch (Exception ex)
             {
-                lblStatus.Text = $"Error: {ex.Message}";
-                throw;
+                throw new Exception($"Error: {ex.Message}", ex);
             }
         }
 

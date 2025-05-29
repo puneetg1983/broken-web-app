@@ -223,6 +223,26 @@
             <h2>Deadlock Scenarios</h2>
             <a href="Scenarios/Deadlock/Deadlock1.aspx">Deadlock Scenario 1 - Classic Deadlock</a>
         </div>
+
+        <div class="scenario-group">
+            <h2>Storage Quota Scenarios</h2>
+            <a href="Scenarios/StorageQuota/StorageQuota1.aspx">Storage Quota Scenario 1 - Disk Space Exhaustion</a>
+        </div>
+
+        <div class="scenario-group">
+            <h2>High Connections Scenarios</h2>
+            <a href="Scenarios/HighConnections/HighConnections1.aspx">High Connections Scenario 1 - Connection Pool Exhaustion</a>
+        </div>
+
+        <div class="scenario-group">
+            <h2>Runtime Version Scenarios</h2>
+            <a href="Scenarios/RuntimeVersion/RuntimeVersion1.aspx">Runtime Version Scenario 1 - Version Mismatch</a>
+        </div>
+
+        <div class="scenario-group">
+            <h2>Missing Dependency Scenarios</h2>
+            <a href="Scenarios/MissingDependency/MissingDependency1.aspx">Missing Dependency Scenario 1 - Assembly Not Found</a>
+        </div>
     </form>
 </body>
 </html> 
