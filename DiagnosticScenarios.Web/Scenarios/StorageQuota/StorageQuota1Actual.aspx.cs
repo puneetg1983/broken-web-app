@@ -14,13 +14,13 @@ namespace DiagnosticScenarios.Web.Scenarios.StorageQuota
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            int fileCount = 0;
             try
             {
                 lblStatus.Text = "Starting storage quota exceeded simulation...";
                 Response.Flush();
 
                 // Create files until we hit the quota
-                int fileCount = 0;
                 while (true)
                 {
                     string fileName = Path.Combine(TempPath, $"{FilePrefix}{fileCount}.dat");

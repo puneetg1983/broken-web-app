@@ -121,6 +121,8 @@
     <Content Include="Scenarios\Crash\UnhandledException1Actual.aspx" />
     <Content Include="Scenarios\HighConnections\HighConnections1.aspx" />
     <Content Include="Scenarios\HighConnections\HighConnections1Actual.aspx" />
+    <Content Include="Scenarios\StorageQuota\StorageQuota1.aspx" />
+    <Content Include="Scenarios\StorageQuota\StorageQuota1Actual.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Default.aspx.cs">
@@ -518,6 +520,20 @@
     </Compile>
     <Compile Include="Scenarios\HighConnections\HighConnections1Actual.aspx.designer.cs">
       <DependentUpon>HighConnections1Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\StorageQuota\StorageQuota1.aspx.cs">
+      <DependentUpon>StorageQuota1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\StorageQuota\StorageQuota1.aspx.designer.cs">
+      <DependentUpon>StorageQuota1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\StorageQuota\StorageQuota1Actual.aspx.cs">
+      <DependentUpon>StorageQuota1Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\StorageQuota\StorageQuota1Actual.aspx.designer.cs">
+      <DependentUpon>StorageQuota1Actual.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

@@ -14,6 +14,14 @@ namespace DiagnosticScenarios.Web.Scenarios.HighConnections
         private const int TargetConnections = 2000;
         private const int ConnectionTimeout = 5000; // 5 seconds
         private static readonly object _lock = new object();
+        private static readonly string[] _endpoints = new[]
+        {
+            "www.microsoft.com:80",
+            "www.google.com:80",
+            "www.amazon.com:80",
+            "www.github.com:80",
+            "www.azure.com:80"
+        };
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -70,8 +78,13 @@ namespace DiagnosticScenarios.Web.Scenarios.HighConnections
         {
             try
             {
+                var endpoint = _endpoints[new Random().Next(_endpoints.Length)];
+                var parts = endpoint.Split(':');
+                var host = parts[0];
+                var port = int.Parse(parts[1]);
+
                 var client = new TcpClient();
-                var connectTask = client.ConnectAsync("localhost", 80);
+                var connectTask = client.ConnectAsync(host, port);
                 
                 if (await Task.WhenAny(connectTask, Task.Delay(ConnectionTimeout)) == connectTask)
                 {
