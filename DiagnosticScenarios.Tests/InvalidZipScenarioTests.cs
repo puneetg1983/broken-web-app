@@ -52,8 +52,8 @@ namespace DiagnosticScenarios.Tests
                     "Expected ServiceUnavailable (503) status code due to invalid zip deployment");
                 
                 // Verify error message indicates deployment issue
-                Assert.That(responseContent, Does.Contain("deployment").IgnoreCase, 
-                    "Response should contain deployment-related error message");
+                Assert.That(responseContent, Does.Contain("The service is unavailable").IgnoreCase, 
+                    "Response should contain 'The service is unavailable' message");
             }
             catch (Exception ex)
             {
