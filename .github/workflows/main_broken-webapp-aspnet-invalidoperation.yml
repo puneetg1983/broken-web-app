@@ -10,10 +10,10 @@ on:
   workflow_dispatch:
 
 env:
-  APP_SERVICE_NAME: broken-webapp-aspnet-invalidoperation-${{ vars.ALIAS }}
-  WEBAPP_URL: https://broken-webapp-aspnet-invalidoperation-${{ vars.ALIAS }}.azurewebsites.net
+  APP_SERVICE_NAME: broken-webapp-aspnet-invalidoperation-${{ github.actor }}
+  WEBAPP_URL: https://broken-webapp-aspnet-invalidoperation-${{ github.actor }}.azurewebsites.net
   CONFIGURATION: 'Release'
-  SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E34A382294604AB38B20E873BFF2ED08 }}
+  SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
   RESOURCE_GROUP_NAME: ${{ vars.RESOURCE_GROUP_NAME }}
 
 jobs:
@@ -66,9 +66,9 @@ jobs:
     - name: Login to Azure
       uses: azure/login@v2
       with:
-        client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_F0C7A6A53CD145789775B830B9CB8AAF }}
-        tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D8A248E844C24894B15CE3E2EC150853 }}
-        subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E34A382294604AB38B20E873BFF2ED08 }}
+        client-id: ${{ secrets.MANAGED_IDENTITY_CLIENTID }}
+        tenant-id: ${{ secrets.TENANTID }}
+        subscription-id: ${{ secrets.SUBSCRIPTIONID }}
 
     - name: List folder structure for debugging
       run: Get-ChildItem -Recurse
