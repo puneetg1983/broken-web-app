@@ -1,7 +1,5 @@
 using System;
 using System.IO;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Web.UI;
@@ -34,22 +32,20 @@ namespace DiagnosticScenarios.Web.Scenarios.StorageQuota
             int fileCount = 0;
             var tasks = new List<Task>();
 
-            while (true)
+
+            // Create a batch of concurrent tasks
+            for (int i = 0; i < ConcurrentTasks; i++)
             {
-                // Create a batch of concurrent tasks
-                for (int i = 0; i < ConcurrentTasks; i++)
-                {
-                    string fileName = Path.Combine(TempPath, $"{FilePrefix}{fileCount}.dat");
-                    tasks.Add(CreateLargeFileAsync(fileName, FileSizeMB));
-                    fileCount++;
-                }
-
-                // Wait for all tasks in the current batch to complete
-                await Task.WhenAll(tasks);
-                tasks.Clear();
-
-                lblStatus.Text = $"Created {fileCount} files ({fileCount * FileSizeMB} MB total)...";
+                string fileName = Path.Combine(TempPath, $"{FilePrefix}{fileCount}.dat");
+                tasks.Add(CreateLargeFileAsync(fileName, FileSizeMB));
+                fileCount++;
             }
+
+            // Wait for all tasks in the current batch to complete
+            await Task.WhenAll(tasks);
+            tasks.Clear();
+
+            lblStatus.Text = $"Created {fileCount} files ({fileCount * FileSizeMB} MB total)...";
         }
 
         private async Task CreateLargeFileAsync(string filePath, int sizeMB)
