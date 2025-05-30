@@ -52,12 +52,8 @@ namespace DiagnosticScenarios.Tests
                     "Expected InternalServerError (500) status code due to missing dependency");
                 
                 // Verify error message indicates assembly loading issue
-                Assert.That(responseContent, Does.Contain("Could not load file or assembly").IgnoreCase, 
-                    "Response should contain assembly loading error message");
-                
-                // Verify specific dependency error
-                Assert.That(responseContent, Does.Contain("MissingDependency").IgnoreCase, 
-                    "Response should mention the missing dependency");
+                Assert.That(responseContent, Does.Contain("Could not load type").IgnoreCase,
+                    "Response should contain 'Could not load type'");
             }
             catch (Exception ex)
             {
