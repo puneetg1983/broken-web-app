@@ -68,8 +68,8 @@ namespace DiagnosticScenarios.Tests
             // Assert the 10th response
             Assert.That(lastErrorResponse.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.InternalServerError), 
                 $"Expected 500 status code on 10th request, got {lastErrorResponse.StatusCode}");
-            Assert.That(lastErrorContent, Does.Contain("Storage quota exceeded").IgnoreCase, 
-                "Expected 'Storage quota exceeded' in the response content");
+            Assert.That(lastErrorContent, Does.Contain("There is not enough space on the disk").IgnoreCase, 
+                "Expected 'There is not enough space on the disk' in the response content");
             
             TestContext.Progress.WriteLine("Test completed successfully");
         }
