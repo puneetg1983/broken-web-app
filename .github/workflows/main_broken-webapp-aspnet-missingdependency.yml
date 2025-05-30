@@ -41,12 +41,16 @@ jobs:
         Get-ChildItem -Recurse -Path "$env:GITHUB_WORKSPACE\published"
         Write-Host "Removing required dependency..."
         Remove-Item -Path "$env:GITHUB_WORKSPACE\published\bin\System.Web.dll" -Force -ErrorAction SilentlyContinue
+        Write-Host "Current directory: $(Get-Location)"
+        Write-Host "Published directory contents:"
+        Get-ChildItem -Path "$env:GITHUB_WORKSPACE\published" -Recurse | Select-Object FullName
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v4
       with:
         name: ASP-app
-        path: '$env:GITHUB_WORKSPACE\published/**'
+        path: published
+        if-no-files-found: error
 
   deploy:
     runs-on: windows-latest
