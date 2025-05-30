@@ -36,15 +36,15 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
-resource appInsightsWebTestSlowDatabase1 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appServiceName}-webtest-slowdatabase-1'
+resource appInsightsWebTestHighConnections1 'Microsoft.Insights/webtests@2022-06-15' = {
+  name: '${appServiceName}-webtest-highconnections-1'
   location: location
   tags: {
     'hidden-link:${appInsights.id}': 'Resource'
   }
   properties: {
-    SyntheticMonitorId: '${appServiceName}-webtest-slowdatabase-1'
-    Name: '${appServiceName}-webtest-slowdatabase-1'
+    SyntheticMonitorId: '${appServiceName}-webtest-highconnections-1'
+    Name: '${appServiceName}-webtest-highconnections-1'
     Enabled: true
     Frequency: 300
     Timeout: 30
@@ -68,48 +68,7 @@ resource appInsightsWebTestSlowDatabase1 'Microsoft.Insights/webtests@2022-06-15
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/SlowDatabase/SlowDatabase1Actual.aspx'
-    }
-    ValidationRules: {
-      SSLCheck: true
-      SSLCertRemainingLifetimeCheck: 100
-    }
-  }
-}
-
-resource appInsightsWebTestSlowDatabase2 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appServiceName}-webtest-slowdatabase-2'
-  location: location
-  tags: {
-    'hidden-link:${appInsights.id}': 'Resource'
-  }
-  properties: {
-    SyntheticMonitorId: '${appServiceName}-webtest-slowdatabase-2'
-    Name: '${appServiceName}-webtest-slowdatabase-2'
-    Enabled: true
-    Frequency: 300
-    Timeout: 30
-    Kind: 'standard'
-    Locations: [
-      {
-        Id: 'us-fl-mia-edge'
-      }
-      {
-        Id: 'us-va-ash-azr'
-      }
-      {
-        Id: 'us-ca-sjc-azr'
-      }
-      {
-        Id: 'emea-gb-db3-azr'
-      }
-      {
-        Id: 'emea-nl-ams-azr'
-      }
-    ]
-    RetryEnabled: true
-    Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/SlowDatabase/SlowDatabase2Actual.aspx'
+      RequestUrl: '${webAppUrl}/Scenarios/HighConnections/HighConnections1Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true

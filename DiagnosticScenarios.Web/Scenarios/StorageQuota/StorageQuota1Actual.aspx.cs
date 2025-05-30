@@ -23,7 +23,7 @@ namespace DiagnosticScenarios.Web.Scenarios.StorageQuota
             // Create a batch of concurrent tasks
             for (int i = 0; i < ConcurrentTasks; i++)
             {
-                string fileName = Path.Combine(TempPath, $"{FilePrefix}{fileCount}.dat");
+                string fileName = Path.Combine(TempPath, $"{FilePrefix}{fileCount}_{DateTime.UtcNow.Ticks}.dat");
                 CreateLargeFileAsync(fileName, FileSizeMB);
             }
         }

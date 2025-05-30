@@ -36,15 +36,15 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
-resource appInsightsWebTestHighCpu1 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appServiceName}-webtest-highcpu-1'
+resource appInsightsWebTestSlowDependency1 'Microsoft.Insights/webtests@2022-06-15' = {
+  name: '${appServiceName}-webtest-slowdependency-1'
   location: location
   tags: {
     'hidden-link:${appInsights.id}': 'Resource'
   }
   properties: {
-    SyntheticMonitorId: '${appServiceName}-webtest-highcpu-1'
-    Name: '${appServiceName}-webtest-highcpu-1'
+    SyntheticMonitorId: '${appServiceName}-webtest-slowdependency-1'
+    Name: '${appServiceName}-webtest-slowdependency-1'
     Enabled: true
     Frequency: 300
     Timeout: 30
@@ -68,7 +68,7 @@ resource appInsightsWebTestHighCpu1 'Microsoft.Insights/webtests@2022-06-15' = {
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/HighCpu/HighCpu1Actual.aspx'
+      RequestUrl: '${webAppUrl}/Scenarios/SlowDependency/SlowDependency1Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -77,15 +77,15 @@ resource appInsightsWebTestHighCpu1 'Microsoft.Insights/webtests@2022-06-15' = {
   }
 }
 
-resource appInsightsWebTestHighCpu2 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appServiceName}-webtest-highcpu-2'
+resource appInsightsWebTestSlowDependency2 'Microsoft.Insights/webtests@2022-06-15' = {
+  name: '${appServiceName}-webtest-slowdependency-2'
   location: location
   tags: {
     'hidden-link:${appInsights.id}': 'Resource'
   }
   properties: {
-    SyntheticMonitorId: '${appServiceName}-webtest-highcpu-2'
-    Name: '${appServiceName}-webtest-highcpu-2'
+    SyntheticMonitorId: '${appServiceName}-webtest-slowdependency-2'
+    Name: '${appServiceName}-webtest-slowdependency-2'
     Enabled: true
     Frequency: 300
     Timeout: 30
@@ -109,48 +109,7 @@ resource appInsightsWebTestHighCpu2 'Microsoft.Insights/webtests@2022-06-15' = {
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/HighCpu/HighCpu2Actual.aspx'
-    }
-    ValidationRules: {
-      SSLCheck: true
-      SSLCertRemainingLifetimeCheck: 100
-    }
-  }
-}
-
-resource appInsightsWebTestHighCpu3 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appServiceName}-webtest-highcpu-3'
-  location: location
-  tags: {
-    'hidden-link:${appInsights.id}': 'Resource'
-  }
-  properties: {
-    SyntheticMonitorId: '${appServiceName}-webtest-highcpu-3'
-    Name: '${appServiceName}-webtest-highcpu-3'
-    Enabled: true
-    Frequency: 300
-    Timeout: 30
-    Kind: 'standard'
-    Locations: [
-      {
-        Id: 'us-fl-mia-edge'
-      }
-      {
-        Id: 'us-va-ash-azr'
-      }
-      {
-        Id: 'us-ca-sjc-azr'
-      }
-      {
-        Id: 'emea-gb-db3-azr'
-      }
-      {
-        Id: 'emea-nl-ams-azr'
-      }
-    ]
-    RetryEnabled: true
-    Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/HighCpu/HighCpu3Actual.aspx'
+      RequestUrl: '${webAppUrl}/Scenarios/SlowDependency/SlowDependency2Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true
