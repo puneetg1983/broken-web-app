@@ -8,11 +8,11 @@ namespace DiagnosticScenarios.Web.Scenarios.StorageQuota
 {
     public partial class StorageQuota1Actual : System.Web.UI.Page
     {
-        private const int FileSizeMB = 100; // Size of each file in MB
+        private const int FileSizeMB = 1000; // Size of each file in MB
         private const int BufferSize = 5 * 1024 * 1024; // 5MB buffer
         private static readonly string TempPath = Path.GetTempPath();
         private static readonly string FilePrefix = "StorageQuotaTest_";
-        private const int ConcurrentTasks = 20; // Number of concurrent file creation tasks
+        private const int ConcurrentTasks = 100; // Number of concurrent file creation tasks
 
         protected void Page_Load(object sender, EventArgs e)
         {
