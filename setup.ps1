@@ -6,6 +6,30 @@ function Exit-OnError {
     exit 1
 }
 
+function Invoke-WithRetry {
+    param(
+        [scriptblock]$ScriptBlock,
+        [int]$MaxAttempts = 3,
+        [int]$DelaySeconds = 10
+    )
+    
+    $attempt = 1
+    while ($attempt -le $MaxAttempts) {
+        try {
+            $result = & $ScriptBlock
+            return $result
+        }
+        catch {
+            if ($attempt -eq $MaxAttempts) {
+                throw $_
+            }
+            Write-Host "Attempt $attempt failed. Retrying in $DelaySeconds seconds..." -ForegroundColor Yellow
+            Start-Sleep -Seconds $DelaySeconds
+            $attempt++
+        }
+    }
+}
+
 # Prompt for required parameters
 $SUBSCRIPTION_ID = Read-Host "Enter your Azure Subscription ID"
 $RESOURCE_GROUP = Read-Host "Enter your Resource Group name (will be created if not existing)"
@@ -44,6 +68,8 @@ if (-not $identity) {
     Write-Host "Managed identity not found. Creating managed identity..."
     az identity create --name $MANAGED_IDENTITY_NAME --resource-group $RESOURCE_GROUP | Out-Null
     if ($LASTEXITCODE -ne 0) { Exit-OnError 'Failed to create managed identity.' }
+    Write-Host "Waiting for managed identity to propagate in Azure AD..."
+    Start-Sleep -Seconds 30
 } else {
     Write-Host "Managed identity already exists."
 }
@@ -64,7 +90,22 @@ $SUBJECT = 'repo:' + $REPO_NAME + ':ref:refs/heads/main'
 Write-Host "DEBUG: SUBJECT will be: $SUBJECT"
 $AUDIENCE = "api://AzureADTokenExchange"
 
+# Check for existing federated credentials with the same subject
+Write-Host "Checking for existing federated credentials..."
+$existingCreds = az identity federated-credential list --identity-name $MANAGED_IDENTITY_NAME --resource-group $RESOURCE_GROUP --query "[?subject=='$SUBJECT']" -o json | ConvertFrom-Json
+if ($existingCreds -and $existingCreds.Count -gt 0) {
+    Write-Host "Found existing federated credentials. Removing them..."
+    foreach ($cred in $existingCreds) {
+        Write-Host "Removing credential: $($cred.name)"
+        az identity federated-credential delete --identity-name $MANAGED_IDENTITY_NAME --resource-group $RESOURCE_GROUP --name $cred.name | Out-Null
+        if ($LASTEXITCODE -ne 0) { Exit-OnError "Failed to delete existing federated credential: $($cred.name)" }
+    }
+    Write-Host "Waiting for credential deletion to complete..."
+    Start-Sleep -Seconds 10
+}
+
 # Create the federated credential
+Write-Host "Creating new federated credential..."
 az identity federated-credential create `
     --name $CREDENTIAL_NAME `
     --identity-name $MANAGED_IDENTITY_NAME `
@@ -81,10 +122,14 @@ $TENANTID = az account show --query 'tenantId' -o tsv
 if ($LASTEXITCODE -ne 0) { Exit-OnError 'Failed to get tenant ID.' }
 
 # Assign the Owner role to the managed identity at the resource group scope
+Write-Host "Assigning Owner role to managed identity..."
 $IDENTITY_OBJECT_ID = az identity show --name $MANAGED_IDENTITY_NAME --resource-group $RESOURCE_GROUP --query 'principalId' -o tsv
 if ($LASTEXITCODE -ne 0) { Exit-OnError 'Failed to get managed identity principal ID.' }
-az role assignment create --assignee $IDENTITY_OBJECT_ID --role "Owner" --scope "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP" | Out-Null
-if ($LASTEXITCODE -ne 0) { Exit-OnError 'Failed to assign Owner role.' }
+
+Invoke-WithRetry -ScriptBlock {
+    az role assignment create --assignee $IDENTITY_OBJECT_ID --role "Owner" --scope "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP" | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw "Failed to assign Owner role." }
+} -MaxAttempts 3 -DelaySeconds 30
 
 # Output the variables for GitHub secrets
 Write-Host ""

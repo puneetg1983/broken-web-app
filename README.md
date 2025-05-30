@@ -22,15 +22,22 @@ Before running `setup.ps1`, keep the following information handy:
 - Your cloned GitHub repo name (e.g. yourgithubaccount/broken-web-app)
 
 ## Getting Started
-1. Clone this repository:
+1. Fork this repository:
+   - Click the "Fork" button in the top-right corner of this repository's page
+   - Select your GitHub account as the destination for the fork
+   - Wait for the forking process to complete
+   - You'll be redirected to your forked copy of the repository
+
+2. Clone your forked repository:
    ```sh
-   git clone <repo-url>
-   cd <repo-directory>
+   git clone https://github.com/YOUR-USERNAME/broken-web-app.git
+   cd broken-web-app
    ```
-2. Run the setup script in PowerShell:
+
+3. Run the setup script in PowerShell:
    ```powershell
    ./setup.ps1
    ```
-3. Copy the values for `MANAGED_IDENTITY_CLIENTID`, `SUBSCRIPTIONID`, `TENANTID`, and `RESOURCE_GROUP_NAME` from the script output and add them as GitHub repository secrets (Settings → Secrets and variables → Actions → New repository secret).
+4. Copy the values for `MANAGED_IDENTITY_CLIENTID`, `SUBSCRIPTIONID`, `TENANTID`, and `RESOURCE_GROUP_NAME` from the script output and add them as GitHub repository secrets (Settings → Secrets and variables → Actions → New repository secret).
 
 For details on different scenarios, see [scenarios.md](scenarios.md). 
