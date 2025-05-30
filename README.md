@@ -17,9 +17,9 @@ The `setup.ps1` PowerShell script automates the following:
 ## Prerequisites
 Before running `setup.ps1`, keep the following information handy:
 - Your Azure Subscription ID
-- The name of your Azure Resource Group
-- The name you want for your Managed Identity
-- Your GitHub repo name (e.g. yourgithubaccount/broken-web-app)
+- The name of your Azure Resource Group (will be created if not existing)
+- The name you want for your Managed Identity (will be created if not existing)
+- Your cloned GitHub repo name (e.g. yourgithubaccount/broken-web-app)
 
 ## Getting Started
 1. Clone this repository:
@@ -31,6 +31,6 @@ Before running `setup.ps1`, keep the following information handy:
    ```powershell
    ./setup.ps1
    ```
-3. Copy the values for `MANAGED_IDENTITY_CLIENTID`, `SUBSCRIPTIONID`, and `TENANTID` from the script output and add them as GitHub repository secrets (Settings → Secrets and variables → Actions → New repository secret).
+3. Copy the values for `MANAGED_IDENTITY_CLIENTID`, `SUBSCRIPTIONID`, `TENANTID`, and `RESOURCE_GROUP_NAME` from the script output and add them as GitHub repository secrets (Settings → Secrets and variables → Actions → New repository secret).
 
 For details on different scenarios, see [scenarios.md](scenarios.md). 

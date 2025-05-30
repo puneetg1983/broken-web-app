@@ -14,7 +14,7 @@ env:
   WEBAPP_URL: https://broken-webapp-aspnet-outofmemory-${{ github.actor }}.azurewebsites.net
   CONFIGURATION: 'Release'
   SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
-  RESOURCE_GROUP_NAME: ${{ vars.RESOURCE_GROUP_NAME }}
+  RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
 
 jobs:
   build:

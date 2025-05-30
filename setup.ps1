@@ -87,11 +87,18 @@ az role assignment create --assignee $IDENTITY_OBJECT_ID --role "Owner" --scope 
 if ($LASTEXITCODE -ne 0) { Exit-OnError 'Failed to assign Owner role.' }
 
 # Output the variables for GitHub secrets
+Write-Host ""
+Write-Host ""
 Write-Host "=============================================================="
 Write-Host "Add the following values as GitHub repository secrets:"
 Write-Host "=============================================================="
 Write-Host "MANAGED_IDENTITY_CLIENTID=$MANAGED_IDENTITY_CLIENTID"
 Write-Host "SUBSCRIPTIONID=$SUBSCRIPTION_ID"
 Write-Host "TENANTID=$TENANTID"
+Write-Host "RESOURCE_GROUP_NAME=$RESOURCE_GROUP"
 Write-Host "=============================================================="
+Write-Host "To add these secrets, go to your GitHub repository, then navigate to:"
+Write-Host "Settings -> Secrets and variables -> Actions -> New repository secret"
+Write-Host ""
+Write-Host ""
 Write-Host "Resource group ensured, managed identity ensured, federated credential created, and Owner role assigned to the managed identity." 
