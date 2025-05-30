@@ -51,17 +51,25 @@ namespace DiagnosticScenarios.Tests
             Assert.That(response.IsSuccessStatusCode, Is.True, $"Failed to load page. Status code: {response.StatusCode}");
             Assert.That(content, Does.Contain("Storage Quota Exceeded Scenario"));
 
-            // Trigger the error
+            // Make 10 requests to trigger the error
             var errorUrl = $"{_baseUrl}/Scenarios/StorageQuota/StorageQuota1Actual.aspx";
-            TestContext.Progress.WriteLine($"Attempting to access error URL: {errorUrl}");
-            var errorResponse = await _client.GetAsync(errorUrl);
-            TestContext.Progress.WriteLine($"Error page response status: {errorResponse.StatusCode}");
-            var errorContent = await errorResponse.Content.ReadAsStringAsync();
-            TestContext.Progress.WriteLine($"Error page content length: {errorContent.Length} characters");
+            HttpResponseMessage lastErrorResponse = null;
+            string lastErrorContent = null;
 
-            // Assert error response
-            Assert.That(errorResponse.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.InternalServerError));
-            Assert.That(errorContent, Does.Contain("Storage quota exceeded").IgnoreCase);
+            for (int i = 0; i < 10; i++)
+            {
+                TestContext.Progress.WriteLine($"Making request {i + 1} of 10 to error URL: {errorUrl}");
+                lastErrorResponse = await _client.GetAsync(errorUrl);
+                lastErrorContent = await lastErrorResponse.Content.ReadAsStringAsync();
+                TestContext.Progress.WriteLine($"Request {i + 1} response status: {lastErrorResponse.StatusCode}");
+                TestContext.Progress.WriteLine($"Request {i + 1} content length: {lastErrorContent.Length} characters");
+            }
+
+            // Assert the 10th response
+            Assert.That(lastErrorResponse.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.InternalServerError), 
+                $"Expected 500 status code on 10th request, got {lastErrorResponse.StatusCode}");
+            Assert.That(lastErrorContent, Does.Contain("Storage quota exceeded").IgnoreCase, 
+                "Expected 'Storage quota exceeded' in the response content");
             
             TestContext.Progress.WriteLine("Test completed successfully");
         }

@@ -1,8 +1,5 @@
 using System;
 using System.IO;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Web.UI;
 
 namespace DiagnosticScenarios.Web.Scenarios.StorageQuota
 {
