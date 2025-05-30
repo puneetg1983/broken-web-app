@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="StorageQuota1Actual.aspx.cs" Inherits="DiagnosticScenarios.Web.Scenarios.StorageQuota.StorageQuota1Actual" Async="true" AsyncTimeout="90" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="StorageQuota1Actual.aspx.cs" Inherits="DiagnosticScenarios.Web.Scenarios.StorageQuota.StorageQuota1Actual" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">

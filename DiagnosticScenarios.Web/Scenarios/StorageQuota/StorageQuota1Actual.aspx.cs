@@ -16,46 +16,29 @@ namespace DiagnosticScenarios.Web.Scenarios.StorageQuota
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            lblStatus.Text = "Starting storage quota exceeded simulation...";
-
-            var task = new PageAsyncTask(async (ct) =>
-            {
-                await CreateFilesUntilQuotaExceeded();
-            });
-
-            RegisterAsyncTask(task);
-            ExecuteRegisteredAsyncTasks();
+            CreateFilesUntilQuotaExceeded();
         }
 
-        private async Task CreateFilesUntilQuotaExceeded()
+        private void CreateFilesUntilQuotaExceeded()
         {
             int fileCount = 0;
-            var tasks = new List<Task>();
-
 
             // Create a batch of concurrent tasks
             for (int i = 0; i < ConcurrentTasks; i++)
             {
                 string fileName = Path.Combine(TempPath, $"{FilePrefix}{fileCount}.dat");
-                tasks.Add(CreateLargeFileAsync(fileName, FileSizeMB));
-                fileCount++;
+                CreateLargeFileAsync(fileName, FileSizeMB);
             }
-
-            // Wait for all tasks in the current batch to complete
-            await Task.WhenAll(tasks);
-            tasks.Clear();
-
-            lblStatus.Text = $"Created {fileCount} files ({fileCount * FileSizeMB} MB total)...";
         }
 
-        private async Task CreateLargeFileAsync(string filePath, int sizeMB)
+        private void CreateLargeFileAsync(string filePath, int sizeMB)
         {
             using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, BufferSize, true))
             {
                 byte[] buffer = new byte[BufferSize];
                 for (int i = 0; i < sizeMB; i++)
                 {
-                    await fs.WriteAsync(buffer, 0, buffer.Length);
+                    fs.Write(buffer, 0, buffer.Length);
                 }
             }
         }

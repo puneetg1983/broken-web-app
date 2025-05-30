@@ -46,380 +46,292 @@ resource webApp 'Microsoft.Web/sites@2022-03-01' = {
   }
 }
 
-resource defaultPageTest 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appInsightsName}-default-test'
-  kind: 'ping'
+resource appInsightsWebTest 'Microsoft.Insights/webtests@2022-06-15' = {
+  name: '${appServiceName}-webtest'
   location: location
   tags: {
     'hidden-link:${appInsights.id}': 'Resource'
   }
   properties: {
-    SyntheticMonitorId: '${appInsightsName}-default-test'
-    Name: 'Default Page Test'
-    Description: 'Tests the default.aspx page'
+    SyntheticMonitorId: '${appServiceName}-webtest-default'
+    Name: '${appServiceName}-webtest-default'
     Enabled: true
     Frequency: 300
     Timeout: 30
-    Kind: 'ping'
-    RetryEnabled: true
+    Kind: 'standard'
     Locations: [
       {
         Id: 'us-fl-mia-edge'
       }
+      {
+        Id: 'us-va-ash-azr'
+      }
+      {
+        Id: 'us-ca-sjc-azr'
+      }
+      {
+        Id: 'emea-gb-db3-azr'
+      }
+      {
+        Id: 'emea-nl-ams-azr'
+      }
     ]
-    Configuration: {
-      WebTest: loadFileAsBase64('webtests/default.aspx.webtest')
-    }
+    RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/default.aspx'
-      HttpVerb: 'GET'
-      ParseDependentRequests: false
-      FollowRedirects: true
-      Headers: []
-      RequestBody: null
+      RequestUrl: webAppUrl
     }
     ValidationRules: {
-      ExpectedHttpStatusCode: 200
-      IgnoreHttpStatusCode: false
-      ContentValidation: null
       SSLCheck: true
-      SSLCertRemainingLifetimeCheck: 7
+      SSLCertRemainingLifetimeCheck: 100
     }
   }
 }
 
-resource http500Test1 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appInsightsName}-http500-db-test'
-  kind: 'ping'
+resource appInsightsWebTest500 'Microsoft.Insights/webtests@2022-06-15' = {
+  name: '${appServiceName}-webtest-500'
   location: location
   tags: {
     'hidden-link:${appInsights.id}': 'Resource'
   }
   properties: {
-    SyntheticMonitorId: '${appInsightsName}-http500-db-test'
-    Name: 'HTTP500 Database Connection Test'
-    Description: 'Tests the Database Connection Error scenario'
+    SyntheticMonitorId: '${appServiceName}-webtest-500'
+    Name: '${appServiceName}-webtest-500'
     Enabled: true
     Frequency: 300
     Timeout: 30
-    Kind: 'ping'
-    RetryEnabled: true
+    Kind: 'standard'
     Locations: [
       {
         Id: 'us-fl-mia-edge'
       }
+      {
+        Id: 'us-va-ash-azr'
+      }
+      {
+        Id: 'us-ca-sjc-azr'
+      }
+      {
+        Id: 'emea-gb-db3-azr'
+      }
+      {
+        Id: 'emea-nl-ams-azr'
+      }
     ]
-    Configuration: {
-      WebTest: loadFileAsBase64('webtests/http500_1.webtest')
-    }
+    RetryEnabled: true
     Request: {
       RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_1Actual.aspx'
-      HttpVerb: 'GET'
-      ParseDependentRequests: false
-      FollowRedirects: true
-      Headers: []
-      RequestBody: null
     }
     ValidationRules: {
-      ExpectedHttpStatusCode: 500
-      IgnoreHttpStatusCode: false
-      ContentValidation: null
       SSLCheck: true
-      SSLCertRemainingLifetimeCheck: 7
+      SSLCertRemainingLifetimeCheck: 100
     }
   }
 }
 
-resource http500Test2 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appInsightsName}-http500-file-test'
-  kind: 'ping'
+resource appInsightsWebTest500_1 'Microsoft.Insights/webtests@2022-06-15' = {
+  name: '${appServiceName}-webtest-500-1'
   location: location
   tags: {
     'hidden-link:${appInsights.id}': 'Resource'
   }
   properties: {
-    SyntheticMonitorId: '${appInsightsName}-http500-file-test'
-    Name: 'HTTP500 File Access Test'
-    Description: 'Tests the File Access Error scenario'
+    SyntheticMonitorId: '${appServiceName}-webtest-500-1'
+    Name: '${appServiceName}-webtest-500-1'
     Enabled: true
     Frequency: 300
     Timeout: 30
-    Kind: 'ping'
-    RetryEnabled: true
+    Kind: 'standard'
     Locations: [
       {
         Id: 'us-fl-mia-edge'
       }
+      {
+        Id: 'us-va-ash-azr'
+      }
+      {
+        Id: 'us-ca-sjc-azr'
+      }
+      {
+        Id: 'emea-gb-db3-azr'
+      }
+      {
+        Id: 'emea-nl-ams-azr'
+      }
     ]
-    Configuration: {
-      WebTest: loadFileAsBase64('webtests/http500_2.webtest')
+    RetryEnabled: true
+    Request: {
+      RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_1Actual.aspx'
     }
+    ValidationRules: {
+      SSLCheck: true
+      SSLCertRemainingLifetimeCheck: 100
+    }
+  }
+}
+
+resource appInsightsWebTest500_2 'Microsoft.Insights/webtests@2022-06-15' = {
+  name: '${appServiceName}-webtest-500-2'
+  location: location
+  tags: {
+    'hidden-link:${appInsights.id}': 'Resource'
+  }
+  properties: {
+    SyntheticMonitorId: '${appServiceName}-webtest-500-2'
+    Name: '${appServiceName}-webtest-500-2'
+    Enabled: true
+    Frequency: 300
+    Timeout: 30
+    Kind: 'standard'
+    Locations: [
+      {
+        Id: 'us-fl-mia-edge'
+      }
+      {
+        Id: 'us-va-ash-azr'
+      }
+      {
+        Id: 'us-ca-sjc-azr'
+      }
+      {
+        Id: 'emea-gb-db3-azr'
+      }
+      {
+        Id: 'emea-nl-ams-azr'
+      }
+    ]
+    RetryEnabled: true
     Request: {
       RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_2Actual.aspx'
-      HttpVerb: 'GET'
-      ParseDependentRequests: false
-      FollowRedirects: true
-      Headers: []
-      RequestBody: null
     }
     ValidationRules: {
-      ExpectedHttpStatusCode: 500
-      IgnoreHttpStatusCode: false
-      ContentValidation: null
       SSLCheck: true
-      SSLCertRemainingLifetimeCheck: 7
+      SSLCertRemainingLifetimeCheck: 100
     }
   }
 }
 
-resource http500Test3 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appInsightsName}-http500-config-test'
-  kind: 'ping'
+resource appInsightsWebTest500_3 'Microsoft.Insights/webtests@2022-06-15' = {
+  name: '${appServiceName}-webtest-500-3'
   location: location
   tags: {
     'hidden-link:${appInsights.id}': 'Resource'
   }
   properties: {
-    SyntheticMonitorId: '${appInsightsName}-http500-config-test'
-    Name: 'HTTP500 Configuration Test'
-    Description: 'Tests the Configuration Error scenario'
+    SyntheticMonitorId: '${appServiceName}-webtest-500-3'
+    Name: '${appServiceName}-webtest-500-3'
     Enabled: true
     Frequency: 300
     Timeout: 30
-    Kind: 'ping'
-    RetryEnabled: true
+    Kind: 'standard'
     Locations: [
       {
         Id: 'us-fl-mia-edge'
       }
+      {
+        Id: 'us-va-ash-azr'
+      }
+      {
+        Id: 'us-ca-sjc-azr'
+      }
+      {
+        Id: 'emea-gb-db3-azr'
+      }
+      {
+        Id: 'emea-nl-ams-azr'
+      }
     ]
-    Configuration: {
-      WebTest: loadFileAsBase64('webtests/http500_3.webtest')
-    }
+    RetryEnabled: true
     Request: {
       RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_3Actual.aspx'
-      HttpVerb: 'GET'
-      ParseDependentRequests: false
-      FollowRedirects: true
-      Headers: []
-      RequestBody: null
     }
     ValidationRules: {
-      ExpectedHttpStatusCode: 500
-      IgnoreHttpStatusCode: false
-      ContentValidation: null
       SSLCheck: true
-      SSLCertRemainingLifetimeCheck: 7
+      SSLCertRemainingLifetimeCheck: 100
     }
   }
 }
 
-resource http500Test4 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appInsightsName}-http500-conn-test'
-  kind: 'ping'
+resource appInsightsWebTest500_4 'Microsoft.Insights/webtests@2022-06-15' = {
+  name: '${appServiceName}-webtest-500-4'
   location: location
   tags: {
     'hidden-link:${appInsights.id}': 'Resource'
   }
   properties: {
-    SyntheticMonitorId: '${appInsightsName}-http500-conn-test'
-    Name: 'HTTP500 Connection String Test'
-    Description: 'Tests the Invalid Connection String scenario'
+    SyntheticMonitorId: '${appServiceName}-webtest-500-4'
+    Name: '${appServiceName}-webtest-500-4'
     Enabled: true
     Frequency: 300
     Timeout: 30
-    Kind: 'ping'
-    RetryEnabled: true
+    Kind: 'standard'
     Locations: [
       {
         Id: 'us-fl-mia-edge'
       }
+      {
+        Id: 'us-va-ash-azr'
+      }
+      {
+        Id: 'us-ca-sjc-azr'
+      }
+      {
+        Id: 'emea-gb-db3-azr'
+      }
+      {
+        Id: 'emea-nl-ams-azr'
+      }
     ]
-    Configuration: {
-      WebTest: loadFileAsBase64('webtests/http500_4.webtest')
-    }
+    RetryEnabled: true
     Request: {
       RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_4Actual.aspx'
-      HttpVerb: 'GET'
-      ParseDependentRequests: false
-      FollowRedirects: true
-      Headers: []
-      RequestBody: null
     }
     ValidationRules: {
-      ExpectedHttpStatusCode: 500
-      IgnoreHttpStatusCode: false
-      ContentValidation: null
       SSLCheck: true
-      SSLCertRemainingLifetimeCheck: 7
+      SSLCertRemainingLifetimeCheck: 100
     }
   }
 }
 
-resource http500PageTest1 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appInsightsName}-http500-page1-test'
-  kind: 'ping'
+resource appInsightsWebTest500_5 'Microsoft.Insights/webtests@2022-06-15' = {
+  name: '${appServiceName}-webtest-500-5'
   location: location
   tags: {
     'hidden-link:${appInsights.id}': 'Resource'
   }
   properties: {
-    SyntheticMonitorId: '${appInsightsName}-http500-page1-test'
-    Name: 'HTTP500 Page 1 Test'
-    Description: 'Tests the HTTP500_1.aspx page'
+    SyntheticMonitorId: '${appServiceName}-webtest-500-5'
+    Name: '${appServiceName}-webtest-500-5'
     Enabled: true
     Frequency: 300
     Timeout: 30
-    Kind: 'ping'
-    RetryEnabled: true
+    Kind: 'standard'
     Locations: [
       {
         Id: 'us-fl-mia-edge'
       }
+      {
+        Id: 'us-va-ash-azr'
+      }
+      {
+        Id: 'us-ca-sjc-azr'
+      }
+      {
+        Id: 'emea-gb-db3-azr'
+      }
+      {
+        Id: 'emea-nl-ams-azr'
+      }
     ]
-    Configuration: {
-      WebTest: loadFileAsBase64('webtests/http500_page1.webtest')
-    }
+    RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_1.aspx'
-      HttpVerb: 'GET'
-      ParseDependentRequests: false
-      FollowRedirects: true
-      Headers: []
-      RequestBody: null
+      RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_5Actual.aspx'
     }
     ValidationRules: {
-      ExpectedHttpStatusCode: 200
-      IgnoreHttpStatusCode: false
-      ContentValidation: null
       SSLCheck: true
-      SSLCertRemainingLifetimeCheck: 7
+      SSLCertRemainingLifetimeCheck: 100
     }
   }
 }
 
-resource http500PageTest2 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appInsightsName}-http500-page2-test'
-  kind: 'ping'
-  location: location
-  tags: {
-    'hidden-link:${appInsights.id}': 'Resource'
-  }
-  properties: {
-    SyntheticMonitorId: '${appInsightsName}-http500-page2-test'
-    Name: 'HTTP500 Page 2 Test'
-    Description: 'Tests the HTTP500_2.aspx page'
-    Enabled: true
-    Frequency: 300
-    Timeout: 30
-    Kind: 'ping'
-    RetryEnabled: true
-    Locations: [
-      {
-        Id: 'us-fl-mia-edge'
-      }
-    ]
-    Configuration: {
-      WebTest: loadFileAsBase64('webtests/http500_page2.webtest')
-    }
-    Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_2.aspx'
-      HttpVerb: 'GET'
-      ParseDependentRequests: false
-      FollowRedirects: true
-      Headers: []
-      RequestBody: null
-    }
-    ValidationRules: {
-      ExpectedHttpStatusCode: 200
-      IgnoreHttpStatusCode: false
-      ContentValidation: null
-      SSLCheck: true
-      SSLCertRemainingLifetimeCheck: 7
-    }
-  }
-}
 
-resource http500PageTest3 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appInsightsName}-http500-page3-test'
-  kind: 'ping'
-  location: location
-  tags: {
-    'hidden-link:${appInsights.id}': 'Resource'
-  }
-  properties: {
-    SyntheticMonitorId: '${appInsightsName}-http500-page3-test'
-    Name: 'HTTP500 Page 3 Test'
-    Description: 'Tests the HTTP500_3.aspx page'
-    Enabled: true
-    Frequency: 300
-    Timeout: 30
-    Kind: 'ping'
-    RetryEnabled: true
-    Locations: [
-      {
-        Id: 'us-fl-mia-edge'
-      }
-    ]
-    Configuration: {
-      WebTest: loadFileAsBase64('webtests/http500_page3.webtest')
-    }
-    Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_3.aspx'
-      HttpVerb: 'GET'
-      ParseDependentRequests: false
-      FollowRedirects: true
-      Headers: []
-      RequestBody: null
-    }
-    ValidationRules: {
-      ExpectedHttpStatusCode: 200
-      IgnoreHttpStatusCode: false
-      ContentValidation: null
-      SSLCheck: true
-      SSLCertRemainingLifetimeCheck: 7
-    }
-  }
-}
 
-resource http500PageTest4 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appInsightsName}-http500-page4-test'
-  kind: 'ping'
-  location: location
-  tags: {
-    'hidden-link:${appInsights.id}': 'Resource'
-  }
-  properties: {
-    SyntheticMonitorId: '${appInsightsName}-http500-page4-test'
-    Name: 'HTTP500 Page 4 Test'
-    Description: 'Tests the HTTP500_4.aspx page'
-    Enabled: true
-    Frequency: 300
-    Timeout: 30
-    Kind: 'ping'
-    RetryEnabled: true
-    Locations: [
-      {
-        Id: 'us-fl-mia-edge'
-      }
-    ]
-    Configuration: {
-      WebTest: loadFileAsBase64('webtests/http500_page4.webtest')
-    }
-    Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_4.aspx'
-      HttpVerb: 'GET'
-      ParseDependentRequests: false
-      FollowRedirects: true
-      Headers: []
-      RequestBody: null
-    }
-    ValidationRules: {
-      ExpectedHttpStatusCode: 200
-      IgnoreHttpStatusCode: false
-      ContentValidation: null
-      SSLCheck: true
-      SSLCertRemainingLifetimeCheck: 7
-    }
-  }
-} 
