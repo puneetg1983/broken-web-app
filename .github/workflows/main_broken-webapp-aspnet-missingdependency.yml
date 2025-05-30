@@ -40,7 +40,7 @@ jobs:
         Write-Host "Listing all files in published folder..."
         Get-ChildItem -Recurse -Path "$env:GITHUB_WORKSPACE\published"
         Write-Host "Removing required dependency..."
-        Remove-Item -Path "$env:GITHUB_WORKSPACE\published\bin\System.Web.dll" -Force -ErrorAction SilentlyContinue
+        Remove-Item -Path "$env:GITHUB_WORKSPACE\published\bin\*.dll" -Force -ErrorAction SilentlyContinue -Verbose
         Write-Host "Current directory: $(Get-Location)"
         Write-Host "Published directory contents:"
         Get-ChildItem -Path "$env:GITHUB_WORKSPACE\published" -Recurse | Select-Object FullName
@@ -49,7 +49,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: ASP-app
-        path: published
+        path: $env:GITHUB_WORKSPACE\published
         if-no-files-found: error
 
   deploy:
@@ -91,28 +91,36 @@ jobs:
         package: ./
 
   test:
-    needs: deploy
     runs-on: windows-latest
+    needs: deploy
+    
     steps:
     - uses: actions/checkout@v4
-    
-    - name: Setup MSBuild
+    - name: Setup MSBuild path
       uses: microsoft/setup-msbuild@v1.0.2
-      
+
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v1.0.5
-      
-    - name: Restore NuGet Packages
-      run: nuget restore DiagnosticScenarios.sln
-      
-    - name: Build Solution
-      run: msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU"
-      
+
+    - name: Restore NuGet packages
+      run: nuget restore
+
+    - name: Build Solution in Release Mode
+      run: |
+        Write-Host "Building solution in Release mode..."
+        msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore /p:OutputPath="bin\Release"
+
     - name: Install NUnit Console Runner
-      run: nuget install NUnit.ConsoleRunner -Version 3.16.3 -OutputDirectory ./tools
-      
+      run: |
+        Write-Host "Installing NUnit Console Runner..."
+        nuget install NUnit.ConsoleRunner -Version 3.16.3 -OutputDirectory tools
+
     - name: Run Tests
-      run: ./tools/NUnit.ConsoleRunner.3.16.3/tools/nunit3-console.exe DiagnosticScenarios.Tests/bin/Release/DiagnosticScenarios.Tests.dll --where "cat==MissingDependency"
+      run: |
+        Write-Host "Running tests..."
+        $nunitPath = Join-Path $env:GITHUB_WORKSPACE "tools\NUnit.ConsoleRunner.3.16.3\tools\nunit3-console.exe"
+        $testDll = Join-Path $env:GITHUB_WORKSPACE "DiagnosticScenarios.Tests\bin\Release\DiagnosticScenarios.Tests.dll"
+        & $nunitPath $testDll --framework=net-4.8 --where "cat == MissingDependency"
       env:
         WEBAPP_URL: ${{ env.WEBAPP_URL }}
         RUN_SPECIALIZED_TESTS: MissingDependency 
