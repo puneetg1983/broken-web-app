@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  APP_SERVICE_NAME: webapp-broken-missingdependency-${{ vars.ALIAS }}
+  APP_SERVICE_NAME: broken-webapp-missingdependency-${{ vars.ALIAS }}
   WEBAPP_URL: https://broken-webapp-aspnet-missingdependency-${{ vars.ALIAS }}.azurewebsites.net
   CONFIGURATION: 'Release'
   SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E34A382294604AB38B20E873BFF2ED08 }}
@@ -36,17 +36,17 @@ jobs:
         Write-Host "Building solution..."
         msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore
         Write-Host "Publishing web project..."
-        msbuild DiagnosticScenarios.Web\DiagnosticScenarios.Web.csproj /p:Configuration=Release /p:Platform="Any CPU" /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
+        msbuild DiagnosticScenarios.Web\DiagnosticScenarios.Web.csproj /p:Configuration=Release /p:Platform="Any CPU" /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="$(Build.ArtifactStagingDirectory)\published"
         Write-Host "Listing all files in published folder..."
-        Get-ChildItem -Recurse -Path "$env:GITHUB_WORKSPACE\published"
+        Get-ChildItem -Recurse -Path "$(Build.ArtifactStagingDirectory)\published"
         Write-Host "Removing required dependency..."
-        Remove-Item -Path "$env:GITHUB_WORKSPACE\published\bin\System.Web.dll" -Force
+        Remove-Item -Path "$(Build.ArtifactStagingDirectory)\published\bin\System.Web.dll" -Force -ErrorAction SilentlyContinue
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v4
       with:
         name: ASP-app
-        path: '/published/**'
+        path: '$(Build.ArtifactStagingDirectory)\published/**'
 
   deploy:
     runs-on: windows-latest

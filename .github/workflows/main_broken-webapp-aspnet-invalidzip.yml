@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  APP_SERVICE_NAME: webapp-broken-invalidzip-${{ vars.ALIAS }}
+  APP_SERVICE_NAME: broken-webapp-invalidzip-${{ vars.ALIAS }}
   WEBAPP_URL: https://broken-webapp-aspnet-invalidzip-${{ vars.ALIAS }}.azurewebsites.net
   CONFIGURATION: 'Release'
   SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E34A382294604AB38B20E873BFF2ED08 }}
@@ -39,28 +39,36 @@ jobs:
         parameters: appServiceName=${{ env.APP_SERVICE_NAME }}
 
   test:
-    needs: deploy
     runs-on: windows-latest
+    needs: deploy
+    
     steps:
     - uses: actions/checkout@v4
-    
-    - name: Setup MSBuild
+    - name: Setup MSBuild path
       uses: microsoft/setup-msbuild@v1.0.2
-      
+
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v1.0.5
-      
-    - name: Restore NuGet Packages
-      run: nuget restore DiagnosticScenarios.sln
-      
-    - name: Build Solution
-      run: msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU"
-      
+
+    - name: Restore NuGet packages
+      run: nuget restore
+
+    - name: Build Solution in Release Mode
+      run: |
+        Write-Host "Building solution in Release mode..."
+        msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore /p:OutputPath="bin\Release"
+
     - name: Install NUnit Console Runner
-      run: nuget install NUnit.ConsoleRunner -Version 3.16.3 -OutputDirectory ./tools
-      
+      run: |
+        Write-Host "Installing NUnit Console Runner..."
+        nuget install NUnit.ConsoleRunner -Version 3.16.3 -OutputDirectory tools
+
     - name: Run Tests
-      run: ./tools/NUnit.ConsoleRunner.3.16.3/tools/nunit3-console.exe DiagnosticScenarios.Tests/bin/Release/DiagnosticScenarios.Tests.dll --where "cat==InvalidZip"
+      run: |
+        Write-Host "Running High Connections tests..."
+        $nunitPath = Join-Path $env:GITHUB_WORKSPACE "tools\NUnit.ConsoleRunner.3.16.3\tools\nunit3-console.exe"
+        $testDll = Join-Path $env:GITHUB_WORKSPACE "DiagnosticScenarios.Tests\bin\Release\DiagnosticScenarios.Tests.dll"
+        & $nunitPath $testDll --framework=net-4.8 --where "cat==HighConnections"
       env:
         WEBAPP_URL: ${{ env.WEBAPP_URL }}
-        RUN_SPECIALIZED_TESTS: InvalidZip 
+        RUN_SPECIALIZED_TESTS: InvalidZip
