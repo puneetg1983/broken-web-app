@@ -1,7 +1,6 @@
 param appServiceName string
 var appServicePlanName = appServiceName
 var location = resourceGroup().location
-var webAppUrl = 'https://${webApp.properties.defaultHostName}'
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   name: appServicePlanName
@@ -16,15 +15,6 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   }
 }
 
-resource webApp 'Microsoft.Web/sites@2022-03-01' = {
-  name: appServiceName
-  location: location
-  kind: 'windows'
-  properties: {
-    serverFarmId: appServicePlan.id
-  }
-}
-
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: '${appServiceName}-insights'
   location: location
@@ -35,6 +25,25 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
     publicNetworkAccessForQuery: 'Enabled'
   }
 }
+
+resource webApp 'Microsoft.Web/sites@2022-03-01' = {
+  name: appServiceName
+  location: location
+  kind: 'windows'
+  properties: {
+    serverFarmId: appServicePlan.id
+    siteConfig: {
+      appSettings: [
+        {
+          name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+          value: appInsights.properties.InstrumentationKey
+        }
+      ]
+    }
+  }
+}
+
+var webAppUrl = 'https://${webApp.properties.defaultHostName}'
 
 resource appInsightsWebTestHighConnections1 'Microsoft.Insights/webtests@2022-06-15' = {
   name: '${appServiceName}-webtest-highconnections-1'

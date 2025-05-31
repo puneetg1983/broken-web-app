@@ -16,15 +16,6 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   }
 }
 
-resource webApp 'Microsoft.Web/sites@2022-03-01' = {
-  name: appServiceName
-  location: location
-  kind: 'windows'
-  properties: {
-    serverFarmId: appServicePlan.id
-  }
-}
-
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: '${appServiceName}-insights'
   location: location
@@ -33,6 +24,23 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
     Application_Type: 'web'
     publicNetworkAccessForIngestion: 'Enabled'
     publicNetworkAccessForQuery: 'Enabled'
+  }
+}
+
+resource webApp 'Microsoft.Web/sites@2022-03-01' = {
+  name: appServiceName
+  location: location
+  kind: 'windows'
+  properties: {
+    serverFarmId: appServicePlan.id
+    siteConfig: {
+      appSettings: [
+        {
+          name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+          value: appInsights.properties.InstrumentationKey
+        }
+      ]
+    }
   }
 }
 
