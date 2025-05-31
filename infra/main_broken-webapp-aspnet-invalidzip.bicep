@@ -15,6 +15,17 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   }
 }
 
+resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: '${appServiceName}-insights'
+  location: location
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+    publicNetworkAccessForIngestion: 'Enabled'
+    publicNetworkAccessForQuery: 'Enabled'
+  }
+}
+
 resource webApp 'Microsoft.Web/sites@2022-03-01' = {
   name: appServiceName
   location: location
@@ -27,8 +38,55 @@ resource webApp 'Microsoft.Web/sites@2022-03-01' = {
           name: 'WEBSITE_RUN_FROM_PACKAGE'
           value: 'https://demowebcampnew.azurewebsites.net/newrelicagent.zip'
         }
+        {
+          name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+          value: appInsights.properties.InstrumentationKey
+        }
       ]
       netFrameworkVersion: 'v4.8'
+    }
+  }
+}
+
+var webAppUrl = 'https://${webApp.properties.defaultHostName}'
+
+resource appInsightsWebTestInvalidZip 'Microsoft.Insights/webtests@2022-06-15' = {
+  name: '${appServiceName}-webtest-invalidzip'
+  location: location
+  tags: {
+    'hidden-link:${appInsights.id}': 'Resource'
+  }
+  properties: {
+    SyntheticMonitorId: '${appServiceName}-webtest-invalidzip'
+    Name: '${appServiceName}-webtest-invalidzip'
+    Enabled: true
+    Frequency: 300
+    Timeout: 30
+    Kind: 'standard'
+    Locations: [
+      {
+        Id: 'us-fl-mia-edge'
+      }
+      {
+        Id: 'us-va-ash-azr'
+      }
+      {
+        Id: 'us-ca-sjc-azr'
+      }
+      {
+        Id: 'emea-gb-db3-azr'
+      }
+      {
+        Id: 'emea-nl-ams-azr'
+      }
+    ]
+    RetryEnabled: true
+    Request: {
+      RequestUrl: webAppUrl
+    }
+    ValidationRules: {
+      SSLCheck: true
+      SSLCertRemainingLifetimeCheck: 100
     }
   }
 } 
