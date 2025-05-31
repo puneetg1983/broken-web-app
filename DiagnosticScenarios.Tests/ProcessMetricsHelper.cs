@@ -109,14 +109,36 @@ namespace DiagnosticScenarios.Tests
 
         public async Task<ProcessMetrics> GetMetrics()
         {
-            var response = await _httpClient.GetAsync($"{_baseUrl}/ProcessMetrics.aspx");
-            if (!response.IsSuccessStatusCode)
+            const int maxRetries = 5;
+            const int retryDelaySeconds = 10;
+
+            for (int attempt = 1; attempt <= maxRetries; attempt++)
             {
-                throw new Exception($"Failed to get process metrics. Status code: {response.StatusCode}");
+                try
+                {
+                    TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Getting process metrics (attempt {attempt} of {maxRetries})...");
+                    var response = await _httpClient.GetAsync($"{_baseUrl}/ProcessMetrics.aspx");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        return JsonConvert.DeserializeObject<ProcessMetrics>(content);
+                    }
+                    
+                    TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Failed to get process metrics. Status code: {response.StatusCode}");
+                }
+                catch (Exception ex)
+                {
+                    TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Error getting process metrics: {ex.Message}");
+                }
+
+                if (attempt < maxRetries)
+                {
+                    TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Waiting {retryDelaySeconds} seconds before next attempt...");
+                    await Task.Delay(TimeSpan.FromSeconds(retryDelaySeconds));
+                }
             }
 
-            var content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<ProcessMetrics>(content);
+            throw new Exception($"Failed to get process metrics after {maxRetries} attempts");
         }
 
         public async Task RestartWebApp()
