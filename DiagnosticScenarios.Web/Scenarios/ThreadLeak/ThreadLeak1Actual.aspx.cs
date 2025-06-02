@@ -26,7 +26,7 @@ namespace DiagnosticScenarios.Web.Scenarios.ThreadLeak
                 int threadCount = 0;
 
                 // Create multiple threads that will never terminate
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 50; i++)
                 {
                     Thread thread = new Thread(() =>
                     {

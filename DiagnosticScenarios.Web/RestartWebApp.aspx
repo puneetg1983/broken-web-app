@@ -1,0 +1,1 @@
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="RestartWebApp.aspx.cs" Inherits="DiagnosticScenarios.Web.RestartWebApp" %> 

@@ -13,10 +13,6 @@ namespace DiagnosticScenarios.Tests
     {
         private readonly string _baseUrl;
         private readonly HttpClient _httpClient;
-        private readonly HttpClient _armClient;
-        private readonly string _subscriptionId;
-        private readonly string _resourceGroup;
-        private readonly string _appServiceName;
         private const int DEFAULT_RESTART_WAIT_SECONDS = 30;
         private const int DEFAULT_WARMUP_RETRIES = 10;
         private const int DEFAULT_WARMUP_RETRY_DELAY_SECONDS = 10;
@@ -27,84 +23,6 @@ namespace DiagnosticScenarios.Tests
             _httpClient = new HttpClient();
             _httpClient.DefaultRequestHeaders.Add("User-Agent", "DiagnosticScenarios.Tests");
             _httpClient.Timeout = TimeSpan.FromMinutes(2);
-
-            // Initialize ARM client for web app restart
-            _subscriptionId = Environment.GetEnvironmentVariable("SUBSCRIPTION_ID") ?? 
-                throw new Exception("SUBSCRIPTION_ID environment variable is not set");
-            _resourceGroup = Environment.GetEnvironmentVariable("RESOURCE_GROUP_NAME") ?? 
-                throw new Exception("RESOURCE_GROUP_NAME environment variable is not set");
-            _appServiceName = Environment.GetEnvironmentVariable("APP_SERVICE_NAME") ?? 
-                throw new Exception("APP_SERVICE_NAME environment variable is not set");
-
-            _armClient = new HttpClient();
-            _armClient.DefaultRequestHeaders.Add("User-Agent", "DiagnosticScenarios.Tests");
-            _armClient.Timeout = TimeSpan.FromMinutes(2);
-
-            // Get access token and set it in the ARM client
-            var accessToken = GetAzureAccessToken().GetAwaiter().GetResult();
-            _armClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
-        }
-
-        private async Task<string> GetAzureAccessToken()
-        {
-            var azPath = FindAzureCliPath();
-            if (string.IsNullOrEmpty(azPath))
-            {
-                throw new Exception("Azure CLI not found. Please install it from: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows");
-            }
-
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Using Azure CLI from: {azPath}");
-            var psi = new ProcessStartInfo
-            {
-                FileName = azPath,
-                Arguments = "account get-access-token --query accessToken -o tsv",
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-
-            try
-            {
-                using (var process = Process.Start(psi))
-                {
-                    if (process == null)
-                    {
-                        throw new Exception("Failed to start Azure CLI process");
-                    }
-
-                    var accessToken = (await process.StandardOutput.ReadToEndAsync()).Trim();
-                    process.WaitForExit();
-                    
-                    if (process.ExitCode != 0)
-                    {
-                        throw new Exception($"Azure CLI process exited with code {process.ExitCode}");
-                    }
-
-                    if (string.IsNullOrEmpty(accessToken))
-                    {
-                        throw new Exception("Failed to get access token from Azure CLI");
-                    }
-
-                    return accessToken;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Failed to get access token: {ex.Message}");
-            }
-        }
-
-        private static string FindAzureCliPath()
-        {
-            string[] possibleAzPaths = new[]
-            {
-                @"C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin\az.cmd",
-                @"C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin\az.cmd",
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Programs\Python\Python*\Scripts\az.cmd"),
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Programs\Python\Python*\Scripts\az.exe")
-            };
-
-            return possibleAzPaths.FirstOrDefault(File.Exists);
         }
 
         public async Task<ProcessMetrics> GetMetrics()
@@ -144,12 +62,19 @@ namespace DiagnosticScenarios.Tests
         public async Task RestartWebApp()
         {
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Restarting web app...");
-            var restartUrl = $"https://management.azure.com/subscriptions/{_subscriptionId}/resourceGroups/{_resourceGroup}/providers/Microsoft.Web/sites/{_appServiceName}/restart?api-version=2021-02-01";
-            var restartResponse = await _armClient.PostAsync(restartUrl, null);
+            var response = await _httpClient.GetAsync($"{_baseUrl}/RestartWebApp.aspx");
             
-            if (!restartResponse.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"Failed to restart web app. Status code: {restartResponse.StatusCode}");
+                throw new Exception($"Failed to restart web app. Status code: {response.StatusCode}");
+            }
+
+            var content = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<dynamic>(content);
+            
+            if (result.status.ToString() != "success")
+            {
+                throw new Exception($"Failed to restart web app: {result.message}");
             }
 
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Web app restart initiated successfully");
@@ -331,7 +256,6 @@ namespace DiagnosticScenarios.Tests
         public void Dispose()
         {
             _httpClient?.Dispose();
-            _armClient?.Dispose();
         }
     }
 } 

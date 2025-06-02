@@ -120,6 +120,7 @@
     <Content Include="Scenarios\SlowDependency\SlowDependency2Actual.aspx" />
     <Content Include="Scenarios\Deadlock\Deadlock1Actual.aspx" />
     <Content Include="ProcessMetrics.aspx" />
+    <Content Include="RestartWebApp.aspx" />
     <Content Include="Scenarios\Crash\StackOverflow1Actual.aspx" />
     <Content Include="Scenarios\Crash\UnhandledException1Actual.aspx" />
     <Content Include="Scenarios\HighConnections\HighConnections1.aspx" />
@@ -500,76 +501,20 @@
     <Compile Include="ProcessMetrics.aspx.designer.cs">
       <DependentUpon>ProcessMetrics.aspx</DependentUpon>
     </Compile>
+    <Compile Include="RestartWebApp.aspx.cs">
+      <DependentUpon>RestartWebApp.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RestartWebApp.aspx.designer.cs">
+      <DependentUpon>RestartWebApp.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scenarios\Crash\StackOverflow1Actual.aspx.cs">
-      <DependentUpon>StackOverflow1Actual.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Scenarios\Crash\StackOverflow1Actual.aspx.designer.cs">
-      <DependentUpon>StackOverflow1Actual.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Scenarios\Crash\UnhandledException1Actual.aspx.cs">
-      <DependentUpon>UnhandledException1Actual.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Scenarios\Crash\UnhandledException1Actual.aspx.designer.cs">
-      <DependentUpon>UnhandledException1Actual.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Scenarios\HighConnections\HighConnections1.aspx.cs">
-      <DependentUpon>HighConnections1.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Scenarios\HighConnections\HighConnections1.aspx.designer.cs">
-      <DependentUpon>HighConnections1.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Scenarios\HighConnections\HighConnections1Actual.aspx.cs">
-      <DependentUpon>HighConnections1Actual.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Scenarios\HighConnections\HighConnections1Actual.aspx.designer.cs">
-      <DependentUpon>HighConnections1Actual.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Scenarios\StorageQuota\StorageQuota1.aspx.cs">
-      <DependentUpon>StorageQuota1.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Scenarios\StorageQuota\StorageQuota1.aspx.designer.cs">
-      <DependentUpon>StorageQuota1.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Scenarios\StorageQuota\StorageQuota1Actual.aspx.cs">
       <DependentUpon>StorageQuota1Actual.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Scenarios\StorageQuota\StorageQuota1Actual.aspx.designer.cs">
       <DependentUpon>StorageQuota1Actual.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Scenarios\ThreadLeak\ThreadLeak1.aspx.cs">
-      <DependentUpon>ThreadLeak1.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Scenarios\ThreadLeak\ThreadLeak1.aspx.designer.cs">
-      <DependentUpon>ThreadLeak1.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Scenarios\ThreadLeak\ThreadLeak1Actual.aspx.cs">
-      <DependentUpon>ThreadLeak1Actual.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Scenarios\ThreadLeak\ThreadLeak1Actual.aspx.designer.cs">
-      <DependentUpon>ThreadLeak1Actual.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Scenarios\OutOfMemory\OutOfMemory1.aspx.cs">
-      <DependentUpon>OutOfMemory1.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Scenarios\OutOfMemory\OutOfMemory1.aspx.designer.cs">
-      <DependentUpon>OutOfMemory1.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Scenarios\OutOfMemory\OutOfMemory1Actual.aspx.cs">
-      <DependentUpon>OutOfMemory1Actual.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Scenarios\OutOfMemory\OutOfMemory1Actual.aspx.designer.cs">
-      <DependentUpon>OutOfMemory1Actual.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
