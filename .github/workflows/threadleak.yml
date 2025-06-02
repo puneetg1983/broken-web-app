@@ -114,14 +114,15 @@ jobs:
         Write-Host "Installing NUnit Console Runner..."
         nuget install NUnit.ConsoleRunner -Version 3.16.3 -OutputDirectory tools
 
-    - name: Run Tests
+    - name: Run Thread Leak Tests
       run: |
-        Write-Host "Running tests..."
+        Write-Host "Running Thread Leak tests..."
         $nunitPath = Join-Path $env:GITHUB_WORKSPACE "tools\NUnit.ConsoleRunner.3.16.3\tools\nunit3-console.exe"
         $testDll = Join-Path $env:GITHUB_WORKSPACE "DiagnosticScenarios.Tests\bin\Release\DiagnosticScenarios.Tests.dll"
-        & $nunitPath $testDll --framework=net-4.8
+        & $nunitPath $testDll --framework=net-4.8 --where "cat==ThreadLeak"
       env:
         WEBAPP_URL: ${{ env.WEBAPP_URL }}
+        RUN_SPECIALIZED_TESTS: ThreadLeak
           
 
 
