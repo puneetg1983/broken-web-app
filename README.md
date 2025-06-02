@@ -28,16 +28,12 @@ Before running `setup.ps1`, keep the following information handy:
    - Wait for the forking process to complete
    - You'll be redirected to your forked copy of the repository
 
-2. Clone your forked repository:
-   ```sh
-   git clone https://github.com/YOUR-USERNAME/broken-web-app.git
-   cd broken-web-app
+2. Run the setup script in PowerShell:
+   ```powershell
+   Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/puneetg1983/broken-web-app/refs/heads/main/setup.ps1' -OutFile 'setup.ps1'
+   .\setup.ps1
    ```
 
-3. Run the setup script in PowerShell:
-   ```powershell
-   ./setup.ps1
-   ```
-4. Copy the values for `MANAGED_IDENTITY_CLIENTID`, `SUBSCRIPTIONID`, `TENANTID`, and `RESOURCE_GROUP_NAME` from the script output and add them as GitHub repository secrets (Settings → Secrets and variables → Actions → New repository secret).
+3. Copy the values for `MANAGED_IDENTITY_CLIENTID`, `SUBSCRIPTIONID`, `TENANTID`, and `RESOURCE_GROUP_NAME` from the script output and add them as GitHub repository secrets (Settings → Secrets and variables → Actions → New repository secret).
 
 For details on different scenarios, see [scenarios.md](scenarios.md). 

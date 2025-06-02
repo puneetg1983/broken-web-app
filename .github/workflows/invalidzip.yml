@@ -1,0 +1,76 @@
+name: Deploy - Invalid Zip App
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  APP_SERVICE_NAME: broken-webapp-aspnet-invalidzip-${{ github.actor }}
+  WEBAPP_URL: https://broken-webapp-aspnet-invalidzip-${{ github.actor }}.azurewebsites.net
+  CONFIGURATION: 'Release'
+  SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
+  RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
+
+jobs:
+  deploy:
+    runs-on: windows-latest
+    permissions:
+      id-token: write #This is required for requesting the JWT
+      contents: read #This is required for actions/checkout
+
+    steps:
+    - uses: actions/checkout@v4
+  
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.MANAGED_IDENTITY_CLIENTID }}
+        tenant-id: ${{ secrets.TENANTID }}
+        subscription-id: ${{ secrets.SUBSCRIPTIONID }}
+
+    - name: Deploy Bicep (Web App & App Service Plan)
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
+        resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
+        template: ./infra/invalidzip.bicep
+        parameters: appServiceName=${{ env.APP_SERVICE_NAME }}
+
+  test:
+    runs-on: windows-latest
+    needs: deploy
+    
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup MSBuild path
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.5
+
+    - name: Restore NuGet packages
+      run: nuget restore
+
+    - name: Build Solution in Release Mode
+      run: |
+        Write-Host "Building solution in Release mode..."
+        msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore /p:OutputPath="bin\Release"
+
+    - name: Install NUnit Console Runner
+      run: |
+        Write-Host "Installing NUnit Console Runner..."
+        nuget install NUnit.ConsoleRunner -Version 3.16.3 -OutputDirectory tools
+
+    - name: Run Tests
+      run: |
+        Write-Host "Running High Connections tests..."
+        $nunitPath = Join-Path $env:GITHUB_WORKSPACE "tools\NUnit.ConsoleRunner.3.16.3\tools\nunit3-console.exe"
+        $testDll = Join-Path $env:GITHUB_WORKSPACE "DiagnosticScenarios.Tests\bin\Release\DiagnosticScenarios.Tests.dll"
+        & $nunitPath $testDll --framework=net-4.8 --where "cat==InvalidZip"
+      env:
+        WEBAPP_URL: ${{ env.WEBAPP_URL }}
+        RUN_SPECIALIZED_TESTS: InvalidZip
+
+

@@ -67,6 +67,7 @@
     <Content Include="Global.asax" />
     <Content Include="Scenarios\MissingDependency\MissingDependency1.aspx" />
     <Content Include="Scenarios\MissingDependency\MissingDependency1Actual.aspx" />
+    <Content Include="Scenarios\OutOfMemory\OutOfMemory1Actual.aspx" />
     <Content Include="Scenarios\RuntimeVersion\RuntimeVersion1.aspx" />
     <Content Include="Scenarios\RuntimeVersion\RuntimeVersion1Actual.aspx" />
     <Content Include="Web.config" />
@@ -87,7 +88,6 @@
     <Content Include="Scenarios\Crash\StackOverflow1.aspx" />
     <Content Include="Scenarios\Crash\Crash1.aspx" />
     <Content Include="Scenarios\Crash\Crash2.aspx" />
-    <Content Include="Scenarios\Crash\Crash3.aspx" />
     <Content Include="Scenarios\Http500\Http500_1.aspx" />
     <Content Include="Scenarios\Http500\Http500_2.aspx" />
     <Content Include="Scenarios\Http500\Http500_3.aspx" />
@@ -114,7 +114,6 @@
     <Content Include="Scenarios\ConnectionPool\ConnectionPool3Actual.aspx" />
     <Content Include="Scenarios\Crash\Crash1Actual.aspx" />
     <Content Include="Scenarios\Crash\Crash2Actual.aspx" />
-    <Content Include="Scenarios\Crash\Crash3Actual.aspx" />
     <Content Include="Scenarios\SlowDatabase\SlowDatabase1Actual.aspx" />
     <Content Include="Scenarios\SlowDatabase\SlowDatabase2Actual.aspx" />
     <Content Include="Scenarios\SlowDependency\SlowDependency1Actual.aspx" />
@@ -127,6 +126,9 @@
     <Content Include="Scenarios\HighConnections\HighConnections1Actual.aspx" />
     <Content Include="Scenarios\StorageQuota\StorageQuota1.aspx" />
     <Content Include="Scenarios\StorageQuota\StorageQuota1Actual.aspx" />
+    <Content Include="Scenarios\ThreadLeak\ThreadLeak1.aspx" />
+    <Content Include="Scenarios\ThreadLeak\ThreadLeak1Actual.aspx" />
+    <Content Include="Scenarios\OutOfMemory\OutOfMemory1.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Default.aspx.cs">
@@ -273,13 +275,6 @@
     </Compile>
     <Compile Include="Scenarios\Crash\Crash2.aspx.designer.cs">
       <DependentUpon>Crash2.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Scenarios\Crash\Crash3.aspx.cs">
-      <DependentUpon>Crash3.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Scenarios\Crash\Crash3.aspx.designer.cs">
-      <DependentUpon>Crash3.aspx</DependentUpon>
     </Compile>
     <Compile Include="Scenarios\Http500\Http500_1.aspx.cs">
       <DependentUpon>Http500_1.aspx</DependentUpon>
@@ -463,13 +458,6 @@
     <Compile Include="Scenarios\Crash\Crash2Actual.aspx.designer.cs">
       <DependentUpon>Crash2Actual.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Scenarios\Crash\Crash3Actual.aspx.cs">
-      <DependentUpon>Crash3Actual.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Scenarios\Crash\Crash3Actual.aspx.designer.cs">
-      <DependentUpon>Crash3Actual.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Scenarios\SlowDatabase\SlowDatabase1Actual.aspx.cs">
       <DependentUpon>SlowDatabase1Actual.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -554,6 +542,34 @@
     </Compile>
     <Compile Include="Scenarios\StorageQuota\StorageQuota1Actual.aspx.designer.cs">
       <DependentUpon>StorageQuota1Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\ThreadLeak\ThreadLeak1.aspx.cs">
+      <DependentUpon>ThreadLeak1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\ThreadLeak\ThreadLeak1.aspx.designer.cs">
+      <DependentUpon>ThreadLeak1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\ThreadLeak\ThreadLeak1Actual.aspx.cs">
+      <DependentUpon>ThreadLeak1Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\ThreadLeak\ThreadLeak1Actual.aspx.designer.cs">
+      <DependentUpon>ThreadLeak1Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\OutOfMemory\OutOfMemory1.aspx.cs">
+      <DependentUpon>OutOfMemory1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\OutOfMemory\OutOfMemory1.aspx.designer.cs">
+      <DependentUpon>OutOfMemory1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\OutOfMemory\OutOfMemory1Actual.aspx.cs">
+      <DependentUpon>OutOfMemory1Actual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\OutOfMemory\OutOfMemory1Actual.aspx.designer.cs">
+      <DependentUpon>OutOfMemory1Actual.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
