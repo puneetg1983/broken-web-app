@@ -78,7 +78,7 @@ jobs:
       with:
         subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
-        template: ./infra/connectionleak.bicep
+        template: ./infra/highconnections.bicep
         parameters: appServiceName=${{ env.APP_SERVICE_NAME }}
 
     - name: Deploy to Azure Web App
