@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Crash3Actual.aspx.cs" Inherits="DiagnosticScenarios.Web.Scenarios.Crash.Crash3Actual" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="OutOfMemory1Actual.aspx.cs" Inherits="DiagnosticScenarios.Web.Scenarios.OutOfMemory.OutOfMemory1Actual" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">

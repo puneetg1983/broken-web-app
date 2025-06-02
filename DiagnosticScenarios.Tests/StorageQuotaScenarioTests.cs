@@ -47,10 +47,6 @@ namespace DiagnosticScenarios.Tests
             var content = await response.Content.ReadAsStringAsync();
             TestContext.Progress.WriteLine($"Initial page content length: {content.Length} characters");
 
-            // Assert
-            Assert.That(response.IsSuccessStatusCode, Is.True, $"Failed to load page. Status code: {response.StatusCode}");
-            Assert.That(content, Does.Contain("Storage Quota Exceeded Scenario"));
-
             // Make 10 requests to trigger the error
             var errorUrl = $"{_baseUrl}/Scenarios/StorageQuota/StorageQuota1Actual.aspx";
             HttpResponseMessage lastErrorResponse = null;

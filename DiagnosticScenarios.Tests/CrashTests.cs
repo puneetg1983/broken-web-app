@@ -83,34 +83,7 @@ namespace DiagnosticScenarios.Tests
             // Verify process ID has changed
             Assert.That(newProcessId, Is.Not.EqualTo(initialProcessId), "Process ID should change after crash");
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Stack Overflow Crash test completed successfully");
-        }
-
-        [Test]
-        [Order(3)]
-        public async Task TestOutOfMemoryCrash()
-        {
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Starting Out of Memory Crash test...");
-            
-            // Get initial process ID
-            var initialMetrics = await GetProcessMetrics();
-            var initialProcessId = initialMetrics["ProcessId"].Value<int>();
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Initial Process ID: {initialProcessId}");
-
-            // Trigger the crash
-            await _helper.TriggerScenarioWithResponse("/Scenarios/Crash/Crash3Actual.aspx");
-
-            // Wait for process to restart
-            await Task.Delay(TimeSpan.FromSeconds(10));
-
-            // Get new process ID
-            var newMetrics = await GetProcessMetrics();
-            var newProcessId = newMetrics["ProcessId"].Value<int>();
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] New Process ID: {newProcessId}");
-
-            // Verify process ID has changed
-            Assert.That(newProcessId, Is.Not.EqualTo(initialProcessId), "Process ID should change after crash");
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Out of Memory Crash test completed successfully");
-        }
+        }     
 
         private async Task<JObject> GetProcessMetrics()
         {

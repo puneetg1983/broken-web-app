@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web.UI;
 
 namespace DiagnosticScenarios.Web.Scenarios.ThreadLeak
@@ -12,10 +13,7 @@ namespace DiagnosticScenarios.Web.Scenarios.ThreadLeak
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                StartThreadLeak();
-            }
+            Task.Run(() => { StartThreadLeak(); });
         }
 
         private void StartThreadLeak()
