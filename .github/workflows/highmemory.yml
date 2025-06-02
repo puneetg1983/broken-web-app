@@ -89,7 +89,7 @@ jobs:
         slot-name: 'Production'
         package: .
 
-  test:
+  test-in-production-high-memory:
     runs-on: windows-latest
     needs: deploy
     
@@ -116,15 +116,12 @@ jobs:
 
     - name: Run Tests
       run: |
-        Write-Host "Running tests..."
+        Write-Host "Running High Memory tests..."
         $nunitPath = Join-Path $env:GITHUB_WORKSPACE "tools\NUnit.ConsoleRunner.3.16.3\tools\nunit3-console.exe"
         $testDll = Join-Path $env:GITHUB_WORKSPACE "DiagnosticScenarios.Tests\bin\Release\DiagnosticScenarios.Tests.dll"
         & $nunitPath $testDll --framework=net-4.8 --where "cat==HighMemory"
       env:
         WEBAPP_URL: ${{ env.WEBAPP_URL }}
-        RESOURCE_GROUP_NAME: ${{ env.RESOURCE_GROUP_NAME }}
-        APP_SERVICE_NAME: ${{ env.APP_SERVICE_NAME }}
-        SUBSCRIPTION_ID: ${{ env.SUBSCRIPTION_ID }}
         RUN_SPECIALIZED_TESTS: HighMemory
           
 

@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Deploy - Crash App
+name: Deploy - DB Connection Exhaustion App
 
 on:
   push:
@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 
 env:
-  APP_SERVICE_NAME: broken-webapp-aspnet-crash-${{ github.actor }}
-  WEBAPP_URL: https://broken-webapp-aspnet-crash-${{ github.actor }}.azurewebsites.net
+  APP_SERVICE_NAME: broken-webapp-aspnet-dbconnectionexhaustion-${{ github.actor }}
+  WEBAPP_URL: https://broken-webapp-aspnet-dbconnectionexhaustion-${{ github.actor }}.azurewebsites.net
   CONFIGURATION: 'Release'
   SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
   RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
@@ -78,7 +78,7 @@ jobs:
       with:
         subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
-        template: ./infra/bcrash.bicep
+        template: ./infra/dbconnectionexhaustion.bicep
         parameters: appServiceName=${{ env.APP_SERVICE_NAME }}
 
     - name: Deploy to Azure Web App
@@ -116,63 +116,12 @@ jobs:
 
     - name: Run Tests
       run: |
-        Write-Host "Running tests..."
+        Write-Host "Running High Connections tests..."
         $nunitPath = Join-Path $env:GITHUB_WORKSPACE "tools\NUnit.ConsoleRunner.3.16.3\tools\nunit3-console.exe"
         $testDll = Join-Path $env:GITHUB_WORKSPACE "DiagnosticScenarios.Tests\bin\Release\DiagnosticScenarios.Tests.dll"
         & $nunitPath $testDll --framework=net-4.8
       env:
         WEBAPP_URL: ${{ env.WEBAPP_URL }}
 
-  test-in-production-crash:
-    runs-on: windows-latest
-    needs: [deploy, test]
-    
-    permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup MSBuild path
-      uses: microsoft/setup-msbuild@v1.0.2
-
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v1.0.5
-
-    - name: Restore NuGet packages
-      run: nuget restore
-
-    - name: Build Solution in Release Mode
-      run: |
-        Write-Host "Building solution in Release mode..."
-        msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore /p:OutputPath="bin\Release"
-
-    - name: Install NUnit Console Runner
-      run: |
-        Write-Host "Installing NUnit Console Runner..."
-        nuget install NUnit.ConsoleRunner -Version 3.16.3 -OutputDirectory tools
-
-    - name: Login to Azure
-      uses: azure/login@v2
-      with:
-        client-id: ${{ secrets.MANAGED_IDENTITY_CLIENTID }}
-        tenant-id: ${{ secrets.TENANTID }}
-        subscription-id: ${{ secrets.SUBSCRIPTIONID }}
-
-    - name: Run Crash Tests
-      run: |
-        Write-Host "Running crash metrics tests..."
-        $nunitPath = Join-Path $env:GITHUB_WORKSPACE "tools\NUnit.ConsoleRunner.3.16.3\tools\nunit3-console.exe"
-        $testDll = Join-Path $env:GITHUB_WORKSPACE "DiagnosticScenarios.Tests\bin\Release\DiagnosticScenarios.Tests.dll"
-        & $nunitPath $testDll --framework=net-4.8 --where "cat==CrashTests"
-      env:
-        WEBAPP_URL: ${{ env.WEBAPP_URL }}
-        RESOURCE_GROUP_NAME: ${{ env.RESOURCE_GROUP_NAME }}
-        APP_SERVICE_NAME: ${{ env.APP_SERVICE_NAME }}
-        SUBSCRIPTION_ID: ${{ env.SUBSCRIPTION_ID }}
-        RUN_SPECIALIZED_TESTS: CrashTests
-
- 
 
 

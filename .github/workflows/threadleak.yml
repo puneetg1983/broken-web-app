@@ -89,7 +89,7 @@ jobs:
         slot-name: 'Production'
         package: .
 
-  test:
+  test-in-production-thread-leak:
     runs-on: windows-latest
     needs: deploy
     
@@ -114,7 +114,7 @@ jobs:
         Write-Host "Installing NUnit Console Runner..."
         nuget install NUnit.ConsoleRunner -Version 3.16.3 -OutputDirectory tools
 
-    - name: Run Thread Leak Tests
+    - name: Run Tests
       run: |
         Write-Host "Running Thread Leak tests..."
         $nunitPath = Join-Path $env:GITHUB_WORKSPACE "tools\NUnit.ConsoleRunner.3.16.3\tools\nunit3-console.exe"

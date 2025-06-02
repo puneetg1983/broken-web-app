@@ -120,7 +120,7 @@ jobs:
         slot-name: 'Production'
         package: ./
 
-  test:
+  test-in-production-storage-quota:
     runs-on: windows-latest
     needs: deploy
     
@@ -145,7 +145,7 @@ jobs:
         Write-Host "Installing NUnit Console Runner..."
         nuget install NUnit.ConsoleRunner -Version 3.16.3 -OutputDirectory tools
 
-    - name: Run Storage Quota Tests
+    - name: Run Tests
       run: |
         Write-Host "Running Storage Quota tests..."
         $nunitPath = Join-Path $env:GITHUB_WORKSPACE "tools\NUnit.ConsoleRunner.3.16.3\tools\nunit3-console.exe"
@@ -153,6 +153,6 @@ jobs:
         & $nunitPath $testDll --framework=net-4.8 --where "cat==StorageQuota"
       env:
         WEBAPP_URL: ${{ env.WEBAPP_URL }}
-        RUN_SPECIALIZED_TESTS: StorageQuota 
+        RUN_SPECIALIZED_TESTS: StorageQuota
 
 

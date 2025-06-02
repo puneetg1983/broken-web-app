@@ -89,12 +89,17 @@ jobs:
         slot-name: 'Production'
         package: .
 
-  test:
+   http-response-tests:
     runs-on: windows-latest
     needs: deploy
     
+    permissions:
+      id-token: write #This is required for requesting the JWT
+      contents: read #This is required for actions/checkout
+    
     steps:
     - uses: actions/checkout@v4
+    
     - name: Setup MSBuild path
       uses: microsoft/setup-msbuild@v1.0.2
 
@@ -114,14 +119,25 @@ jobs:
         Write-Host "Installing NUnit Console Runner..."
         nuget install NUnit.ConsoleRunner -Version 3.16.3 -OutputDirectory tools
 
-    - name: Run Tests
+    - name: Login to Azure
+      uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.MANAGED_IDENTITY_CLIENTID }}
+        tenant-id: ${{ secrets.TENANTID }}
+        subscription-id: ${{ secrets.SUBSCRIPTIONID }}
+
+    - name: Run HTTP Response Tests
       run: |
-        Write-Host "Running tests..."
+        Write-Host "Running HTTP response tests..."
         $nunitPath = Join-Path $env:GITHUB_WORKSPACE "tools\NUnit.ConsoleRunner.3.16.3\tools\nunit3-console.exe"
         $testDll = Join-Path $env:GITHUB_WORKSPACE "DiagnosticScenarios.Tests\bin\Release\DiagnosticScenarios.Tests.dll"
-        & $nunitPath $testDll --framework=net-4.8
+        & $nunitPath $testDll --framework=net-4.8 --where "cat==HttpResponse"
       env:
         WEBAPP_URL: ${{ env.WEBAPP_URL }}
+        RESOURCE_GROUP_NAME: ${{ env.RESOURCE_GROUP_NAME }}
+        APP_SERVICE_NAME: ${{ env.APP_SERVICE_NAME }}
+        SUBSCRIPTION_ID: ${{ env.SUBSCRIPTION_ID }}
+        RUN_SPECIALIZED_TESTS: HttpResponse
           
 
 

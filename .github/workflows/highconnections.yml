@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Deploy - Connection Leak App
+name: Deploy - High Connections App
 
 on:
   push:
@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 
 env:
-  APP_SERVICE_NAME: broken-webapp-aspnet-connectionleak-${{ github.actor }}
-  WEBAPP_URL: https://broken-webapp-aspnet-connectionleak-${{ github.actor }}.azurewebsites.net
+  APP_SERVICE_NAME: broken-webapp-aspnet-highconnections-${{ github.actor }}
+  WEBAPP_URL: https://broken-webapp-aspnet-highconnections-${{ github.actor }}.azurewebsites.net
   CONFIGURATION: 'Release'
   SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
   RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
@@ -89,7 +89,7 @@ jobs:
         slot-name: 'Production'
         package: .
 
-  test:
+  test-in-production-high-connections:
     runs-on: windows-latest
     needs: deploy
     

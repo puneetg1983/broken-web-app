@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Deploy - HTTP Server App
+name: Deploy - HTTP 500 App
 
 on:
   push:
@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 
 env:
-  APP_SERVICE_NAME: broken-webapp-aspnet-invalidoperation-${{ github.actor }}
-  WEBAPP_URL: https://broken-webapp-aspnet-invalidoperation-${{ github.actor }}.azurewebsites.net
+  APP_SERVICE_NAME: broken-webapp-aspnet-http500-${{ github.actor }}
+  WEBAPP_URL: https://broken-webapp-aspnet-http500-${{ github.actor }}.azurewebsites.net
   CONFIGURATION: 'Release'
   SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
   RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}

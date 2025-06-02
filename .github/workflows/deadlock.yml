@@ -122,7 +122,6 @@ jobs:
         & $nunitPath $testDll --framework=net-4.8
       env:
         WEBAPP_URL: ${{ env.WEBAPP_URL }}
-          
 
 
 

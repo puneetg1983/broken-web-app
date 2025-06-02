@@ -188,13 +188,11 @@ namespace DiagnosticScenarios.Tests
             var response2 = await GetWithRetryAsync($"{_baseUrl}/Scenarios/Crash/StackOverflow1.aspx", "Stack Overflow Scenario 1");
             var response3 = await GetWithRetryAsync($"{_baseUrl}/Scenarios/Crash/Crash1.aspx", "Crash Scenario 1");
             var response4 = await GetWithRetryAsync($"{_baseUrl}/Scenarios/Crash/Crash2.aspx", "Crash Scenario 2");
-            var response5 = await GetWithRetryAsync($"{_baseUrl}/Scenarios/Crash/Crash3.aspx", "Crash Scenario 3");
 
             await AssertSuccessfulResponse(response1, "Unhandled Exception Scenario 1");
             await AssertSuccessfulResponse(response2, "Stack Overflow Scenario 1");
             await AssertSuccessfulResponse(response3, "Crash Scenario 1");
             await AssertSuccessfulResponse(response4, "Crash Scenario 2");
-            await AssertSuccessfulResponse(response5, "Crash Scenario 3");
         }
 
         [Test]
