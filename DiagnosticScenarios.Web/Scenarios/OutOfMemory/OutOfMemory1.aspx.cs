@@ -9,8 +9,13 @@ namespace DiagnosticScenarios.Web.Scenarios.OutOfMemory
         {
             if (!IsPostBack)
             {
-                // Initialize the page
+                lblStatus.Text = "Ready to simulate out of memory scenario...";
             }
+        }
+
+        protected void btnOutOfMemory_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("OutofMemory1Actual.aspx");
         }
     }
 } 

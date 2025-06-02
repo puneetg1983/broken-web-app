@@ -142,6 +142,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Scenarios\HighConnections\HighConnections1.aspx.cs">
+      <DependentUpon>HighConnections1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\HighConnections\HighConnections1.aspx.designer.cs">
+      <DependentUpon>HighConnections1.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Scenarios\HighConnections\HighConnections1Actual.aspx.cs">
       <DependentUpon>HighConnections1Actual.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -198,6 +205,13 @@
     <Compile Include="Scenarios\MissingDependency\MissingDependency1Actual.aspx.cs">
       <DependentUpon>MissingDependency1Actual.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\OutOfMemory\OutOfMemory1.aspx.cs">
+      <DependentUpon>OutOfMemory1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\OutOfMemory\OutOfMemory1.aspx.designer.cs">
+      <DependentUpon>OutOfMemory1.aspx</DependentUpon>
     </Compile>
     <Compile Include="Scenarios\OutOfMemory\OutOfMemory1Actual.aspx.cs">
       <DependentUpon>OutOfMemory1Actual.aspx</DependentUpon>

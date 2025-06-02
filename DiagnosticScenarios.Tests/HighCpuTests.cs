@@ -53,7 +53,7 @@ namespace DiagnosticScenarios.Tests
             };
 
             var (baseline, after) = await _helper.RunResourceIntensiveScenario(scenario);
-            _helper.VerifyMetricIncrease(after, baseline, "CPU");
+            _helper.VerifyMetricIncrease(after, baseline, scenario);
             await _helper.RestartWebApp();
         }
 
@@ -74,7 +74,7 @@ namespace DiagnosticScenarios.Tests
             };
 
             var (baseline, after) = await _helper.RunResourceIntensiveScenario(scenario);
-            _helper.VerifyMetricIncrease(after, baseline, "CPU");
+            _helper.VerifyMetricIncrease(after, baseline, scenario);
             await _helper.RestartWebApp();
         }
 
@@ -95,7 +95,7 @@ namespace DiagnosticScenarios.Tests
             };
 
             var (baseline, after) = await _helper.RunResourceIntensiveScenario(scenario);
-            _helper.VerifyMetricIncrease(after, baseline, "CPU");
+            _helper.VerifyMetricIncrease(after, baseline, scenario);
             await _helper.RestartWebApp();
         }
     }

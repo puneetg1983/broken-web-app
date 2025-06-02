@@ -223,8 +223,10 @@ namespace DiagnosticScenarios.Tests
             }
         }
 
-        public void VerifyMetricIncrease(ProcessMetrics after, ProcessMetrics baseline, string metricType)
+        public void VerifyMetricIncrease(ProcessMetrics after, ProcessMetrics baseline, ScenarioInfo scenarioInfo)
         {
+            string metricType = scenarioInfo.MetricName;
+
             if (metricType == "CPU")
             {
                 // For CPU Time, we expect an increase in seconds

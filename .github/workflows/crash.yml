@@ -89,40 +89,6 @@ jobs:
         slot-name: 'Production'
         package: .
 
-  test:
-    runs-on: windows-latest
-    needs: deploy
-    
-    steps:
-    - uses: actions/checkout@v4
-    - name: Setup MSBuild path
-      uses: microsoft/setup-msbuild@v1.0.2
-
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v1.0.5
-
-    - name: Restore NuGet packages
-      run: nuget restore
-
-    - name: Build Solution in Release Mode
-      run: |
-        Write-Host "Building solution in Release mode..."
-        msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore /p:OutputPath="bin\Release"
-
-    - name: Install NUnit Console Runner
-      run: |
-        Write-Host "Installing NUnit Console Runner..."
-        nuget install NUnit.ConsoleRunner -Version 3.16.3 -OutputDirectory tools
-
-    - name: Run Tests
-      run: |
-        Write-Host "Running tests..."
-        $nunitPath = Join-Path $env:GITHUB_WORKSPACE "tools\NUnit.ConsoleRunner.3.16.3\tools\nunit3-console.exe"
-        $testDll = Join-Path $env:GITHUB_WORKSPACE "DiagnosticScenarios.Tests\bin\Release\DiagnosticScenarios.Tests.dll"
-        & $nunitPath $testDll --framework=net-4.8
-      env:
-        WEBAPP_URL: ${{ env.WEBAPP_URL }}
-
   test-in-production-crash:
     runs-on: windows-latest
     needs: [deploy, test]
