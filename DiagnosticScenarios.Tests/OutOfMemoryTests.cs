@@ -14,7 +14,7 @@ namespace DiagnosticScenarios.Tests
         [OneTimeSetUp]
         public void Setup()
         {
-            if (!ArmMetricsHelper.ShouldRunTests("OutOfMemory"))
+            if (!ProcessMetricsHelper.ShouldRunTests("OutOfMemory"))
             {
                 Assert.Ignore("Skipping OutOfMemoryTests. Set RUN_SPECIALIZED_TESTS=OutOfMemory to run them locally.");
             }

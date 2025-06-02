@@ -21,62 +21,21 @@ namespace DiagnosticScenarios.Tests
         private const int DEFAULT_WARMUP_RETRIES = 10;
         private const int DEFAULT_WARMUP_RETRY_DELAY_SECONDS = 10;
 
-        private ArmMetricsHelper _helper;
+        private ProcessMetricsHelper _helper;
         private string _baseUrl;
 
         [OneTimeSetUp]
         public async Task Setup()
         {
-            if (!ArmMetricsHelper.ShouldRunTests("HttpResponse"))
+            if (!ProcessMetricsHelper.ShouldRunTests("HttpResponse"))
             {
                 Assert.Ignore("Skipping ARM metrics tests. Set RUN_SPECIALIZED_TESTS=true to run them locally.");
             }
 
-            InitializeEnvironmentVariables();
-            await InitializeHelper();
-            await EnsureAppIsRunning();
-        }
-
-        private void InitializeEnvironmentVariables()
-        {
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Initializing environment variables...");
             _baseUrl = Environment.GetEnvironmentVariable("WEBAPP_URL") ?? "https://localhost:44300";
-            var subscriptionId = ArmMetricsHelper.GetSubscriptionId();
-            var resourceGroup = Environment.GetEnvironmentVariable("RESOURCE_GROUP_NAME");
-            var appServiceName = Environment.GetEnvironmentVariable("APP_SERVICE_NAME");
+            _helper = new ProcessMetricsHelper(_baseUrl);
 
-            LogEnvironmentVariables();
-
-            if (string.IsNullOrEmpty(resourceGroup) || string.IsNullOrEmpty(appServiceName))
-            {
-                Assert.Fail("Required environment variables are not set: RESOURCE_GROUP_NAME, APP_SERVICE_NAME");
-            }
-        }
-
-        private void LogEnvironmentVariables()
-        {
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Environment variables:");
-            TestContext.Progress.WriteLine($"  WEBAPP_URL: {_baseUrl}");
-            TestContext.Progress.WriteLine($"  SUBSCRIPTION_ID: {ArmMetricsHelper.GetSubscriptionId()}");
-            TestContext.Progress.WriteLine($"  RESOURCE_GROUP_NAME: {Environment.GetEnvironmentVariable("RESOURCE_GROUP_NAME")}");
-            TestContext.Progress.WriteLine($"  APP_SERVICE_NAME: {Environment.GetEnvironmentVariable("APP_SERVICE_NAME")}");
-        }
-
-        private async Task InitializeHelper()
-        {
-            try
-            {
-                _helper = await ArmMetricsHelper.CreateAsync(
-                    _baseUrl,
-                    ArmMetricsHelper.GetSubscriptionId(),
-                    Environment.GetEnvironmentVariable("RESOURCE_GROUP_NAME"),
-                    Environment.GetEnvironmentVariable("APP_SERVICE_NAME")
-                );
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail($"Failed to initialize helper: {ex.Message}");
-            }
+            await EnsureAppIsRunning();
         }
 
         private async Task EnsureAppIsRunning()

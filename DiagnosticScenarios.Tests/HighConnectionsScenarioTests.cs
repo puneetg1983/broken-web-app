@@ -18,7 +18,7 @@ namespace DiagnosticScenarios.Tests
 
         public HighConnectionsScenarioTests()
         {
-            if (!ArmMetricsHelper.ShouldRunTests("HighConnections"))
+            if (!ProcessMetricsHelper.ShouldRunTests("HighConnections"))
             {
                 Assert.Ignore("Skipping HighConnectionsScenarioTests tests. Set RUN_SPECIALIZED_TESTS=HighConnections to run them locally.");
             }

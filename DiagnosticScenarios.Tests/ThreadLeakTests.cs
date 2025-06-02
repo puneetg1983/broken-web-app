@@ -14,7 +14,7 @@ namespace DiagnosticScenarios.Tests
         [OneTimeSetUp]
         public void Setup()
         {
-            if (!ArmMetricsHelper.ShouldRunTests("ThreadLeak"))
+            if (!ProcessMetricsHelper.ShouldRunTests("ThreadLeak"))
             {
                 Assert.Ignore("Skipping ThreadLeakTests. Set RUN_SPECIALIZED_TESTS=ThreadLeak to run them locally.");
             }

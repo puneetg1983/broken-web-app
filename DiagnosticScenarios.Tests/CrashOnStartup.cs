@@ -15,7 +15,7 @@ namespace DiagnosticScenarios.Tests
         [OneTimeSetUp]
         public void Setup()
         {
-            if (!ArmMetricsHelper.ShouldRunTests("CrashOnStartup"))
+            if (!ProcessMetricsHelper.ShouldRunTests("CrashOnStartup"))
             {
                 Assert.Ignore("Skipping CrashOnStartup tests. Set RUN_SPECIALIZED_TESTS=CrashOnStartup to run them locally.");
             }

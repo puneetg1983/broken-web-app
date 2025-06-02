@@ -25,6 +25,17 @@ namespace DiagnosticScenarios.Tests
             _httpClient.Timeout = TimeSpan.FromMinutes(2);
         }
 
+        public static bool ShouldRunTests(string category)
+        {
+            var runTests = Environment.GetEnvironmentVariable("RUN_SPECIALIZED_TESTS");
+            if (string.IsNullOrEmpty(runTests))
+            {
+                return false;
+            }
+
+            return runTests.Equals(category, StringComparison.OrdinalIgnoreCase);
+        }
+
         public async Task<ProcessMetrics> GetMetrics()
         {
             const int maxRetries = 5;
@@ -251,6 +262,36 @@ namespace DiagnosticScenarios.Tests
             var response = await _httpClient.GetAsync($"{_baseUrl}{path}");
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Response status code: {response.StatusCode}");
             return response;
+        }
+
+        public async Task EnsureAppIsRunning()
+        {
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Making warmup request to ensure app is running...");
+            int maxRetries = 5;
+            int retryDelaySeconds = 50;
+
+            for (int attempt = 1; attempt <= maxRetries; attempt++)
+            {
+                if (await TryWarmupRequest(attempt, maxRetries))
+                {
+                    return;
+                }
+
+                if (attempt < maxRetries)
+                {
+                    TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Waiting {retryDelaySeconds} seconds before next warmup attempt...");
+                    await Task.Delay(TimeSpan.FromSeconds(retryDelaySeconds));
+                }
+            }
+        }
+
+        public void VerifyHttp500Response(HttpResponseMessage response, string content)
+        {
+            if (response.StatusCode != System.Net.HttpStatusCode.InternalServerError)
+            {
+                throw new Exception($"Expected HTTP 500 status code, but got {(int)response.StatusCode} {response.StatusCode}");
+            }
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] HTTP 500 scenario test completed successfully");
         }
 
         public void Dispose()

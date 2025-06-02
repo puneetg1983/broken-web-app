@@ -15,7 +15,7 @@ namespace DiagnosticScenarios.Tests
         [OneTimeSetUp]
         public void Setup()
         {
-            if (!ArmMetricsHelper.ShouldRunTests("MissingDependency"))
+            if (!ProcessMetricsHelper.ShouldRunTests("MissingDependency"))
             {
                 Assert.Ignore("Skipping MissingDependencyScenarioTests tests. Set RUN_SPECIALIZED_TESTS=true to run them locally.");
             }

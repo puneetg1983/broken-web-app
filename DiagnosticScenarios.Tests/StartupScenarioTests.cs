@@ -15,7 +15,7 @@ namespace DiagnosticScenarios.Tests
         [OneTimeSetUp]
         public void Setup()
         {
-            if (!ArmMetricsHelper.ShouldRunTests("HangOnStartup"))
+            if (!ProcessMetricsHelper.ShouldRunTests("HangOnStartup"))
             {
                 Assert.Ignore("Skipping HangOnStartup tests. Set RUN_SPECIALIZED_TESTS=HangOnStartup to run them locally.");
             }

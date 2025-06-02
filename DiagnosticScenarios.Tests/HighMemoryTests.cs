@@ -8,23 +8,19 @@ namespace DiagnosticScenarios.Tests
     [Category("HighMemory")]
     public class HighMemoryTests
     {
-        private ArmMetricsHelper _helper;
+        private ProcessMetricsHelper _helper;
+        private string _baseUrl;
 
         [OneTimeSetUp]
-        public async Task Setup()
+        public void Setup()
         {
-            if (!ArmMetricsHelper.ShouldRunTests("HighMemory"))
+            if (!ProcessMetricsHelper.ShouldRunTests("HighMemory"))
             {
                 Assert.Ignore("Skipping HighMemoryTests. Set RUN_SPECIALIZED_TESTS=true to run them locally.");
             }
 
-            var baseUrl = Environment.GetEnvironmentVariable("WEBAPP_URL") ?? "https://localhost:44300";
-            _helper = await ArmMetricsHelper.CreateAsync(
-                baseUrl,
-                ArmMetricsHelper.GetSubscriptionId(),
-                Environment.GetEnvironmentVariable("RESOURCE_GROUP_NAME"),
-                Environment.GetEnvironmentVariable("APP_SERVICE_NAME")
-            );
+            _baseUrl = Environment.GetEnvironmentVariable("WEBAPP_URL") ?? "https://localhost:44300";
+            _helper = new ProcessMetricsHelper(_baseUrl);
         }
 
         [OneTimeTearDown]

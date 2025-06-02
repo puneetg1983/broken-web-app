@@ -16,7 +16,7 @@ namespace DiagnosticScenarios.Tests
         [OneTimeSetUp]
         public void Setup()
         {
-            if (!ArmMetricsHelper.ShouldRunTests("CrashTests"))
+            if (!ProcessMetricsHelper.ShouldRunTests("CrashTests"))
             {
                 Assert.Ignore("Skipping CrashTests tests. Set RUN_SPECIALIZED_TESTS='CrashTests' to run them locally.");
             }

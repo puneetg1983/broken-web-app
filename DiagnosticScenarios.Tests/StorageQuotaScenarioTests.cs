@@ -16,7 +16,7 @@ namespace DiagnosticScenarios.Tests
         public void Setup()
         {
             TestContext.Progress.WriteLine("Setting up StorageQuotaScenarioTests...");
-            if (!ArmMetricsHelper.ShouldRunTests("StorageQuota"))
+            if (!ProcessMetricsHelper.ShouldRunTests("StorageQuota"))
             {
                 TestContext.Progress.WriteLine("Skipping tests as RUN_SPECIALIZED_TESTS is not set to StorageQuota");
                 Assert.Ignore("Skipping StorageQuotaScenarioTests tests. Set RUN_SPECIALIZED_TESTS=StorageQuota to run them locally.");
