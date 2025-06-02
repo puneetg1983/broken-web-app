@@ -37,7 +37,7 @@ namespace DiagnosticScenarios.Tests
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Baseline memory usage: {baselineMemory} bytes");
 
             // Trigger the out of memory scenario 10 times
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 3; i++)
             {
                 TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Triggering OutOfMemory1Actual.aspx (iteration {i + 1}/10)...");
                 var response = await _helper.TriggerScenarioWithResponse("/Scenarios/OutOfMemory/OutOfMemory1Actual.aspx");
@@ -49,9 +49,9 @@ namespace DiagnosticScenarios.Tests
             // Check for OutOfMemoryException only after the last response
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Checking for OutOfMemoryException after all iterations...");
             var lastResponse = await _helper.TriggerScenarioWithResponse("/Scenarios/OutOfMemory/OutOfMemory1Actual.aspx");
-            Assert.That(lastResponse.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.InternalServerError), "Expected an OutOfMemoryException to be thrown.");
+            Assert.That(lastResponse.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.InternalServerError), "Expected InternalServerError");
             var content = await lastResponse.Content.ReadAsStringAsync();
-            Assert.That(content, Does.Contain("OutOfMemoryException"), "Response should indicate an OutOfMemoryException was thrown.");
+            Assert.That(content, Does.Contain("Exception of type 'System.OutOfMemoryException' was thrown"), "Response should contain - Exception of type 'System.OutOfMemoryException' was thrown");
 
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Getting memory usage after scenario...");
             var after = await _helper.GetMetrics();

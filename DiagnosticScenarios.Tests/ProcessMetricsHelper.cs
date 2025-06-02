@@ -153,7 +153,8 @@ namespace DiagnosticScenarios.Tests
 
         private async Task RunScenario(ScenarioInfo scenario)
         {
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Getting the {scenario.MetricName} page with Url {scenario.Path}...");
+            var fullUrl = $"{_baseUrl}{scenario.Path}";
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Getting the {scenario.MetricName} page with Url {fullUrl}...");
             
             const int maxRetries = 3;
             const int initialDelayMs = 5000;
@@ -162,10 +163,10 @@ namespace DiagnosticScenarios.Tests
             {
                 try
                 {
-                    var getResponse = await _httpClient.GetAsync($"{_baseUrl}{scenario.Path}");
+                    var getResponse = await _httpClient.GetAsync(fullUrl);
                     if (!getResponse.IsSuccessStatusCode)
                     {
-                        throw new Exception($"Failed to get {scenario.MetricName} page with Url {_baseUrl}{scenario.Path}");
+                        throw new Exception($"Failed to get {scenario.MetricName} page with Url {fullUrl}");
                     }
                     break; // Success, exit retry loop
                 }
@@ -179,28 +180,28 @@ namespace DiagnosticScenarios.Tests
             
             for (int i = 0; i < scenario.Iterations; i++)
             {
-                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Running {scenario.MetricName} scenario with Url {_baseUrl}{scenario.Path} iteration {i + 1} of {scenario.Iterations}");
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Running {scenario.MetricName} scenario with Url {fullUrl} iteration {i + 1} of {scenario.Iterations}");
                 
                 for (int retry = 0; retry < maxRetries; retry++)
                 {
                     try
                     {
-                        var response = await _httpClient.GetAsync($"{_baseUrl}{scenario.Path}");
+                        var response = await _httpClient.GetAsync(fullUrl);
                         if (!response.IsSuccessStatusCode)
                         {
-                            throw new Exception($"Failed to trigger {scenario.MetricName} scenario with Url {_baseUrl}{scenario.Path}");
+                            throw new Exception($"Failed to trigger {scenario.MetricName} scenario with Url {fullUrl}");
                         }
                         break; // Success, exit retry loop
                     }
                     catch (TaskCanceledException) when (retry < maxRetries - 1)
                     {
                         var delayMs = initialDelayMs * (int)Math.Pow(2, retry);
-                        TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Url {_baseUrl}{scenario.Path} Request timed out, retrying in {delayMs}ms (attempt {retry + 1} of {maxRetries})...");
+                        TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Url {fullUrl} Request timed out, retrying in {delayMs}ms (attempt {retry + 1} of {maxRetries})...");
                         await Task.Delay(delayMs);
                     }
                 }
                 
-                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Waiting {scenario.DelayBetweenIterationsSeconds} seconds to trigger {scenario.MetricName} scenario with Url {_baseUrl}{scenario.Path} before next iteration...");
+                TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Waiting {scenario.DelayBetweenIterationsSeconds} seconds to trigger {scenario.MetricName} scenario with Url {fullUrl} before next iteration...");
                 await Task.Delay(TimeSpan.FromSeconds(scenario.DelayBetweenIterationsSeconds));
             }
         }
