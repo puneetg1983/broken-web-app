@@ -9,6 +9,11 @@ on:
       - main
   workflow_dispatch:
 
+# Add concurrency configuration to ensure only one workflow runs at a time
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   APP_SERVICE_NAME: broken-webapp-aspnet-slowresponse-${{ github.actor }}
   WEBAPP_URL: https://broken-webapp-aspnet-slowresponse-${{ github.actor }}.azurewebsites.net
