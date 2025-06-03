@@ -91,7 +91,7 @@ jobs:
 
   test-in-production-crash:
     runs-on: windows-latest
-    needs: [deploy, test]
+    needs: deploy
     
     permissions:
       id-token: write #This is required for requesting the JWT
