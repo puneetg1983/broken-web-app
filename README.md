@@ -1,4 +1,4 @@
-# Diagnostic Scenarios for Azure App Service
+# Diagnostic Scenarios for Azure App Service - Windows Apps
 
 This codebase provides a collection of intentionally broken or problematic web application scenarios designed to help you test and validate diagnostics and troubleshooting tools for Azure App Service. It includes:
 - A variety of web app scenarios that simulate real-world failures and performance issues
