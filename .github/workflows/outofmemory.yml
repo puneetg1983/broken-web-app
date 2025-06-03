@@ -81,6 +81,35 @@ jobs:
         template: ./infra/outofmemory.bicep
         parameters: appServiceName=${{ env.APP_SERVICE_NAME }}
 
+    - name: Restart Web App to recover from previous deployment
+      run: |
+        Write-Host "Restarting web app..."
+        az webapp restart --name ${{ env.APP_SERVICE_NAME }} --resource-group ${{ env.RESOURCE_GROUP_NAME }}
+        Write-Host "Waiting for web app to be ready..."
+        Start-Sleep -Seconds 30
+        Write-Host "Verifying web app is responding..."
+        $maxAttempts = 10
+        $attempt = 0
+        $success = $false
+        while (-not $success -and $attempt -lt $maxAttempts) {
+            $attempt++
+            try {
+                $response = Invoke-WebRequest -Uri ${{ env.WEBAPP_URL }} -Method GET -UseBasicParsing
+                if ($response.StatusCode -eq 200) {
+                    Write-Host "Web app is responding successfully!"
+                    $success = $true
+                }
+            }
+            catch {
+                Write-Host "Attempt $attempt failed. Waiting before retry..."
+                Start-Sleep -Seconds 10
+            }
+        }
+        if (-not $success) {
+            Write-Error "Web app failed to respond after $maxAttempts attempts"
+            exit 1
+        }
+
     - name: Deploy to Azure Web App
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v3
