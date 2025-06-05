@@ -1,0 +1,1 @@
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="cleanup.aspx.cs" Inherits="DiagnosticScenarios.Web.Scenarios.StorageQuota.cleanup" %> 

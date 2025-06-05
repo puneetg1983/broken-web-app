@@ -130,6 +130,7 @@
     <Content Include="Scenarios\ThreadLeak\ThreadLeak1.aspx" />
     <Content Include="Scenarios\ThreadLeak\ThreadLeak1Actual.aspx" />
     <Content Include="Scenarios\OutOfMemory\OutOfMemory1.aspx" />
+    <Content Include="Scenarios\StorageQuota\cleanup.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Default.aspx.cs">
@@ -550,6 +551,13 @@
     </Compile>
     <Compile Include="Scenarios\ThreadLeak\ThreadLeak1Actual.aspx.designer.cs">
       <DependentUpon>ThreadLeak1Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\StorageQuota\cleanup.aspx.cs">
+      <DependentUpon>cleanup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\StorageQuota\cleanup.aspx.designer.cs">
+      <DependentUpon>cleanup.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

@@ -117,6 +117,20 @@ jobs:
             exit 1
         }
 
+    - name: Cleanup Temp Files
+      run: |
+        Write-Host "Invoking cleanup page..."
+        $cleanupUrl = "${{ env.WEBAPP_URL }}/Scenarios/StorageQuota/cleanup.aspx"
+        try {
+            $response = Invoke-WebRequest -Uri $cleanupUrl -Method GET -UseBasicParsing
+            Write-Host "Cleanup completed with status code: $($response.StatusCode)"
+            Write-Host "Cleanup response content: $($response.Content)"
+            Write-Host "Cleanup response headers: $($response.Headers | ConvertTo-Json)"
+        }
+        catch {
+            Write-Host "Error during cleanup: $_"
+        }
+
     - name: Deploy to Azure Web App
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v3
