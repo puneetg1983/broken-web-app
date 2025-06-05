@@ -4,4 +4,4 @@
     subscriptionId: ${{ env.SUBSCRIPTION_ID }}
     resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
     template: ./infra/loganalytics.bicep
-    deploymentName: loganalytics-${{ github.workflow }}-${{ github.run_id }} 
+    deploymentName: loganalytics-slowdependency-${{ github.run_number }} 

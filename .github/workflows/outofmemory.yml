@@ -84,7 +84,7 @@ jobs:
         subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
         template: ./infra/loganalytics.bicep
-        deploymentName: loganalytics-${{ github.workflow }}-${{ github.run_id }}
+        deploymentName: loganalytics-outofmemory-${{ github.run_number }}
 
     - name: Deploy Bicep (Web App & App Service Plan)
       uses: azure/arm-deploy@v1
