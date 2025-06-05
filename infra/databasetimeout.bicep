@@ -1,7 +1,13 @@
 param appServiceName string
+param workspaceName string = 'broken-webapps-appinsights-workspace'
+
 var appServicePlanName = appServiceName
 var location = resourceGroup().location
 var webAppUrl = 'https://${webApp.properties.defaultHostName}'
+
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
+  name: workspaceName
+}
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   name: appServicePlanName
@@ -22,6 +28,7 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   kind: 'web'
   properties: {
     Application_Type: 'web'
+    WorkspaceResourceId: logAnalyticsWorkspace.id
   }
 }
 
