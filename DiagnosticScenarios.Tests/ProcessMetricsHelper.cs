@@ -2,9 +2,6 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using Newtonsoft.Json;
 
 namespace DiagnosticScenarios.Tests

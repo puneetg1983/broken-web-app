@@ -6,8 +6,10 @@ namespace DiagnosticScenarios.Tests
 {
     [TestFixture]
     [Category("ThreadLeak")]
-    public class ThreadLeakTests
+    public class ThreadLeakTests : ProcessMetricsBase
     {
+        protected override string GetTestCategory() => "ThreadLeak";
+
         private ProcessMetricsHelper _helper;
         private string _baseUrl;
 
@@ -32,7 +34,7 @@ namespace DiagnosticScenarios.Tests
         public async Task TestThreadLeakScenario()
         {
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Getting baseline thread count...");
-            var baseline = await _helper.GetMetrics();
+            var baseline = await GetProcessMetrics();
             int baselineThreads = baseline.ThreadCount;
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Baseline thread count: {baselineThreads}");
 
@@ -48,16 +50,14 @@ namespace DiagnosticScenarios.Tests
                 await Task.Delay(TimeSpan.FromSeconds(1));
             }
 
-            // Wait for threads to leak
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Waiting for threads to accumulate...");
-            await Task.Delay(TimeSpan.FromSeconds(30));
-
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Getting thread count after scenario...");
-            var after = await _helper.GetMetrics();
+            // Get final thread count
+            var after = await GetProcessMetrics();
             int afterThreads = after.ThreadCount;
-            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Thread count after scenario: {afterThreads}");
+            TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Final thread count: {afterThreads}");
 
-            Assert.Greater(afterThreads, baselineThreads, "Thread count should increase after running the thread leak scenario.");
+            // Verify thread count increased
+            Assert.That(afterThreads, Is.GreaterThan(baselineThreads), 
+                $"Thread count should increase. Initial: {baselineThreads}, After: {afterThreads}");
         }
     }
 } 

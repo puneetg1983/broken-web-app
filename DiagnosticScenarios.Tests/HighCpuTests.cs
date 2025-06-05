@@ -6,8 +6,10 @@ namespace DiagnosticScenarios.Tests
 {
     [TestFixture]
     [Category("HighCpu")]
-    public class HighCpuTests
+    public class HighCpuTests : ProcessMetricsBase
     {
+        protected override string GetTestCategory() => "HighCpu";
+
         private ProcessMetricsHelper _helper;
         private string _baseUrl;
 
@@ -28,12 +30,6 @@ namespace DiagnosticScenarios.Tests
         public void Cleanup()
         {
             _helper?.Dispose();
-        }
-
-        private async Task EnsureFreshProcess()
-        {
-            await _helper.RestartWebApp();
-            await Task.Delay(TimeSpan.FromSeconds(10)); // Wait for app to stabilize
         }
 
         [Test]

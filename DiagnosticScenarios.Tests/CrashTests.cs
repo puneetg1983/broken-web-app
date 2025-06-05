@@ -8,8 +8,10 @@ namespace DiagnosticScenarios.Tests
     [TestFixture]
     [NonParallelizable]
     [Category("CrashTests")]
-    public class CrashTests
+    public class CrashTests: ProcessMetricsBase
     {
+        protected override string GetTestCategory() => "CrashTests";
+
         private ProcessMetricsHelper _helper;
         private string _baseUrl;
 
@@ -39,7 +41,7 @@ namespace DiagnosticScenarios.Tests
             
             // Get initial process ID
             var initialMetrics = await GetProcessMetrics();
-            var initialProcessId = initialMetrics["ProcessId"].Value<int>();
+            var initialProcessId = initialMetrics.ProcessId;
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Initial Process ID: {initialProcessId}");
 
             // Trigger the crash
@@ -50,7 +52,7 @@ namespace DiagnosticScenarios.Tests
 
             // Get new process ID
             var newMetrics = await GetProcessMetrics();
-            var newProcessId = newMetrics["ProcessId"].Value<int>();
+            var newProcessId = newMetrics.ProcessId;
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] New Process ID: {newProcessId}");
 
             // Verify process ID has changed
@@ -66,7 +68,7 @@ namespace DiagnosticScenarios.Tests
             
             // Get initial process ID
             var initialMetrics = await GetProcessMetrics();
-            var initialProcessId = initialMetrics["ProcessId"].Value<int>();
+            var initialProcessId = initialMetrics.ProcessId;
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Initial Process ID: {initialProcessId}");
 
             // Trigger the crash
@@ -77,24 +79,12 @@ namespace DiagnosticScenarios.Tests
 
             // Get new process ID
             var newMetrics = await GetProcessMetrics();
-            var newProcessId = newMetrics["ProcessId"].Value<int>();
+            var newProcessId = newMetrics.ProcessId;
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] New Process ID: {newProcessId}");
 
             // Verify process ID has changed
             Assert.That(newProcessId, Is.Not.EqualTo(initialProcessId), "Process ID should change after crash");
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Stack Overflow Crash test completed successfully");
-        }     
-
-        private async Task<JObject> GetProcessMetrics()
-        {
-            var response = await _helper.TriggerScenarioWithResponse("/ProcessMetrics.aspx");
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Failed to get process metrics. Status code: {response.StatusCode}");
-            }
-
-            var content = await response.Content.ReadAsStringAsync();
-            return JObject.Parse(content);
         }
     }
 } 

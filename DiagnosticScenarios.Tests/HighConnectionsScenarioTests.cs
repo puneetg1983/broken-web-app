@@ -11,8 +11,10 @@ namespace DiagnosticScenarios.Tests
 {
     [TestFixture]
     [Category("HighConnections")]
-    public class HighConnectionsScenarioTests
+    public class HighConnectionsScenarioTests : ProcessMetricsBase
     {
+        protected override string GetTestCategory() => "HighConnections";
+
         private readonly string _baseUrl;
         private readonly HttpClient _httpClient;
 
@@ -49,7 +51,7 @@ namespace DiagnosticScenarios.Tests
 
             // Get initial metrics
             TestContext.Progress.WriteLine("Getting initial metrics...");
-            var initialMetrics = await GetMetrics();
+            var initialMetrics = await GetProcessMetrics();
             var initialTotalConnections = GetTotalServicePointConnections(initialMetrics);
             TestContext.Progress.WriteLine($"Initial total connection count: {initialTotalConnections}");
 
@@ -71,7 +73,7 @@ namespace DiagnosticScenarios.Tests
 
             // Get metrics after scenario
             TestContext.Progress.WriteLine("Getting metrics after scenario...");
-            var afterMetrics = await GetMetrics();
+            var afterMetrics = await GetProcessMetrics();
             var afterTotalConnections = GetTotalServicePointConnections(afterMetrics);
             TestContext.Progress.WriteLine($"After scenario total connection count: {afterTotalConnections}");
 
@@ -86,35 +88,6 @@ namespace DiagnosticScenarios.Tests
         private int GetTotalServicePointConnections(ProcessMetrics metrics)
         {
             return metrics.ServicePointConnections.ServicePoints.Sum(sp => sp.TotalConnections);
-        }
-
-        private async Task<ProcessMetrics> GetMetrics()
-        {
-            TestContext.Progress.WriteLine("Attempting to get process metrics...");
-            var response = await _httpClient.GetAsync($"{_baseUrl}/ProcessMetrics.aspx");
-            TestContext.Progress.WriteLine($"ProcessMetrics response status: {response.StatusCode}");
-            
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = $"Failed to get process metrics. Status code: {response.StatusCode}";
-                TestContext.Progress.WriteLine(error);
-                throw new Exception(error);
-            }
-
-            var content = await response.Content.ReadAsStringAsync();
-            TestContext.Progress.WriteLine($"ProcessMetrics response content: {content}");
-            
-            try
-            {
-                var metrics = JsonConvert.DeserializeObject<ProcessMetrics>(content);
-                TestContext.Progress.WriteLine($"Successfully deserialized ProcessMetrics");
-                return metrics;
-            }
-            catch (Exception ex)
-            {
-                TestContext.Progress.WriteLine($"Failed to deserialize ProcessMetrics: {ex.Message}");
-                throw;
-            }
         }
 
         private async Task WaitForAppReady()

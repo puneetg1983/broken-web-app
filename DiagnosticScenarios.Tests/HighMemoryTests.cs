@@ -6,8 +6,10 @@ namespace DiagnosticScenarios.Tests
 {
     [TestFixture]
     [Category("HighMemory")]
-    public class HighMemoryTests
+    public class HighMemoryTests : ProcessMetricsBase
     {
+        protected override string GetTestCategory() => "HighMemory";
+
         private ProcessMetricsHelper _helper;
         private string _baseUrl;
 
@@ -29,11 +31,6 @@ namespace DiagnosticScenarios.Tests
             _helper?.Dispose();
         }
 
-        private async Task EnsureFreshProcess()
-        {
-            await _helper.RestartWebApp();
-            await Task.Delay(TimeSpan.FromSeconds(10)); // Wait for app to stabilize
-        }
 
         [Test]
         [Order(1)]

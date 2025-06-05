@@ -6,8 +6,10 @@ namespace DiagnosticScenarios.Tests
 {
     [TestFixture]
     [Category("OutOfMemory")]
-    public class OutOfMemoryTests
+    public class OutOfMemoryTests : ProcessMetricsBase
     {
+        protected override string GetTestCategory() => "OutOfMemory";
+
         private ProcessMetricsHelper _helper;
         private string _baseUrl;
 
@@ -32,7 +34,7 @@ namespace DiagnosticScenarios.Tests
         public async Task TestOutOfMemoryScenario()
         {
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Getting baseline memory usage...");
-            var baseline = await _helper.GetMetrics();
+            var baseline = await GetProcessMetrics();
             long baselineMemory = baseline.PrivateBytes;
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Baseline memory usage: {baselineMemory} bytes");
 
@@ -54,7 +56,7 @@ namespace DiagnosticScenarios.Tests
             Assert.That(content, Does.Contain("Exception of type 'System.OutOfMemoryException' was thrown"), "Response should contain - Exception of type 'System.OutOfMemoryException' was thrown");
 
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Getting memory usage after scenario...");
-            var after = await _helper.GetMetrics();
+            var after = await GetProcessMetrics();
             long afterMemory = after.PrivateBytes;
             TestContext.Progress.WriteLine($"[{DateTime.UtcNow}] Memory usage after scenario: {afterMemory} bytes");
 
