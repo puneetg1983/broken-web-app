@@ -37,3 +37,4 @@ Before running `setup.ps1`, keep the following information handy:
 3. Copy the values for `MANAGED_IDENTITY_CLIENTID`, `SUBSCRIPTIONID`, `TENANTID`, and `RESOURCE_GROUP_NAME` from the script output and add them as GitHub repository secrets (Settings → Secrets and variables → Actions → New repository secret).
 
 For details on different scenarios, see [scenarios.md](scenarios.md). 
+
