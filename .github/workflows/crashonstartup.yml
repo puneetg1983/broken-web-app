@@ -78,6 +78,13 @@ jobs:
     - name: List folder structure for debugging
       run: Get-ChildItem -Recurse
 
+    - name: Deploy Log Analytics Workspace
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
+        resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
+        template: ./infra/loganalytics.bicep
+
     - name: Deploy Bicep (Web App & App Service Plan)
       uses: azure/arm-deploy@v1
       with:
