@@ -1,8 +1,8 @@
-param workspaceName string = 'broken-webapps-appinsights-workspace'
+param logAnalyticsName string
 var location = resourceGroup().location
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
-  name: workspaceName
+  name: logAnalyticsName
   location: location
   properties: {
     sku: {

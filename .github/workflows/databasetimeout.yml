@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Deploy - DB Timeout App
+name: Deploy - Database Timeout App
 
 on:
   push:
@@ -21,6 +21,7 @@ env:
   CONFIGURATION: 'Release'
   SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
   RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
+  LOG_ANALYTICS_NAME: broken-webapp-aspnet-${{ github.actor }}
 
 jobs:
   build:
@@ -85,6 +86,8 @@ jobs:
         subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
         template: ./infra/loganalytics.bicep
+        parameters: logAnalyticsName=${{ env.LOG_ANALYTICS_NAME }}
+        deploymentName: loganalytics-databasetimeout-${{ github.run_number }}
 
     - name: Deploy Bicep (Web App & App Service Plan)
       uses: azure/arm-deploy@v1

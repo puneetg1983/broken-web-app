@@ -16,11 +16,12 @@ concurrency:
 
 env:
   APP_SERVICE_NAME: broken-webapp-aspnet-highcpu-${{ github.actor }}
-  APP_SERVICE_PLAN_NAME: broken-webapp-aspnet-highcpu-${{ github.actor }}
+  APP_SERVICE_PLAN_NAME: broken-webapp-aspnet-common-${{ github.actor }}
   WEBAPP_URL: https://broken-webapp-aspnet-highcpu-${{ github.actor }}.azurewebsites.net
   CONFIGURATION: 'Release'
   SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
   RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
+  LOG_ANALYTICS_NAME: broken-webapp-aspnet-${{ github.actor }}
 
 jobs:
   build:
@@ -85,6 +86,8 @@ jobs:
         subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
         template: ./infra/loganalytics.bicep
+        parameters: logAnalyticsName=${{ env.LOG_ANALYTICS_NAME }}
+        deploymentName: loganalytics-highcpu-${{ github.run_number }}
 
     - name: Deploy Bicep (Web App & App Service Plan)
       uses: azure/arm-deploy@v1
