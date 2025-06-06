@@ -1,10 +1,10 @@
 param appServiceName string
 param appServicePlanName string
-param appInsightsName string = '${appServiceName}-insights'
-param logAnalyticsName string = 'broken-webapps-appinsights-workspace'
+param logAnalyticsName string
 
 var location = resourceGroup().location
 var webAppUrl = 'https://${webApp.properties.defaultHostName}'
+var appInsightsName = '${appServiceName}-insights'
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: logAnalyticsName

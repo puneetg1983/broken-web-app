@@ -86,9 +86,8 @@ jobs:
         subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
         template: ./infra/loganalytics.bicep
+        parameters: logAnalyticsName=${{ env.LOG_ANALYTICS_NAME }}
         deploymentName: loganalytics-highconnections-${{ github.run_number }}
-        failOnStdErr: false
-        deploymentMode: Incremental
 
     - name: Deploy Bicep (Web App & App Service Plan)
       uses: azure/arm-deploy@v1
