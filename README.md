@@ -47,16 +47,18 @@ Before running `setup.ps1`, keep the following information handy:
 
    Note: If you're not already authenticated with GitHub CLI, the script will prompt you to log in during the process.
 
-4. To trigger GitHub Actions workflows, run the trigger script in PowerShell: 
-      ```
-      Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/puneetg1983/broken-web-app/refs/heads/main/trigger-workflows.ps1' -OutFile 'trigger-workflows.ps1'
-      .\trigger-workflows.ps1
-      ```
-    The trigger script will:
-    - Find all available workflows in your repository
-    - Let you choose between triggering all workflows or selecting specific ones
-    - Show you the progress of triggered workflows
-    - You can run this script anytime to trigger workflows or check their status
+## Trigger GitHub Actions workflows
+
+To trigger GitHub Actions workflows, run the trigger script in PowerShell:
+   ```
+   Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/puneetg1983/broken-web-app/refs/heads/main/trigger-workflows.ps1' -OutFile 'trigger-workflows.ps1'
+   .\trigger-workflows.ps1
+   ```
+The trigger script will:
+- Find all available workflows in your repository
+- Let you choose between triggering all workflows or selecting specific ones
+- Show you the progress of triggered workflows
+- You can run this script anytime to trigger workflows or check their status
 
 ## Scenarios
 
