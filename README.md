@@ -9,10 +9,15 @@ This codebase provides a collection of intentionally broken or problematic web a
 
 ## What does setup.ps1 do?
 The `setup.ps1` PowerShell script automates the following:
+- Checks and installs required tools if not present:
+  - WinGet (Windows Package Manager)
+  - Azure CLI (az)
+  - GitHub CLI (gh)
 - Ensures your Azure resource group exists (creates it if needed)
 - Ensures a managed identity exists (creates it if needed)
 - Sets up a federated credential for GitHub Actions OIDC
 - Assigns the Owner role to the managed identity on the resource group
+- Automatically configures GitHub repository secrets using GitHub CLI
 
 ## Prerequisites
 Before running `setup.ps1`, keep the following information handy:
@@ -20,6 +25,8 @@ Before running `setup.ps1`, keep the following information handy:
 - The name of your Azure Resource Group (will be created if not existing)
 - The name you want for your Managed Identity (will be created if not existing)
 - Your cloned GitHub repo name (e.g. yourgithubaccount/broken-web-app)
+
+Note: The script will automatically install WinGet, Azure CLI, and GitHub CLI if they're not present on your system. You'll need administrator privileges for these installations.
 
 ## Getting Started
 1. Fork this repository:
@@ -34,7 +41,26 @@ Before running `setup.ps1`, keep the following information handy:
    .\setup.ps1
    ```
 
-3. Copy the values for `MANAGED_IDENTITY_CLIENTID`, `SUBSCRIPTIONID`, `TENANTID`, and `RESOURCE_GROUP_NAME` from the script output and add them as GitHub repository secrets (Settings → Secrets and variables → Actions → New repository secret).
+3. The script will:
+   - Show you what actions it will perform and ask for your consent
+   - Install any missing required tools (WinGet, Azure CLI, GitHub CLI)
+   - Prompt you for necessary Azure information
+   - Ask for your GitHub repository URL
+   - Automatically set up all required GitHub secrets using GitHub CLI
+
+Note: If you're not already authenticated with GitHub CLI, the script will prompt you to log in during the process.
+
+4. To trigger GitHub Actions workflows, run the trigger script in PowerShell:
+   ```powershell
+   Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/puneetg1983/broken-web-app/refs/heads/main/trigger-workflows.ps1' -OutFile 'trigger-workflows.ps1'
+   .\trigger-workflows.ps1
+   ```
+
+The trigger script will:
+- Find all available workflows in your repository
+- Let you choose between triggering all workflows or selecting specific ones
+- Show you the progress of triggered workflows
+- You can run this script anytime to trigger workflows or check their status
 
 For details on different scenarios, see [scenarios.md](scenarios.md). 
 
