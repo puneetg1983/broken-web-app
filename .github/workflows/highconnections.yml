@@ -21,6 +21,7 @@ env:
   CONFIGURATION: 'Release'
   SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
   RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
+  LOG_ANALYTICS_NAME: broken-webapp-aspnet-${{ github.actor }}
 
 jobs:
   build:
@@ -95,7 +96,7 @@ jobs:
         subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
         template: ./infra/highconnections.bicep
-        parameters: appServiceName=${{ env.APP_SERVICE_NAME }} appServicePlanName=${{ env.APP_SERVICE_PLAN_NAME }}
+        parameters: appServiceName=${{ env.APP_SERVICE_NAME }} appServicePlanName=${{ env.APP_SERVICE_PLAN_NAME }} logAnalyticsName=${{ env.LOG_ANALYTICS_NAME }}
 
     - name: Restart Web App to recover from previous deployment
       run: |

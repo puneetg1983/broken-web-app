@@ -95,7 +95,7 @@ jobs:
         subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
         template: ./infra/deadlock.bicep
-        parameters: appServiceName=${{ env.APP_SERVICE_NAME }} appServicePlanName=${{ env.APP_SERVICE_PLAN_NAME }}
+        parameters: appServiceName=${{ env.APP_SERVICE_NAME }} appServicePlanName=${{ env.APP_SERVICE_PLAN_NAME }} logAnalyticsName=${{ env.LOG_ANALYTICS_NAME }}
 
     - name: Deploy to Azure Web App
       id: deploy-to-webapp

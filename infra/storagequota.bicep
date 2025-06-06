@@ -1,13 +1,14 @@
 @description('Deploys a broken web app scenario for storage quota')
 param appServiceName string
 param appServicePlanName string
-param workspaceName string = 'broken-webapps-appinsights-workspace'
+param appInsightsName string = '${appServiceName}-insights'
+param logAnalyticsName string = 'broken-webapps-appinsights-workspace'
 
 var location = resourceGroup().location
 var webAppUrl = 'https://${webApp.properties.defaultHostName}'
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
-  name: workspaceName
+  name: logAnalyticsName
 }
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
@@ -20,6 +21,16 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   kind: 'windows'
   properties: {
     reserved: false
+  }
+}
+
+resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: appInsightsName
+  location: location
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+    WorkspaceResourceId: logAnalyticsWorkspace.id
   }
 }
 
@@ -66,16 +77,6 @@ resource webApp 'Microsoft.Web/sites@2022-03-01' = {
   }
   identity: {
     type: 'SystemAssigned'
-  }
-}
-
-resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
-  name: '${appServiceName}-insights'
-  location: location
-  kind: 'web'
-  properties: {
-    Application_Type: 'web'
-    WorkspaceResourceId: logAnalyticsWorkspace.id
   }
 }
 
