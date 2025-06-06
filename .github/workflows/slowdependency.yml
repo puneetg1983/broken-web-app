@@ -1,7 +1,0 @@
-- name: Deploy Log Analytics Workspace
-  uses: azure/arm-deploy@v1
-  with:
-    subscriptionId: ${{ env.SUBSCRIPTION_ID }}
-    resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
-    template: ./infra/loganalytics.bicep
-    deploymentName: loganalytics-slowdependency-${{ github.run_number }} 
