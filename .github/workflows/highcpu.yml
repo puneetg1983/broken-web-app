@@ -16,7 +16,7 @@ concurrency:
 
 env:
   APP_SERVICE_NAME: broken-webapp-aspnet-highcpu-${{ github.actor }}
-  APP_SERVICE_PLAN_NAME: broken-webapp-aspnet-common-${{ github.actor }}
+  APP_SERVICE_PLAN_NAME: broken-webapp-aspnet-highcpu-${{ github.actor }}
   WEBAPP_URL: https://broken-webapp-aspnet-highcpu-${{ github.actor }}.azurewebsites.net
   CONFIGURATION: 'Release'
   SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
