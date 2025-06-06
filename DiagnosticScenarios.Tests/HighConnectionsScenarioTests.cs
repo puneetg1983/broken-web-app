@@ -17,6 +17,7 @@ namespace DiagnosticScenarios.Tests
 
         private readonly string _baseUrl;
         private readonly HttpClient _httpClient;
+        private ProcessMetricsHelper _helper;
 
         public HighConnectionsScenarioTests()
         {
@@ -28,6 +29,7 @@ namespace DiagnosticScenarios.Tests
                 throw new Exception("WEBAPP_URL environment variable is not set");
             _httpClient = new HttpClient();
             _httpClient.DefaultRequestHeaders.Add("User-Agent", "DiagnosticScenarios.Tests");
+            _helper = new ProcessMetricsHelper(_baseUrl);
         }
 
         [OneTimeSetUp]
@@ -41,6 +43,7 @@ namespace DiagnosticScenarios.Tests
         public void Cleanup()
         {
             _httpClient?.Dispose();
+            _helper?.Dispose();
         }
 
         [Test]
@@ -48,6 +51,10 @@ namespace DiagnosticScenarios.Tests
         {
             TestContext.Progress.WriteLine("Starting HighConnectionsScenario_ShouldIncreaseConnectionCount test");
             TestContext.Progress.WriteLine($"Using base URL: {_baseUrl}");
+
+            // Restart the web app to ensure a clean state
+            TestContext.Progress.WriteLine("Restarting web app to ensure clean state...");
+            await _helper.RestartWebApp();
 
             // Get initial metrics
             TestContext.Progress.WriteLine("Getting initial metrics...");
@@ -61,15 +68,21 @@ namespace DiagnosticScenarios.Tests
             TestContext.Progress.WriteLine($"Initial page response status: {response.StatusCode}");
             Assert.That(response.IsSuccessStatusCode, Is.True, "Failed to get the initial page");
 
-            // Now trigger the actual scenario
-            TestContext.Progress.WriteLine("Triggering high connections scenario (HighConnections1Actual.aspx)...");
-            response = await _httpClient.GetAsync($"{_baseUrl}/Scenarios/HighConnections/HighConnections1Actual.aspx");
-            TestContext.Progress.WriteLine($"Scenario page response status: {response.StatusCode}");
-            Assert.That(response.IsSuccessStatusCode, Is.True, "Failed to trigger high connections scenario");
+            // Make multiple calls to trigger the scenario
+            const int numberOfCalls = 5;
+            TestContext.Progress.WriteLine($"Making {numberOfCalls} calls to HighConnections1Actual.aspx...");
+            
+            for (int i = 0; i < numberOfCalls; i++)
+            {
+                TestContext.Progress.WriteLine($"Making call {i + 1} of {numberOfCalls}...");
+                response = await _httpClient.GetAsync($"{_baseUrl}/Scenarios/HighConnections/HighConnections1Actual.aspx");
+                TestContext.Progress.WriteLine($"Call {i + 1} response status: {response.StatusCode}");
+                Assert.That(response.IsSuccessStatusCode, Is.True, $"Failed to trigger high connections scenario on call {i + 1}");
+            }
 
             // Wait for connections to be established
-            TestContext.Progress.WriteLine("Waiting 10 seconds for connections to be established...");
-            await Task.Delay(TimeSpan.FromSeconds(10));
+            TestContext.Progress.WriteLine("Waiting 30 seconds for connections to be established...");
+            await Task.Delay(TimeSpan.FromSeconds(30));
 
             // Get metrics after scenario
             TestContext.Progress.WriteLine("Getting metrics after scenario...");
