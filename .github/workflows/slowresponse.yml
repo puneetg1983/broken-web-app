@@ -16,6 +16,7 @@ concurrency:
 
 env:
   APP_SERVICE_NAME: broken-webapp-aspnet-slowresponse-${{ github.actor }}
+  APP_SERVICE_PLAN_NAME: broken-webapp-aspnet-common-${{ github.actor }}
   WEBAPP_URL: https://broken-webapp-aspnet-slowresponse-${{ github.actor }}.azurewebsites.net
   CONFIGURATION: 'Release'
   SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
@@ -92,7 +93,7 @@ jobs:
         subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
         template: ./infra/slowresponse.bicep
-        parameters: appServiceName=${{ env.APP_SERVICE_NAME }}
+        parameters: appServiceName=${{ env.APP_SERVICE_NAME }} appServicePlanName=${{ env.APP_SERVICE_PLAN_NAME }}
 
     - name: Deploy to Azure Web App
       id: deploy-to-webapp

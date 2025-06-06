@@ -1,7 +1,7 @@
 param appServiceName string
+param appServicePlanName string
 param workspaceName string = 'broken-webapps-appinsights-workspace'
 
-var appServicePlanName = appServiceName
 var location = resourceGroup().location
 var webAppUrl = 'https://${webApp.properties.defaultHostName}'
 

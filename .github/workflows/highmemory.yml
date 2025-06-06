@@ -16,6 +16,7 @@ concurrency:
 
 env:
   APP_SERVICE_NAME: broken-webapp-aspnet-highmemory-${{ github.actor }}
+  APP_SERVICE_PLAN_NAME: broken-webapp-aspnet-highmemory-${{ github.actor }}
   WEBAPP_URL: https://broken-webapp-aspnet-highmemory-${{ github.actor }}.azurewebsites.net
   CONFIGURATION: 'Release'
   SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
@@ -91,7 +92,7 @@ jobs:
         subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
         template: ./infra/highmemory.bicep
-        parameters: appServiceName=${{ env.APP_SERVICE_NAME }}
+        parameters: appServiceName=${{ env.APP_SERVICE_NAME }} appServicePlanName=${{ env.APP_SERVICE_PLAN_NAME }}
 
     - name: Restart Web App to recover from previous deployment
       run: |
