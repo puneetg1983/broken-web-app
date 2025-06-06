@@ -318,7 +318,10 @@ Write-Host "Resource group ensured, managed identity ensured, federated credenti
 # Inform user about the trigger-workflows script
 Write-Host ""
 Write-Host "=============================================================="
-Write-Host "To trigger GitHub Actions workflows and start the deployment process:" -ForegroundColor Cyan
-Write-Host "Run the trigger-workflows.ps1 script in this directory." -ForegroundColor Cyan
+Write-Host "To trigger GitHub Actions workflows and start the deployment process, run the following commands in PowerShell:" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "    Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/puneetg1983/broken-web-app/refs/heads/main/trigger-workflows.ps1' -OutFile 'trigger-workflows.ps1'" -ForegroundColor Green
+Write-Host "    .\trigger-workflows.ps1" -ForegroundColor Green
+Write-Host ""
 Write-Host "This script will help you trigger all or specific workflows." -ForegroundColor Cyan
 Write-Host "==============================================================" 
