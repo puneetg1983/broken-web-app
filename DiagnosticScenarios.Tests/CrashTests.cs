@@ -48,7 +48,7 @@ namespace DiagnosticScenarios.Tests
             await _helper.TriggerScenarioWithResponse("/Scenarios/Crash/Crash1Actual.aspx");
 
             // Wait for process to restart
-            await Task.Delay(TimeSpan.FromSeconds(10));
+            await Task.Delay(TimeSpan.FromSeconds(60));
 
             // Get new process ID
             var newMetrics = await GetProcessMetrics();
@@ -75,7 +75,7 @@ namespace DiagnosticScenarios.Tests
             await _helper.TriggerScenarioWithResponse("/Scenarios/Crash/Crash2Actual.aspx");
 
             // Wait for process to restart
-            await Task.Delay(TimeSpan.FromSeconds(10));
+            await Task.Delay(TimeSpan.FromSeconds(60));
 
             // Get new process ID
             var newMetrics = await GetProcessMetrics();
