@@ -37,7 +37,7 @@ namespace DiagnosticScenarios.Tests
 
         protected async Task<ProcessMetrics> GetProcessMetrics()
         {
-            const int maxRetries = 5;
+            const int maxRetries = 10;
             const int retryDelaySeconds = 10;
 
             for (int attempt = 1; attempt <= maxRetries; attempt++)
