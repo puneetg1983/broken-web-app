@@ -109,6 +109,23 @@ if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
     Write-Host "GitHub CLI is already installed." -ForegroundColor Green
 }
 
+# Check Azure CLI authentication and login if needed
+Write-Host "Checking Azure CLI authentication status..." -ForegroundColor Cyan
+try {
+    $accountInfo = az account show 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "You are not logged into Azure CLI. Please log in..." -ForegroundColor Yellow
+        az login --scope https://management.azure.com/.default
+        if ($LASTEXITCODE -ne 0) { Exit-OnError 'Failed to log into Azure CLI.' }
+        Write-Host "Successfully logged into Azure CLI." -ForegroundColor Green
+    } else {
+        Write-Host "Already logged into Azure CLI." -ForegroundColor Green
+    }
+} catch {
+    Write-Host "Error checking Azure CLI authentication. Please ensure Azure CLI is properly installed." -ForegroundColor Red
+    exit 1
+}
+
 # Prompt for required parameters
 $SUBSCRIPTION_ID = Read-Host "Enter your Azure Subscription ID"
 $RESOURCE_GROUP = Read-Host "Enter your Resource Group name (will be created if not existing)"
@@ -314,6 +331,27 @@ try {
 Write-Host "All GitHub secrets have been set successfully!" -ForegroundColor Green
 Write-Host ""
 Write-Host "Resource group ensured, managed identity ensured, federated credential created, Owner role assigned to the managed identity, and GitHub secrets configured." 
+
+# Enable GitHub Actions workflows
+Write-Host ""
+Write-Host "=============================================================="
+Write-Host "Enabling GitHub Actions workflows..." -ForegroundColor Cyan
+Write-Host "=============================================================="
+
+try {
+    # Enable Actions for the repository
+    Write-Host "Enabling GitHub Actions for the repository..."
+    gh api repos/$REPO_NAME/actions/permissions --method PUT --field enabled=true
+    if ($LASTEXITCODE -ne 0) { 
+        Write-Host "Warning: Could not enable GitHub Actions. This might be due to repository settings or permissions." -ForegroundColor Yellow
+        Write-Host "Please manually enable GitHub Actions in your repository settings if needed." -ForegroundColor Yellow
+    } else {
+        Write-Host "GitHub Actions enabled successfully!" -ForegroundColor Green
+    }
+} catch {
+    Write-Host "Warning: Could not enable GitHub Actions. This might be due to repository settings or permissions." -ForegroundColor Yellow
+    Write-Host "Please manually enable GitHub Actions in your repository settings if needed." -ForegroundColor Yellow
+}
 
 # Inform user about the trigger-workflows script
 Write-Host ""
