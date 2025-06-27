@@ -1,4 +1,4 @@
-namespace DiagnosticScenariosCore.Web.Models
+namespace DiagnosticScenarios.Web.Models
 {
     public class ErrorViewModel
     {

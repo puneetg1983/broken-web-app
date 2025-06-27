@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace DiagnosticScenariosCore.Web.Controllers
+namespace DiagnosticScenarios.Web.Controllers
 {
     public class ScenariosController : Controller
     {

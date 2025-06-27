@@ -1,4 +1,4 @@
-namespace DiagnosticScenariosCore.Web
+namespace DiagnosticScenarios.Web
 {
     public class Program
     {

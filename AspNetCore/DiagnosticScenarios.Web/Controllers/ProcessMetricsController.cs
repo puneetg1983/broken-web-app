@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Collections;
 using System.Net;
 
-namespace DiagnosticScenariosCore.Web.Controllers
+namespace DiagnosticScenarios.Web.Controllers
 {
     public class ProcessMetricsController : Controller
     {
