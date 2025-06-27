@@ -15,13 +15,13 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  APP_SERVICE_NAME: broken-webapp-aspnetcore-slowresponse-${{ github.actor }}
-  APP_SERVICE_PLAN_NAME: broken-webapp-aspnetcore-common2-${{ github.actor }}
-  WEBAPP_URL: https://broken-webapp-aspnetcore-slowresponse-${{ github.actor }}.azurewebsites.net
+  APP_SERVICE_NAME: broken-core-slowresponse-${{ github.actor }}
+  APP_SERVICE_PLAN_NAME: broken-core-common2-${{ github.actor }}
+  WEBAPP_URL: https://broken-core-slowresponse-${{ github.actor }}.azurewebsites.net
   CONFIGURATION: 'Release'
   SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
   RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
-  LOG_ANALYTICS_NAME: broken-webapp-aspnetcore-${{ github.actor }}
+  LOG_ANALYTICS_NAME: broken-core-${{ github.actor }}
 
 jobs:
   build:
