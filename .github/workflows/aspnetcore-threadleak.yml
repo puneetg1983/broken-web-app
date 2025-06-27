@@ -1,0 +1,104 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: ASP.NET Core - Thread Leak App
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# Add concurrency configuration to ensure only one workflow runs at a time
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  APP_SERVICE_NAME: broken-webapp-aspnetcore-threadleak-${{ github.actor }}
+  APP_SERVICE_PLAN_NAME: broken-webapp-aspnetcore-common2-${{ github.actor }}
+  WEBAPP_URL: https://broken-webapp-aspnetcore-threadleak-${{ github.actor }}.azurewebsites.net
+  CONFIGURATION: 'Release'
+  SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
+  RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
+  LOG_ANALYTICS_NAME: broken-webapp-aspnetcore-${{ github.actor }}
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: read #This is required for actions/checkout
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore AspNetCore/DiagnosticScenarios.sln
+
+    - name: Build
+      run: dotnet build AspNetCore/DiagnosticScenarios.sln --configuration Release --no-restore
+
+    - name: Publish
+      run: dotnet publish AspNetCore/DiagnosticScenarios.Web/DiagnosticScenarios.Web.csproj --configuration Release --output ./published --no-build
+
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v4
+      with:
+        name: ASP-app
+        path: './published/**'
+
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    
+    permissions:
+      id-token: write #This is required for requesting the JWT
+      contents: read #This is required for actions/checkout
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download artifact from build job
+      uses: actions/download-artifact@v4
+      with:
+        name: ASP-app
+    
+    - name: Login to Azure
+      uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.MANAGED_IDENTITY_CLIENTID }}
+        tenant-id: ${{ secrets.TENANTID }}
+        subscription-id: ${{ secrets.SUBSCRIPTIONID }}
+
+    - name: List folder structure for debugging
+      run: Get-ChildItem -Recurse
+
+    - name: Deploy Log Analytics Workspace
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
+        resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
+        template: ./AspNetCore/infra/loganalytics.bicep
+        parameters: logAnalyticsName=${{ env.LOG_ANALYTICS_NAME }}
+        deploymentName: loganalytics-threadleak-${{ github.run_number }}
+
+    - name: Deploy Bicep (Web App & App Service Plan)
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
+        resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
+        template: ./AspNetCore/infra/threadleak.bicep
+        parameters: appServiceName=${{ env.APP_SERVICE_NAME }} appServicePlanName=${{ env.APP_SERVICE_PLAN_NAME }} logAnalyticsName=${{ env.LOG_ANALYTICS_NAME }}
+
+    - name: Deploy to Azure Web App
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: '${{ env.APP_SERVICE_NAME }}'
+        slot-name: 'Production'
+        package: . 
