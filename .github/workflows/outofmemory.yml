@@ -46,7 +46,7 @@ jobs:
         Write-Host "Building solution..."
         msbuild AspNetFramework\DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore
         Write-Host "Publishing web project..."
-        msbuild DiagnosticScenarios.Web\DiagnosticScenarios.Web.csproj /p:Configuration=Release /p:Platform="Any CPU" /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
+        msbuild AspNetFramework\DiagnosticScenarios.Web\DiagnosticScenarios.Web.csproj /p:Configuration=Release /p:Platform="Any CPU" /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v4
