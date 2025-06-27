@@ -39,12 +39,12 @@ jobs:
       uses: NuGet/setup-nuget@v1.0.5
 
     - name: Restore NuGet packages
-      run: msbuild DiagnosticScenarios.sln /t:restore /p:RestorePackagesConfig=true
+      run: msbuild AspNetFramework\DiagnosticScenarios.sln /t:restore /p:RestorePackagesConfig=true
 
     - name: Publish to folder
       run: |
         Write-Host "Building solution..."
-        msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore
+        msbuild AspNetFramework\DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore
         Write-Host "Publishing web project..."
         msbuild DiagnosticScenarios.Web\DiagnosticScenarios.Web.csproj /p:Configuration=Release /p:Platform="Any CPU" /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
 
@@ -85,7 +85,7 @@ jobs:
       with:
         subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
-        template: ./infra/loganalytics.bicep
+        template: ./AspNetFramework/infra/loganalytics.bicep
         parameters: logAnalyticsName=${{ env.LOG_ANALYTICS_NAME }}
         deploymentName: loganalytics-crashonstartup-${{ github.run_number }}
 
@@ -94,7 +94,7 @@ jobs:
       with:
         subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
-        template: ./infra/crashonstartup.bicep
+        template: ./AspNetFramework/infra/crashonstartup.bicep
         parameters: appServiceName=${{ env.APP_SERVICE_NAME }} appServicePlanName=${{ env.APP_SERVICE_PLAN_NAME }} logAnalyticsName=${{ env.LOG_ANALYTICS_NAME }}
 
     - name: Deploy to Azure Web App
@@ -118,12 +118,12 @@ jobs:
       uses: NuGet/setup-nuget@v1.0.5
 
     - name: Restore NuGet packages
-      run: msbuild DiagnosticScenarios.sln /t:restore /p:RestorePackagesConfig=true
+      run: msbuild AspNetFramework\DiagnosticScenarios.sln /t:restore /p:RestorePackagesConfig=true
 
     - name: Build Solution in Release Mode
       run: |
         Write-Host "Building solution in Release mode..."
-        msbuild DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore /p:OutputPath="bin\Release"
+        msbuild AspNetFramework\DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore /p:OutputPath="bin\Release"
 
     - name: Install NUnit Console Runner
       run: |
@@ -134,7 +134,7 @@ jobs:
       run: |
         Write-Host "Running tests..."
         $nunitPath = Join-Path $env:GITHUB_WORKSPACE "tools\NUnit.ConsoleRunner.3.16.3\tools\nunit3-console.exe"
-        $testDll = Join-Path $env:GITHUB_WORKSPACE "DiagnosticScenarios.Tests\bin\Release\DiagnosticScenarios.Tests.dll"
+        $testDll = Join-Path $env:GITHUB_WORKSPACE "AspNetFramework\DiagnosticScenarios.Tests\bin\Release\DiagnosticScenarios.Tests.dll"
         & $nunitPath $testDll --framework=net-4.8 --where "cat == CrashOnStartup"
       env:
         WEBAPP_URL: ${{ env.WEBAPP_URL }} 
