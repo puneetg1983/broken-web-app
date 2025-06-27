@@ -1,0 +1,72 @@
+@{
+    ViewData["Title"] = "Crash Scenario 1 - Unhandled Exception";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h2>Crash Scenario 1 - Unhandled Exception</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <strong>Warning:</strong> This scenario will crash the application by throwing an unhandled exception in a background thread.
+                    </div>
+                    
+                    <p class="description">
+                        This scenario demonstrates an unhandled exception that will crash the application.
+                        Clicking the button will throw an unhandled exception in a background thread,
+                        which will cause the application to crash.
+                    </p>
+                    
+                    <div class="text-center mt-4">
+                        <a href="@Url.Action("Crash1Actual", "Scenarios")" class="btn btn-danger btn-lg">
+                            <i class="fas fa-exclamation-triangle"></i> Crash Application
+                        </a>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h5>What happens:</h5>
+                        <ul>
+                            <li>A background thread is started</li>
+                            <li>The thread throws an unhandled exception</li>
+                            <li>The application crashes due to the unhandled exception</li>
+                            <li>This simulates real-world scenarios where exceptions are not properly handled</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Scenarios
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .description {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #666;
+        margin-bottom: 20px;
+    }
+    
+    .card {
+        border: none;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        margin-top: 20px;
+    }
+    
+    .card-header {
+        border-bottom: none;
+    }
+    
+    .btn-lg {
+        padding: 15px 30px;
+        font-size: 18px;
+    }
+</style> 

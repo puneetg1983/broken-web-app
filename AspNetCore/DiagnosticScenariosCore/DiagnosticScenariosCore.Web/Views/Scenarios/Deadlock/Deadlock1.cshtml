@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Deadlock Scenario 1";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h2>Deadlock Scenario 1</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-dark">
+                        <strong>Warning:</strong> This scenario will simulate a deadlock by locking resources in a specific order.
+                    </div>
+                    <p class="description">
+                        This scenario demonstrates a deadlock. Clicking the button will start two threads that lock resources in a way that causes a deadlock.
+                    </p>
+                    <div class="text-center mt-4">
+                        <a href="@Url.Action("Deadlock1Actual", "Scenarios")" class="btn btn-dark btn-lg">
+                            <i class="fas fa-sync-alt"></i> Start Deadlock
+                        </a>
+                    </div>
+                    <div class="mt-4">
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Scenarios
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Out of Memory Scenario 1";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h2>Out of Memory Scenario 1</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-dark">
+                        <strong>Warning:</strong> This scenario will simulate an out of memory condition by allocating large amounts of memory.
+                    </div>
+                    <p class="description">
+                        This scenario demonstrates an out of memory condition. Clicking the button will cause the application to allocate memory until it runs out of available memory.
+                    </p>
+                    <div class="text-center mt-4">
+                        <a href="@Url.Action("OutOfMemory1Actual", "Scenarios")" class="btn btn-dark btn-lg">
+                            <i class="fas fa-memory"></i> Start Out of Memory
+                        </a>
+                    </div>
+                    <div class="mt-4">
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Scenarios
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

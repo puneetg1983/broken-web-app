@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "High Memory Scenario 3";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h2>High Memory Scenario 3</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <strong>Warning:</strong> This scenario will simulate high memory usage by allocating large amounts of memory.
+                    </div>
+                    <p class="description">
+                        This scenario demonstrates high memory usage. Clicking the button will start allocating memory until the process is close to out of memory.
+                    </p>
+                    <div class="text-center mt-4">
+                        <a href="@Url.Action("HighMemory3Actual", "Scenarios")" class="btn btn-warning btn-lg">
+                            <i class="fas fa-memory"></i> Start High Memory
+                        </a>
+                    </div>
+                    <div class="mt-4">
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Scenarios
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

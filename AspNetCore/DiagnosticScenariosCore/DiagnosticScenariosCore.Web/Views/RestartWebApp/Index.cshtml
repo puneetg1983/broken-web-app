@@ -1,0 +1,95 @@
+@{
+    ViewData["Title"] = "Restart Web Application";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="mb-0">Restart Web Application</h1>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h5 class="alert-heading">⚠️ Warning</h5>
+                        <p class="mb-0">
+                            Clicking the restart button will stop the current application. 
+                            The application will need to be restarted manually or through your hosting environment.
+                        </p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button id="restartBtn" class="btn btn-danger btn-lg" onclick="restartApplication()">
+                            <i class="fas fa-redo"></i> Restart Application
+                        </button>
+                    </div>
+                    
+                    <div id="status" class="mt-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function restartApplication() {
+        const button = document.getElementById('restartBtn');
+        const status = document.getElementById('status');
+        
+        // Disable button and show loading state
+        button.disabled = true;
+        button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Restarting...';
+        
+        // Clear previous status
+        status.innerHTML = '';
+        
+        fetch('/RestartWebApp/api')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    status.innerHTML = `
+                        <div class="alert alert-success">
+                            <h5 class="alert-heading">✅ Restart Initiated</h5>
+                            <p class="mb-0">${data.message}</p>
+                        </div>
+                    `;
+                    
+                    // Show countdown
+                    let countdown = 5;
+                    const countdownInterval = setInterval(() => {
+                        status.innerHTML = `
+                            <div class="alert alert-info">
+                                <h5 class="alert-heading">🔄 Application Restarting</h5>
+                                <p class="mb-0">The application will stop in ${countdown} seconds...</p>
+                            </div>
+                        `;
+                        countdown--;
+                        
+                        if (countdown < 0) {
+                            clearInterval(countdownInterval);
+                            status.innerHTML = `
+                                <div class="alert alert-secondary">
+                                    <h5 class="alert-heading">⏹️ Application Stopped</h5>
+                                    <p class="mb-0">The application has been stopped. Please restart it manually or through your hosting environment.</p>
+                                </div>
+                            `;
+                        }
+                    }, 1000);
+                } else {
+                    throw new Error(data.message || 'Unknown error occurred');
+                }
+            })
+            .catch(error => {
+                status.innerHTML = `
+                    <div class="alert alert-danger">
+                        <h5 class="alert-heading">❌ Error</h5>
+                        <p class="mb-0">Failed to restart application: ${error.message}</p>
+                    </div>
+                `;
+                
+                // Re-enable button
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-redo"></i> Restart Application';
+            });
+    }
+</script> 

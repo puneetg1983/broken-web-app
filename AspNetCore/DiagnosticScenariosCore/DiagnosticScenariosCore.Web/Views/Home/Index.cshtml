@@ -1,0 +1,174 @@
+﻿@{
+    ViewData["Title"] = "Diagnostic Scenarios";
+}
+
+<div class="container">
+    <h1>Diagnostic Scenarios</h1>
+    <p class="lead">Select a scenario to simulate various application issues for testing and diagnostics.</p>
+
+    <!-- System Management Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>System Management</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="@Url.Action("Index", "ProcessMetrics")" class="btn btn-success btn-lg w-100 mb-2">
+                                <i class="fas fa-chart-line"></i> Process Metrics
+                            </a>
+                            <p class="text-muted small">View real-time process information, memory usage, and connection statistics.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="@Url.Action("Index", "RestartWebApp")" class="btn btn-warning btn-lg w-100 mb-2">
+                                <i class="fas fa-redo"></i> Restart Application
+                            </a>
+                            <p class="text-muted small">Safely restart the web application (requires manual restart after stopping).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Crash Scenarios</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><a href="@Url.Action("Crash1", "Scenarios")" class="btn btn-outline-danger btn-sm mb-2">Crash 1 - Unhandled Exception</a></li>
+                        <li><a href="@Url.Action("Crash2", "Scenarios")" class="btn btn-outline-danger btn-sm mb-2">Crash 2 - Division by Zero</a></li>
+                        <li><a href="@Url.Action("StackOverflow1", "Scenarios")" class="btn btn-outline-danger btn-sm mb-2">Stack Overflow</a></li>
+                        <li><a href="@Url.Action("UnhandledException1", "Scenarios")" class="btn btn-outline-danger btn-sm mb-2">Unhandled Exception</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Performance Scenarios</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><a href="@Url.Action("HighCpu1", "Scenarios")" class="btn btn-outline-warning btn-sm mb-2">High CPU 1</a></li>
+                        <li><a href="@Url.Action("HighCpu2", "Scenarios")" class="btn btn-outline-warning btn-sm mb-2">High CPU 2</a></li>
+                        <li><a href="@Url.Action("HighCpu3", "Scenarios")" class="btn btn-outline-warning btn-sm mb-2">High CPU 3</a></li>
+                        <li><a href="@Url.Action("HighMemory1", "Scenarios")" class="btn btn-outline-warning btn-sm mb-2">High Memory 1</a></li>
+                        <li><a href="@Url.Action("HighMemory2", "Scenarios")" class="btn btn-outline-warning btn-sm mb-2">High Memory 2</a></li>
+                        <li><a href="@Url.Action("HighMemory3", "Scenarios")" class="btn btn-outline-warning btn-sm mb-2">High Memory 3</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Connection & Network Scenarios</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><a href="@Url.Action("HighConnections1", "Scenarios")" class="btn btn-outline-info btn-sm mb-2">High Connections</a></li>
+                        <li><a href="@Url.Action("ConnectionPool1", "Scenarios")" class="btn btn-outline-info btn-sm mb-2">Connection Pool 1</a></li>
+                        <li><a href="@Url.Action("ConnectionPool2", "Scenarios")" class="btn btn-outline-info btn-sm mb-2">Connection Pool 2</a></li>
+                        <li><a href="@Url.Action("ConnectionPool3", "Scenarios")" class="btn btn-outline-info btn-sm mb-2">Connection Pool 3</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Error Scenarios</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><a href="@Url.Action("Http500_1", "Scenarios")" class="btn btn-outline-secondary btn-sm mb-2">HTTP 500 - Invalid Operation</a></li>
+                        <li><a href="@Url.Action("Http500_2", "Scenarios")" class="btn btn-outline-secondary btn-sm mb-2">HTTP 500 - Argument Exception</a></li>
+                        <li><a href="@Url.Action("Http500_3", "Scenarios")" class="btn btn-outline-secondary btn-sm mb-2">HTTP 500 - Null Reference</a></li>
+                        <li><a href="@Url.Action("Http500_4", "Scenarios")" class="btn btn-outline-secondary btn-sm mb-2">HTTP 500 - Index Out of Range</a></li>
+                        <li><a href="@Url.Action("MissingDependency1", "Scenarios")" class="btn btn-outline-secondary btn-sm mb-2">Missing Dependency</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Slow Response Scenarios</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><a href="@Url.Action("SlowResponse1", "Scenarios")" class="btn btn-outline-primary btn-sm mb-2">Slow Response 1 (30s)</a></li>
+                        <li><a href="@Url.Action("SlowResponse2", "Scenarios")" class="btn btn-outline-primary btn-sm mb-2">Slow Response 2 (60s)</a></li>
+                        <li><a href="@Url.Action("SlowResponse3", "Scenarios")" class="btn btn-outline-primary btn-sm mb-2">Slow Response 3 (120s)</a></li>
+                        <li><a href="@Url.Action("SlowDatabase1", "Scenarios")" class="btn btn-outline-primary btn-sm mb-2">Slow Database 1</a></li>
+                        <li><a href="@Url.Action("SlowDatabase2", "Scenarios")" class="btn btn-outline-primary btn-sm mb-2">Slow Database 2</a></li>
+                        <li><a href="@Url.Action("SlowDependency1", "Scenarios")" class="btn btn-outline-primary btn-sm mb-2">Slow Dependency 1</a></li>
+                        <li><a href="@Url.Action("SlowDependency2", "Scenarios")" class="btn btn-outline-primary btn-sm mb-2">Slow Dependency 2</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Resource & System Scenarios</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><a href="@Url.Action("Deadlock1", "Scenarios")" class="btn btn-outline-dark btn-sm mb-2">Deadlock</a></li>
+                        <li><a href="@Url.Action("OutOfMemory1", "Scenarios")" class="btn btn-outline-dark btn-sm mb-2">Out of Memory</a></li>
+                        <li><a href="@Url.Action("ThreadLeak1", "Scenarios")" class="btn btn-outline-dark btn-sm mb-2">Thread Leak</a></li>
+                        <li><a href="@Url.Action("StorageQuota1", "Scenarios")" class="btn btn-outline-dark btn-sm mb-2">Storage Quota</a></li>
+                        <li><a href="@Url.Action("RuntimeVersion1", "Scenarios")" class="btn btn-outline-dark btn-sm mb-2">Runtime Version</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #ddd;
+        padding: 15px;
+    }
+    
+    .card-body {
+        padding: 15px;
+    }
+    
+    .btn-sm {
+        width: 100%;
+        text-align: left;
+        margin-bottom: 5px;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+</style>

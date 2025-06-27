@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "High CPU Scenario 1";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h2>High CPU Scenario 1</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <strong>Warning:</strong> This scenario will simulate high CPU usage by running intensive calculations on multiple threads.
+                    </div>
+                    <p class="description">
+                        This scenario demonstrates high CPU usage. Clicking the button will start CPU-intensive operations for 60 seconds.
+                    </p>
+                    <div class="text-center mt-4">
+                        <a href="@Url.Action("HighCpu1Actual", "Scenarios")" class="btn btn-warning btn-lg">
+                            <i class="fas fa-microchip"></i> Start High CPU
+                        </a>
+                    </div>
+                    <div class="mt-4">
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Scenarios
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

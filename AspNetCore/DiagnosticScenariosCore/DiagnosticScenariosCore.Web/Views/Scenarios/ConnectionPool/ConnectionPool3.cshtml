@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Connection Pool Scenario 3";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-info text-dark">
+                    <h2>Connection Pool Scenario 3</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>Info:</strong> This scenario will simulate connection pool exhaustion by opening many connections.
+                    </div>
+                    <p class="description">
+                        This scenario demonstrates connection pool exhaustion. Clicking the button will simulate opening many connections to exhaust the connection pool.
+                    </p>
+                    <div class="text-center mt-4">
+                        <a href="@Url.Action("ConnectionPool3Actual", "Scenarios")" class="btn btn-info btn-lg">
+                            <i class="fas fa-network-wired"></i> Start Connection Pool
+                        </a>
+                    </div>
+                    <div class="mt-4">
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Scenarios
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

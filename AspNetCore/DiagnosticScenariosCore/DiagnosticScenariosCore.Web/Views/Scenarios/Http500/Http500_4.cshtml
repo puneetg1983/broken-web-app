@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "HTTP 500 Scenario 4 - Index Out of Range";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h2>HTTP 500 Scenario 4 - Index Out of Range</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-secondary">
+                        <strong>Warning:</strong> This scenario will throw an IndexOutOfRangeException to simulate an HTTP 500 error.
+                    </div>
+                    <p class="description">
+                        This scenario demonstrates an HTTP 500 error caused by an index out of range exception. Clicking the button will throw an IndexOutOfRangeException.
+                    </p>
+                    <div class="text-center mt-4">
+                        <a href="@Url.Action("Http500_4Actual", "Scenarios")" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-bug"></i> Trigger HTTP 500
+                        </a>
+                    </div>
+                    <div class="mt-4">
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Scenarios
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

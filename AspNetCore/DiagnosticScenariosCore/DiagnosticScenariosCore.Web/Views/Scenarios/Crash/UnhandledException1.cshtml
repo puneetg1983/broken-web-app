@@ -1,0 +1,33 @@
+@{
+    ViewData["Title"] = "Crash Scenario - Unhandled Exception";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h2>Crash Scenario - Unhandled Exception</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <strong>Warning:</strong> This scenario will crash the application by throwing an unhandled exception in a background thread.
+                    </div>
+                    <p class="description">
+                        This scenario demonstrates an unhandled exception crash. Clicking the button will trigger an unhandled exception in a background thread, causing the application to crash.
+                    </p>
+                    <div class="text-center mt-4">
+                        <a href="@Url.Action("UnhandledException1Actual", "Scenarios")" class="btn btn-danger btn-lg">
+                            <i class="fas fa-exclamation-triangle"></i> Trigger Unhandled Exception
+                        </a>
+                    </div>
+                    <div class="mt-4">
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Scenarios
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

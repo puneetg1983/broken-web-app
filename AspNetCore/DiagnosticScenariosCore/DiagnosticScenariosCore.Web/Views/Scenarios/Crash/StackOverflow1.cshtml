@@ -1,0 +1,33 @@
+@{
+    ViewData["Title"] = "Crash Scenario - Stack Overflow";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h2>Crash Scenario - Stack Overflow</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <strong>Warning:</strong> This scenario will crash the application by causing a stack overflow in a background thread.
+                    </div>
+                    <p class="description">
+                        This scenario demonstrates a stack overflow crash. Clicking the button will trigger a stack overflow exception in a background thread, causing the application to crash.
+                    </p>
+                    <div class="text-center mt-4">
+                        <a href="@Url.Action("StackOverflow1Actual", "Scenarios")" class="btn btn-danger btn-lg">
+                            <i class="fas fa-exclamation-triangle"></i> Trigger Stack Overflow
+                        </a>
+                    </div>
+                    <div class="mt-4">
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Scenarios
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

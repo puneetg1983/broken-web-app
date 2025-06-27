@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Slow Response Scenario 2";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2>Slow Response Scenario 2</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-primary">
+                        <strong>Info:</strong> This scenario will simulate a slow response by waiting for 60 seconds.
+                    </div>
+                    <p class="description">
+                        This scenario demonstrates a slow response. Clicking the button will cause the application to wait for 60 seconds before responding.
+                    </p>
+                    <div class="text-center mt-4">
+                        <a href="@Url.Action("SlowResponse2Actual", "Scenarios")" class="btn btn-primary btn-lg">
+                            <i class="fas fa-clock"></i> Start Slow Response
+                        </a>
+                    </div>
+                    <div class="mt-4">
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Scenarios
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
