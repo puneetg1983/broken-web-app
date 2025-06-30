@@ -118,53 +118,13 @@ jobs:
           }
         }
 
-    - name: Deploy to Azure Web App with Retry
+    - name: Deploy to Azure Web App
       id: deploy-to-webapp
-      shell: pwsh
-      run: |
-        Write-Host "Current directory contents:"
-        Get-ChildItem -Recurse | Format-Table Name, FullName
-        
-        Write-Host "Looking for published files..."
-        $publishedPath = $null
-        if (Test-Path "./published") {
-          $publishedPath = "./published"
-        } elseif (Test-Path "./ASP-app") {
-          $publishedPath = "./ASP-app"
-        } elseif (Test-Path "./ASP-app/published") {
-          $publishedPath = "./ASP-app/published"
-        } else {
-          Write-Host "ERROR: Could not find published files in expected locations"
-          Get-ChildItem -Recurse | Format-Table Name, FullName
-          exit 1
-        }
-        
-        Write-Host "Using deployment path: $publishedPath"
-        
-        $maxAttempts = 3
-        $attempt = 1
-        while ($attempt -le $maxAttempts) {
-          Write-Host "Attempt $attempt of $maxAttempts for web app deployment"
-          try {
-            az webapp deploy `
-              --subscription "${{ env.SUBSCRIPTION_ID }}" `
-              --resource-group "${{ env.RESOURCE_GROUP_NAME }}" `
-              --name "${{ env.APP_SERVICE_NAME }}" `
-              --src-path $publishedPath
-            Write-Host "Web app deployment succeeded on attempt $attempt"
-            break
-          }
-          catch {
-            Write-Host "Web app deployment failed on attempt $attempt"
-            if ($attempt -eq $maxAttempts) {
-              Write-Host "All attempts failed. Exiting."
-              exit 1
-            }
-            Write-Host "Waiting 30 seconds before retry..."
-            Start-Sleep -Seconds 30
-            $attempt++
-          }
-        }
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: '${{ env.APP_SERVICE_NAME }}'
+        slot-name: 'Production'
+        package: . 
 
   test:
     runs-on: windows-latest

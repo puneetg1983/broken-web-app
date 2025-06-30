@@ -89,14 +89,34 @@ jobs:
         parameters: logAnalyticsName=${{ env.LOG_ANALYTICS_NAME }}
         deploymentName: loganalytics-http500-${{ github.run_number }}
 
-    - name: Deploy Bicep (Web App & App Service Plan)
-      uses: azure/arm-deploy@v1
-      with:
-        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
-        resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
-        template: ./AspNetFramework/infra/http500.bicep
-        parameters: appServiceName=${{ env.APP_SERVICE_NAME }} appServicePlanName=${{ env.APP_SERVICE_PLAN_NAME }} logAnalyticsName=${{ env.LOG_ANALYTICS_NAME }}
-        deploymentName: http500-deployment-${{ github.run_number }}
+    - name: Deploy Bicep (Web App & App Service Plan) with Retry
+      shell: pwsh
+      run: |
+        $maxAttempts = 3
+        $attempt = 1
+        while ($attempt -le $maxAttempts) {
+          Write-Host "Attempt $attempt of $maxAttempts for Bicep deployment"
+          try {
+            az deployment group create `
+              --subscription "${{ env.SUBSCRIPTION_ID }}" `
+              --resource-group "${{ env.RESOURCE_GROUP_NAME }}" `
+              --template-file "./AspNetFramework/infra/http500.bicep" `
+              --parameters appServiceName="${{ env.APP_SERVICE_NAME }}" appServicePlanName="${{ env.APP_SERVICE_PLAN_NAME }}" logAnalyticsName="${{ env.LOG_ANALYTICS_NAME }}" `
+              --name "http500-deployment-${{ github.run_number }}"
+            Write-Host "Bicep deployment succeeded on attempt $attempt"
+            break
+          }
+          catch {
+            Write-Host "Bicep deployment failed on attempt $attempt"
+            if ($attempt -eq $maxAttempts) {
+              Write-Host "All attempts failed. Exiting."
+              exit 1
+            }
+            Write-Host "Waiting 30 seconds before retry..."
+            Start-Sleep -Seconds 30
+            $attempt++
+          }
+        }
 
     - name: Deploy to Azure Web App
       id: deploy-to-webapp
