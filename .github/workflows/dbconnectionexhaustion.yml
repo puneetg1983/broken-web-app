@@ -122,6 +122,25 @@ jobs:
       id: deploy-to-webapp
       shell: pwsh
       run: |
+        Write-Host "Current directory contents:"
+        Get-ChildItem -Recurse | Format-Table Name, FullName
+        
+        Write-Host "Looking for published files..."
+        $publishedPath = $null
+        if (Test-Path "./published") {
+          $publishedPath = "./published"
+        } elseif (Test-Path "./ASP-app") {
+          $publishedPath = "./ASP-app"
+        } elseif (Test-Path "./ASP-app/published") {
+          $publishedPath = "./ASP-app/published"
+        } else {
+          Write-Host "ERROR: Could not find published files in expected locations"
+          Get-ChildItem -Recurse | Format-Table Name, FullName
+          exit 1
+        }
+        
+        Write-Host "Using deployment path: $publishedPath"
+        
         $maxAttempts = 3
         $attempt = 1
         while ($attempt -le $maxAttempts) {
@@ -131,7 +150,7 @@ jobs:
               --subscription "${{ env.SUBSCRIPTION_ID }}" `
               --resource-group "${{ env.RESOURCE_GROUP_NAME }}" `
               --name "${{ env.APP_SERVICE_NAME }}" `
-              --src-path ./published
+              --src-path $publishedPath
             Write-Host "Web app deployment succeeded on attempt $attempt"
             break
           }
