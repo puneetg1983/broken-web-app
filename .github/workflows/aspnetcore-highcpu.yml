@@ -125,11 +125,11 @@ jobs:
         while ($attempt -le $maxAttempts) {
           Write-Host "Attempt $attempt of $maxAttempts for web app deployment"
           try {
-            az webapp deployment source config-zip `
+            az webapp deploy `
               --subscription "${{ env.SUBSCRIPTION_ID }}" `
               --resource-group "${{ env.RESOURCE_GROUP_NAME }}" `
               --name "${{ env.APP_SERVICE_NAME }}" `
-              --src .
+              --src-path .
             Write-Host "Web app deployment succeeded on attempt $attempt"
             break
           }
