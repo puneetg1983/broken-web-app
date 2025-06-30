@@ -131,7 +131,7 @@ jobs:
               --subscription "${{ env.SUBSCRIPTION_ID }}" `
               --resource-group "${{ env.RESOURCE_GROUP_NAME }}" `
               --name "${{ env.APP_SERVICE_NAME }}" `
-              --src-path .
+              --src-path ./published
             Write-Host "Web app deployment succeeded on attempt $attempt"
             break
           }
