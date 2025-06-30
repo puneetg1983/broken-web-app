@@ -3,7 +3,6 @@ param appServicePlanName string
 param logAnalyticsName string
 
 var location = resourceGroup().location
-var webAppUrl = 'https://${webApp.properties.defaultHostName}'
 var appInsightsName = '${appServiceName}-insights'
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
@@ -75,15 +74,15 @@ resource webApp 'Microsoft.Web/sites@2022-03-01' = {
   }
 }
 
-resource appInsightsWebTest 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appServiceName}-webtest'
+resource appInsightsWebTestCrash1 'Microsoft.Insights/webtests@2022-06-15' = {
+  name: '${appServiceName}-webtest-crash-1'
   location: location
   tags: {
     'hidden-link:${appInsights.id}': 'Resource'
   }
   properties: {
-    SyntheticMonitorId: '${appServiceName}-webtest-default'
-    Name: '${appServiceName}-webtest-default'
+    SyntheticMonitorId: '${appServiceName}-webtest-crash-1'
+    Name: '${appServiceName}-webtest-crash-1'
     Enabled: true
     Frequency: 300
     Timeout: 30
@@ -107,7 +106,7 @@ resource appInsightsWebTest 'Microsoft.Insights/webtests@2022-06-15' = {
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Crash/Crash1.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/Crash1'
     }
     ValidationRules: {
       SSLCheck: true
@@ -116,15 +115,15 @@ resource appInsightsWebTest 'Microsoft.Insights/webtests@2022-06-15' = {
   }
 }
 
-resource appInsightsWebTestActual 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appServiceName}-webtest-actual'
+resource appInsightsWebTestCrash1Actual 'Microsoft.Insights/webtests@2022-06-15' = {
+  name: '${appServiceName}-webtest-crash-1-actual'
   location: location
   tags: {
     'hidden-link:${appInsights.id}': 'Resource'
   }
   properties: {
-    SyntheticMonitorId: '${appServiceName}-webtest-actual'
-    Name: '${appServiceName}-webtest-actual'
+    SyntheticMonitorId: '${appServiceName}-webtest-crash-1-actual'
+    Name: '${appServiceName}-webtest-crash-1-actual'
     Enabled: true
     Frequency: 300
     Timeout: 30
@@ -148,7 +147,7 @@ resource appInsightsWebTestActual 'Microsoft.Insights/webtests@2022-06-15' = {
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Crash/Crash1Actual.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/Crash1Actual'
     }
     ValidationRules: {
       SSLCheck: true
@@ -157,15 +156,15 @@ resource appInsightsWebTestActual 'Microsoft.Insights/webtests@2022-06-15' = {
   }
 }
 
-resource appInsightsWebTest2 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appServiceName}-webtest-2'
+resource appInsightsWebTestCrash2 'Microsoft.Insights/webtests@2022-06-15' = {
+  name: '${appServiceName}-webtest-crash-2'
   location: location
   tags: {
     'hidden-link:${appInsights.id}': 'Resource'
   }
   properties: {
-    SyntheticMonitorId: '${appServiceName}-webtest-2'
-    Name: '${appServiceName}-webtest-2'
+    SyntheticMonitorId: '${appServiceName}-webtest-crash-2'
+    Name: '${appServiceName}-webtest-crash-2'
     Enabled: true
     Frequency: 300
     Timeout: 30
@@ -189,7 +188,7 @@ resource appInsightsWebTest2 'Microsoft.Insights/webtests@2022-06-15' = {
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Crash/Crash2.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/Crash2'
     }
     ValidationRules: {
       SSLCheck: true
@@ -198,7 +197,7 @@ resource appInsightsWebTest2 'Microsoft.Insights/webtests@2022-06-15' = {
   }
 }
 
-resource appInsightsWebTest2Actual 'Microsoft.Insights/webtests@2022-06-15' = {
+resource appInsightsWebTestCrash2Actual 'Microsoft.Insights/webtests@2022-06-15' = {
   name: '${appServiceName}-webtest-crash-2-actual'
   location: location
   tags: {
@@ -230,7 +229,7 @@ resource appInsightsWebTest2Actual 'Microsoft.Insights/webtests@2022-06-15' = {
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Crash/Crash2Actual.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/Crash2Actual'
     }
     ValidationRules: {
       SSLCheck: true
@@ -239,15 +238,15 @@ resource appInsightsWebTest2Actual 'Microsoft.Insights/webtests@2022-06-15' = {
   }
 }
 
-resource appInsightsWebTest3 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appServiceName}-webtest-3'
+resource appInsightsWebTestStackOverflow1 'Microsoft.Insights/webtests@2022-06-15' = {
+  name: '${appServiceName}-webtest-stackoverflow-1'
   location: location
   tags: {
     'hidden-link:${appInsights.id}': 'Resource'
   }
   properties: {
-    SyntheticMonitorId: '${appServiceName}-webtest-3'
-    Name: '${appServiceName}-webtest-3'
+    SyntheticMonitorId: '${appServiceName}-webtest-stackoverflow-1'
+    Name: '${appServiceName}-webtest-stackoverflow-1'
     Enabled: true
     Frequency: 300
     Timeout: 30
@@ -271,7 +270,7 @@ resource appInsightsWebTest3 'Microsoft.Insights/webtests@2022-06-15' = {
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Crash/Crash3.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/StackOverflow1'
     }
     ValidationRules: {
       SSLCheck: true
@@ -280,15 +279,15 @@ resource appInsightsWebTest3 'Microsoft.Insights/webtests@2022-06-15' = {
   }
 }
 
-resource appInsightsWebTestUnhandledException 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appServiceName}-webtest-unhandled-exception'
+resource appInsightsWebTestStackOverflow1Actual 'Microsoft.Insights/webtests@2022-06-15' = {
+  name: '${appServiceName}-webtest-stackoverflow-1-actual'
   location: location
   tags: {
     'hidden-link:${appInsights.id}': 'Resource'
   }
   properties: {
-    SyntheticMonitorId: '${appServiceName}-webtest-unhandled-exception'
-    Name: '${appServiceName}-webtest-unhandled-exception'
+    SyntheticMonitorId: '${appServiceName}-webtest-stackoverflow-1-actual'
+    Name: '${appServiceName}-webtest-stackoverflow-1-actual'
     Enabled: true
     Frequency: 300
     Timeout: 30
@@ -312,7 +311,7 @@ resource appInsightsWebTestUnhandledException 'Microsoft.Insights/webtests@2022-
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Crash/UnhandledException1.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/StackOverflow1Actual'
     }
     ValidationRules: {
       SSLCheck: true
@@ -321,15 +320,15 @@ resource appInsightsWebTestUnhandledException 'Microsoft.Insights/webtests@2022-
   }
 }
 
-resource appInsightsWebTestUnhandledExceptionActual 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appServiceName}-webtest-unhandled-exception-actual'
+resource appInsightsWebTestUnhandledException1 'Microsoft.Insights/webtests@2022-06-15' = {
+  name: '${appServiceName}-webtest-unhandledexception-1'
   location: location
   tags: {
     'hidden-link:${appInsights.id}': 'Resource'
   }
   properties: {
-    SyntheticMonitorId: '${appServiceName}-webtest-unhandled-exception-actual'
-    Name: '${appServiceName}-webtest-unhandled-exception-actual'
+    SyntheticMonitorId: '${appServiceName}-webtest-unhandledexception-1'
+    Name: '${appServiceName}-webtest-unhandledexception-1'
     Enabled: true
     Frequency: 300
     Timeout: 30
@@ -353,7 +352,7 @@ resource appInsightsWebTestUnhandledExceptionActual 'Microsoft.Insights/webtests
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Crash/UnhandledException1Actual.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/UnhandledException1'
     }
     ValidationRules: {
       SSLCheck: true
@@ -362,15 +361,15 @@ resource appInsightsWebTestUnhandledExceptionActual 'Microsoft.Insights/webtests
   }
 }
 
-resource appInsightsWebTestStackOverflow 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appServiceName}-webtest-stack-overflow'
+resource appInsightsWebTestUnhandledException1Actual 'Microsoft.Insights/webtests@2022-06-15' = {
+  name: '${appServiceName}-webtest-unhandledexception-1-actual'
   location: location
   tags: {
     'hidden-link:${appInsights.id}': 'Resource'
   }
   properties: {
-    SyntheticMonitorId: '${appServiceName}-webtest-stack-overflow'
-    Name: '${appServiceName}-webtest-stack-overflow'
+    SyntheticMonitorId: '${appServiceName}-webtest-unhandledexception-1-actual'
+    Name: '${appServiceName}-webtest-unhandledexception-1-actual'
     Enabled: true
     Frequency: 300
     Timeout: 30
@@ -394,48 +393,7 @@ resource appInsightsWebTestStackOverflow 'Microsoft.Insights/webtests@2022-06-15
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Crash/StackOverflow1.aspx'
-    }
-    ValidationRules: {
-      SSLCheck: true
-      SSLCertRemainingLifetimeCheck: 100
-    }
-  }
-}
-
-resource appInsightsWebTestStackOverflowActual 'Microsoft.Insights/webtests@2022-06-15' = {
-  name: '${appServiceName}-webtest-stack-overflow-actual'
-  location: location
-  tags: {
-    'hidden-link:${appInsights.id}': 'Resource'
-  }
-  properties: {
-    SyntheticMonitorId: '${appServiceName}-webtest-stack-overflow-actual'
-    Name: '${appServiceName}-webtest-stack-overflow-actual'
-    Enabled: true
-    Frequency: 300
-    Timeout: 30
-    Kind: 'standard'
-    Locations: [
-      {
-        Id: 'us-fl-mia-edge'
-      }
-      {
-        Id: 'us-va-ash-azr'
-      }
-      {
-        Id: 'us-ca-sjc-azr'
-      }
-      {
-        Id: 'emea-gb-db3-azr'
-      }
-      {
-        Id: 'emea-nl-ams-azr'
-      }
-    ]
-    RetryEnabled: true
-    Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Crash/StackOverflow1Actual.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/UnhandledException1Actual'
     }
     ValidationRules: {
       SSLCheck: true

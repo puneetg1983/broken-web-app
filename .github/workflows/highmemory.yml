@@ -96,6 +96,7 @@ jobs:
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
         template: ./AspNetFramework/infra/highmemory.bicep
         parameters: appServiceName=${{ env.APP_SERVICE_NAME }} appServicePlanName=${{ env.APP_SERVICE_PLAN_NAME }} logAnalyticsName=${{ env.LOG_ANALYTICS_NAME }}
+        deploymentName: highmemory-deployment-${{ github.run_number }}
 
     - name: Restart Web App to recover from previous deployment
       run: |

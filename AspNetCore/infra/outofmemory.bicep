@@ -3,7 +3,6 @@ param appServicePlanName string
 param logAnalyticsName string
 
 var location = resourceGroup().location
-var webAppUrl = 'https://${webApp.properties.defaultHostName}'
 var appInsightsName = '${appServiceName}-insights'
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
@@ -108,7 +107,7 @@ resource appInsightsWebTestOutOfMemory1 'Microsoft.Insights/webtests@2022-06-15'
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/OutOfMemory1'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/OutOfMemory1'
     }
     ValidationRules: {
       SSLCheck: true
@@ -149,7 +148,7 @@ resource appInsightsWebTestOutOfMemory1Actual 'Microsoft.Insights/webtests@2022-
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/OutOfMemory1Actual'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/OutOfMemory1Actual'
     }
     ValidationRules: {
       SSLCheck: true

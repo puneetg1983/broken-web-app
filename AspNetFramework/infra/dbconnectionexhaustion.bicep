@@ -3,7 +3,6 @@ param appServicePlanName string
 param logAnalyticsName string
 
 var location = resourceGroup().location
-var webAppUrl = 'https://${webApp.properties.defaultHostName}'
 var appInsightsName = '${appServiceName}-insights'
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
@@ -107,7 +106,7 @@ resource appInsightsWebTestConnectionPool1 'Microsoft.Insights/webtests@2022-06-
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/ConnectionPool/ConnectionPool1Actual.aspx'
+      RequestUrl: '${webApp.properties.defaultHostName}/Scenarios/ConnectionPool/ConnectionPool1Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -148,7 +147,7 @@ resource appInsightsWebTestConnectionPool2 'Microsoft.Insights/webtests@2022-06-
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/ConnectionPool/ConnectionPool2Actual.aspx'
+      RequestUrl: '${webApp.properties.defaultHostName}/Scenarios/ConnectionPool/ConnectionPool2Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -189,7 +188,7 @@ resource appInsightsWebTestConnectionPool3 'Microsoft.Insights/webtests@2022-06-
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/ConnectionPool/ConnectionPool3Actual.aspx'
+      RequestUrl: '${webApp.properties.defaultHostName}/Scenarios/ConnectionPool/ConnectionPool3Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -230,7 +229,7 @@ resource appInsightsWebTestConnectionLeak1 'Microsoft.Insights/webtests@2022-06-
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/ConnectionLeak/ConnectionLeak1.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/DbConnectionExhaustion/DbConnectionExhaustion1.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -271,7 +270,7 @@ resource appInsightsWebTestConnectionLeak1Actual 'Microsoft.Insights/webtests@20
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/ConnectionLeak/ConnectionLeak1Actual.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/DbConnectionExhaustion/DbConnectionExhaustion1Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true

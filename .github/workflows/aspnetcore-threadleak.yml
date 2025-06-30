@@ -94,6 +94,7 @@ jobs:
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
         template: ./AspNetCore/infra/threadleak.bicep
         parameters: appServiceName=${{ env.APP_SERVICE_NAME }} appServicePlanName=${{ env.APP_SERVICE_PLAN_NAME }} logAnalyticsName=${{ env.LOG_ANALYTICS_NAME }}
+        deploymentName: threadleak-deployment-${{ github.run_number }}
 
     - name: Deploy to Azure Web App
       id: deploy-to-webapp

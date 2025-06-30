@@ -3,7 +3,6 @@ param appServicePlanName string
 param logAnalyticsName string
 
 var location = resourceGroup().location
-var webAppUrl = 'https://${webApp.properties.defaultHostName}'
 var appInsightsName = '${appServiceName}-insights'
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
@@ -107,7 +106,7 @@ resource appInsightsWebTestHighCpu1 'Microsoft.Insights/webtests@2022-06-15' = {
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/HighCpu/HighCpu1.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/HighCpu/HighCpu1.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -148,7 +147,7 @@ resource appInsightsWebTestHighCpu1Actual 'Microsoft.Insights/webtests@2022-06-1
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/HighCpu/HighCpu1Actual.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/HighCpu/HighCpu1Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -189,7 +188,7 @@ resource appInsightsWebTestHighCpu2 'Microsoft.Insights/webtests@2022-06-15' = {
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/HighCpu/HighCpu2.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/HighCpu/HighCpu2.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -230,7 +229,7 @@ resource appInsightsWebTestHighCpu2Actual 'Microsoft.Insights/webtests@2022-06-1
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/HighCpu/HighCpu2Actual.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/HighCpu/HighCpu2Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -271,7 +270,7 @@ resource appInsightsWebTestHighCpu3 'Microsoft.Insights/webtests@2022-06-15' = {
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/HighCpu/HighCpu3.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/HighCpu/HighCpu3.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -312,7 +311,7 @@ resource appInsightsWebTestHighCpu3Actual 'Microsoft.Insights/webtests@2022-06-1
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/HighCpu/HighCpu3Actual.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/HighCpu/HighCpu3Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true

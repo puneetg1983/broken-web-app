@@ -3,7 +3,6 @@ param appServicePlanName string
 param logAnalyticsName string
 
 var location = resourceGroup().location
-var webAppUrl = 'https://${webApp.properties.defaultHostName}'
 var appInsightsName = '${appServiceName}-insights'
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
@@ -108,7 +107,7 @@ resource appInsightsWebTestHttp500_1 'Microsoft.Insights/webtests@2022-06-15' = 
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_1.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/Http500/Http500_1.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -149,7 +148,7 @@ resource appInsightsWebTestHttp500_1Actual 'Microsoft.Insights/webtests@2022-06-
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_1Actual.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/Http500/Http500_1Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -190,7 +189,7 @@ resource appInsightsWebTestHttp500_2 'Microsoft.Insights/webtests@2022-06-15' = 
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_2.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/Http500/Http500_2.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -231,7 +230,7 @@ resource appInsightsWebTestHttp500_2Actual 'Microsoft.Insights/webtests@2022-06-
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_2Actual.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/Http500/Http500_2Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -272,7 +271,7 @@ resource appInsightsWebTestHttp500_3 'Microsoft.Insights/webtests@2022-06-15' = 
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_3.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/Http500/Http500_3.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -313,7 +312,7 @@ resource appInsightsWebTestHttp500_3Actual 'Microsoft.Insights/webtests@2022-06-
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_3Actual.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/Http500/Http500_3Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -354,7 +353,7 @@ resource appInsightsWebTestHttp500_4 'Microsoft.Insights/webtests@2022-06-15' = 
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Http500/Http500_4Actual.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/Http500/Http500_4Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -395,7 +394,7 @@ resource appInsightsWebTestServerErrors1 'Microsoft.Insights/webtests@2022-06-15
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/ServerErrors/ServerErrors1.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/ServerErrors/ServerErrors1.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -436,7 +435,7 @@ resource appInsightsWebTestServerErrors1Actual 'Microsoft.Insights/webtests@2022
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/ServerErrors/ServerErrors1Actual.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/ServerErrors/ServerErrors1Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -477,7 +476,7 @@ resource appInsightsWebTestServerErrors2 'Microsoft.Insights/webtests@2022-06-15
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/ServerErrors/ServerErrors2.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/ServerErrors/ServerErrors2.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -518,7 +517,7 @@ resource appInsightsWebTestServerErrors2Actual 'Microsoft.Insights/webtests@2022
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/ServerErrors/ServerErrors2Actual.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/ServerErrors/ServerErrors2Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -559,7 +558,7 @@ resource appInsightsWebTestServerErrors3 'Microsoft.Insights/webtests@2022-06-15
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/ServerErrors/ServerErrors3.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/ServerErrors/ServerErrors3.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -600,7 +599,7 @@ resource appInsightsWebTestServerErrors3Actual 'Microsoft.Insights/webtests@2022
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/ServerErrors/ServerErrors3Actual.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/ServerErrors/ServerErrors3Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true

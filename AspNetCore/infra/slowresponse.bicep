@@ -3,7 +3,6 @@ param appServicePlanName string
 param logAnalyticsName string
 
 var location = resourceGroup().location
-var webAppUrl = 'https://${webApp.properties.defaultHostName}'
 var appInsightsName = '${appServiceName}-insights'
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
@@ -108,7 +107,7 @@ resource appInsightsWebTestSlowResponse1 'Microsoft.Insights/webtests@2022-06-15
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/SlowResponse1'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/SlowResponse1'
     }
     ValidationRules: {
       SSLCheck: true
@@ -149,7 +148,7 @@ resource appInsightsWebTestSlowResponse1Actual 'Microsoft.Insights/webtests@2022
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/SlowResponse1Actual'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/SlowResponse1Actual'
     }
     ValidationRules: {
       SSLCheck: true
@@ -190,7 +189,7 @@ resource appInsightsWebTestSlowResponse2 'Microsoft.Insights/webtests@2022-06-15
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/SlowResponse2'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/SlowResponse2'
     }
     ValidationRules: {
       SSLCheck: true
@@ -231,7 +230,7 @@ resource appInsightsWebTestSlowResponse2Actual 'Microsoft.Insights/webtests@2022
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/SlowResponse2Actual'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/SlowResponse2Actual'
     }
     ValidationRules: {
       SSLCheck: true
@@ -272,7 +271,7 @@ resource appInsightsWebTestSlowResponse3 'Microsoft.Insights/webtests@2022-06-15
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/SlowResponse3'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/SlowResponse3'
     }
     ValidationRules: {
       SSLCheck: true
@@ -313,7 +312,7 @@ resource appInsightsWebTestSlowResponse3Actual 'Microsoft.Insights/webtests@2022
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/SlowResponse3Actual'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/SlowResponse3Actual'
     }
     ValidationRules: {
       SSLCheck: true

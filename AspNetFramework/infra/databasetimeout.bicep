@@ -3,7 +3,6 @@ param appServicePlanName string
 param logAnalyticsName string
 
 var location = resourceGroup().location
-var webAppUrl = 'https://${webApp.properties.defaultHostName}'
 var appInsightsName = '${appServiceName}-insights'
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
@@ -107,7 +106,7 @@ resource appInsightsWebTestSlowDatabase1 'Microsoft.Insights/webtests@2022-06-15
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/SlowDatabase/SlowDatabase1Actual.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/DatabaseTimeout/DatabaseTimeout1.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -148,7 +147,7 @@ resource appInsightsWebTestSlowDatabase2 'Microsoft.Insights/webtests@2022-06-15
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/SlowDatabase/SlowDatabase2Actual.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/DatabaseTimeout/DatabaseTimeout1Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true

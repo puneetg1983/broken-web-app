@@ -3,7 +3,6 @@ param appServicePlanName string
 param logAnalyticsName string
 
 var location = resourceGroup().location
-var webAppUrl = 'https://${webApp.properties.defaultHostName}'
 var appInsightsName = '${appServiceName}-insights'
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
@@ -108,7 +107,7 @@ resource appInsightsWebTestHighMemory1 'Microsoft.Insights/webtests@2022-06-15' 
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/HighMemory1'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/HighMemory1'
     }
     ValidationRules: {
       SSLCheck: true
@@ -149,7 +148,7 @@ resource appInsightsWebTestHighMemory1Actual 'Microsoft.Insights/webtests@2022-0
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/HighMemory1Actual'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/HighMemory1Actual'
     }
     ValidationRules: {
       SSLCheck: true
@@ -190,7 +189,7 @@ resource appInsightsWebTestHighMemory2 'Microsoft.Insights/webtests@2022-06-15' 
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/HighMemory2'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/HighMemory2'
     }
     ValidationRules: {
       SSLCheck: true
@@ -231,7 +230,7 @@ resource appInsightsWebTestHighMemory2Actual 'Microsoft.Insights/webtests@2022-0
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/HighMemory2Actual'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/HighMemory2Actual'
     }
     ValidationRules: {
       SSLCheck: true
@@ -272,7 +271,7 @@ resource appInsightsWebTestHighMemory3 'Microsoft.Insights/webtests@2022-06-15' 
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/HighMemory3'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/HighMemory3'
     }
     ValidationRules: {
       SSLCheck: true
@@ -313,7 +312,7 @@ resource appInsightsWebTestHighMemory3Actual 'Microsoft.Insights/webtests@2022-0
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/HighMemory3Actual'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/HighMemory3Actual'
     }
     ValidationRules: {
       SSLCheck: true

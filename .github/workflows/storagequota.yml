@@ -98,6 +98,7 @@ jobs:
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
         template: ./AspNetFramework/infra/storagequota.bicep
         parameters: appServiceName=${{ env.APP_SERVICE_NAME }} appServicePlanName=${{ env.APP_SERVICE_PLAN_NAME }} logAnalyticsName=${{ env.LOG_ANALYTICS_NAME }}
+        deploymentName: storagequota-deployment-${{ github.run_number }}
 
     - name: Restart Web App to recover from storage quota issue from previous deployment
       run: |

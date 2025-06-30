@@ -3,7 +3,6 @@ param appServicePlanName string
 param logAnalyticsName string
 
 var location = resourceGroup().location
-var webAppUrl = 'https://${webApp.properties.defaultHostName}'
 var appInsightsName = '${appServiceName}-insights'
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
@@ -112,7 +111,48 @@ resource appInsightsWebTestInvalidZip 'Microsoft.Insights/webtests@2022-06-15' =
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: webAppUrl
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/InvalidZip/InvalidZip1.aspx'
+    }
+    ValidationRules: {
+      SSLCheck: true
+      SSLCertRemainingLifetimeCheck: 100
+    }
+  }
+}
+
+resource appInsightsWebTestInvalidZipActual 'Microsoft.Insights/webtests@2022-06-15' = {
+  name: '${appServiceName}-webtest-invalidzip-actual'
+  location: location
+  tags: {
+    'hidden-link:${appInsights.id}': 'Resource'
+  }
+  properties: {
+    SyntheticMonitorId: '${appServiceName}-webtest-invalidzip-actual'
+    Name: '${appServiceName}-webtest-invalidzip-actual'
+    Enabled: true
+    Frequency: 300
+    Timeout: 30
+    Kind: 'standard'
+    Locations: [
+      {
+        Id: 'us-fl-mia-edge'
+      }
+      {
+        Id: 'us-va-ash-azr'
+      }
+      {
+        Id: 'us-ca-sjc-azr'
+      }
+      {
+        Id: 'emea-gb-db3-azr'
+      }
+      {
+        Id: 'emea-nl-ams-azr'
+      }
+    ]
+    RetryEnabled: true
+    Request: {
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/InvalidZip/InvalidZip1Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true

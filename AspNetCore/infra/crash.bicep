@@ -3,7 +3,6 @@ param appServicePlanName string
 param logAnalyticsName string
 
 var location = resourceGroup().location
-var webAppUrl = 'https://${webApp.properties.defaultHostName}'
 var appInsightsName = '${appServiceName}-insights'
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
@@ -108,7 +107,7 @@ resource appInsightsWebTestCrash1 'Microsoft.Insights/webtests@2022-06-15' = {
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Crash1'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/Crash1'
     }
     ValidationRules: {
       SSLCheck: true
@@ -149,7 +148,7 @@ resource appInsightsWebTestCrash1Actual 'Microsoft.Insights/webtests@2022-06-15'
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Crash1Actual'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/Crash1Actual'
     }
     ValidationRules: {
       SSLCheck: true
@@ -190,7 +189,7 @@ resource appInsightsWebTestCrash2 'Microsoft.Insights/webtests@2022-06-15' = {
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Crash2'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/Crash2'
     }
     ValidationRules: {
       SSLCheck: true
@@ -231,7 +230,7 @@ resource appInsightsWebTestCrash2Actual 'Microsoft.Insights/webtests@2022-06-15'
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/Crash2Actual'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/Crash2Actual'
     }
     ValidationRules: {
       SSLCheck: true
@@ -272,7 +271,7 @@ resource appInsightsWebTestStackOverflow1 'Microsoft.Insights/webtests@2022-06-1
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/StackOverflow1'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/StackOverflow1'
     }
     ValidationRules: {
       SSLCheck: true
@@ -313,7 +312,7 @@ resource appInsightsWebTestStackOverflow1Actual 'Microsoft.Insights/webtests@202
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/StackOverflow1Actual'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/StackOverflow1Actual'
     }
     ValidationRules: {
       SSLCheck: true
@@ -354,7 +353,7 @@ resource appInsightsWebTestUnhandledException1 'Microsoft.Insights/webtests@2022
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/UnhandledException1'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/UnhandledException1'
     }
     ValidationRules: {
       SSLCheck: true
@@ -395,7 +394,7 @@ resource appInsightsWebTestUnhandledException1Actual 'Microsoft.Insights/webtest
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webAppUrl}/Scenarios/UnhandledException1Actual'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/UnhandledException1Actual'
     }
     ValidationRules: {
       SSLCheck: true
