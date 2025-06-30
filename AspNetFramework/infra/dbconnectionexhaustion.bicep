@@ -106,7 +106,7 @@ resource appInsightsWebTestConnectionPool1 'Microsoft.Insights/webtests@2022-06-
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webApp.properties.defaultHostName}/Scenarios/ConnectionPool/ConnectionPool1Actual.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/ConnectionPool/ConnectionPool1Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -147,7 +147,7 @@ resource appInsightsWebTestConnectionPool2 'Microsoft.Insights/webtests@2022-06-
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webApp.properties.defaultHostName}/Scenarios/ConnectionPool/ConnectionPool2Actual.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/ConnectionPool/ConnectionPool2Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true
@@ -188,7 +188,7 @@ resource appInsightsWebTestConnectionPool3 'Microsoft.Insights/webtests@2022-06-
     ]
     RetryEnabled: true
     Request: {
-      RequestUrl: '${webApp.properties.defaultHostName}/Scenarios/ConnectionPool/ConnectionPool3Actual.aspx'
+      RequestUrl: 'https://${webApp.properties.defaultHostName}/Scenarios/ConnectionPool/ConnectionPool3Actual.aspx'
     }
     ValidationRules: {
       SSLCheck: true

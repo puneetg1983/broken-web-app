@@ -87,19 +87,54 @@ jobs:
         parameters: logAnalyticsName=${{ env.LOG_ANALYTICS_NAME }}
         deploymentName: loganalytics-highcpu-${{ github.run_number }}
 
-    - name: Deploy Bicep (Web App & App Service Plan)
-      uses: azure/arm-deploy@v1
-      with:
-        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
-        resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
-        template: ./AspNetCore/infra/highcpu.bicep
-        parameters: appServiceName=${{ env.APP_SERVICE_NAME }} appServicePlanName=${{ env.APP_SERVICE_PLAN_NAME }} logAnalyticsName=${{ env.LOG_ANALYTICS_NAME }}
-        deploymentName: highcpu-deployment-${{ github.run_number }}
+    - name: Deploy Bicep (Web App & App Service Plan) with Retry
+      run: |
+        max_attempts=3
+        attempt=1
+        while [ $attempt -le $max_attempts ]; do
+          echo "Attempt $attempt of $max_attempts for Bicep deployment"
+          if az deployment group create \
+            --subscription "${{ env.SUBSCRIPTION_ID }}" \
+            --resource-group "${{ env.RESOURCE_GROUP_NAME }}" \
+            --template-file "./AspNetCore/infra/highcpu.bicep" \
+            --parameters appServiceName="${{ env.APP_SERVICE_NAME }}" appServicePlanName="${{ env.APP_SERVICE_PLAN_NAME }}" logAnalyticsName="${{ env.LOG_ANALYTICS_NAME }}" \
+            --name "highcpu-deployment-${{ github.run_number }}"; then
+            echo "Bicep deployment succeeded on attempt $attempt"
+            break
+          else
+            echo "Bicep deployment failed on attempt $attempt"
+            if [ $attempt -eq $max_attempts ]; then
+              echo "All attempts failed. Exiting."
+              exit 1
+            fi
+            echo "Waiting 30 seconds before retry..."
+            sleep 30
+            ((attempt++))
+          fi
+        done
 
-    - name: Deploy to Azure Web App
+    - name: Deploy to Azure Web App with Retry
       id: deploy-to-webapp
-      uses: azure/webapps-deploy@v3
-      with:
-        app-name: '${{ env.APP_SERVICE_NAME }}'
-        slot-name: 'Production'
-        package: . 
+      run: |
+        max_attempts=3
+        attempt=1
+        while [ $attempt -le $max_attempts ]; do
+          echo "Attempt $attempt of $max_attempts for web app deployment"
+          if az webapp deployment source config-zip \
+            --subscription "${{ env.SUBSCRIPTION_ID }}" \
+            --resource-group "${{ env.RESOURCE_GROUP_NAME }}" \
+            --name "${{ env.APP_SERVICE_NAME }}" \
+            --src .; then
+            echo "Web app deployment succeeded on attempt $attempt"
+            break
+          else
+            echo "Web app deployment failed on attempt $attempt"
+            if [ $attempt -eq $max_attempts ]; then
+              echo "All attempts failed. Exiting."
+              exit 1
+            fi
+            echo "Waiting 30 seconds before retry..."
+            sleep 30
+            ((attempt++))
+          fi
+        done 
