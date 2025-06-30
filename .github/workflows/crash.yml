@@ -90,56 +90,62 @@ jobs:
         deploymentName: loganalytics-crash-${{ github.run_number }}
 
     - name: Deploy Bicep (Web App & App Service Plan) with Retry
+      shell: pwsh
       run: |
-        max_attempts=3
-        attempt=1
-        while [ $attempt -le $max_attempts ]; do
-          echo "Attempt $attempt of $max_attempts for Bicep deployment"
-          if az deployment group create \
-            --subscription "${{ env.SUBSCRIPTION_ID }}" \
-            --resource-group "${{ env.RESOURCE_GROUP_NAME }}" \
-            --template-file "./AspNetFramework/infra/crash.bicep" \
-            --parameters appServiceName="${{ env.APP_SERVICE_NAME }}" appServicePlanName="${{ env.APP_SERVICE_PLAN_NAME }}" logAnalyticsName="${{ env.LOG_ANALYTICS_NAME }}" \
-            --name "crash-deployment-${{ github.run_number }}"; then
-            echo "Bicep deployment succeeded on attempt $attempt"
+        $maxAttempts = 3
+        $attempt = 1
+        while ($attempt -le $maxAttempts) {
+          Write-Host "Attempt $attempt of $maxAttempts for Bicep deployment"
+          try {
+            az deployment group create `
+              --subscription "${{ env.SUBSCRIPTION_ID }}" `
+              --resource-group "${{ env.RESOURCE_GROUP_NAME }}" `
+              --template-file "./AspNetFramework/infra/crash.bicep" `
+              --parameters appServiceName="${{ env.APP_SERVICE_NAME }}" appServicePlanName="${{ env.APP_SERVICE_PLAN_NAME }}" logAnalyticsName="${{ env.LOG_ANALYTICS_NAME }}" `
+              --name "crash-deployment-${{ github.run_number }}"
+            Write-Host "Bicep deployment succeeded on attempt $attempt"
             break
-          else
-            echo "Bicep deployment failed on attempt $attempt"
-            if [ $attempt -eq $max_attempts ]; then
-              echo "All attempts failed. Exiting."
+          }
+          catch {
+            Write-Host "Bicep deployment failed on attempt $attempt"
+            if ($attempt -eq $maxAttempts) {
+              Write-Host "All attempts failed. Exiting."
               exit 1
-            fi
-            echo "Waiting 30 seconds before retry..."
-            sleep 30
-            ((attempt++))
-          fi
-        done
+            }
+            Write-Host "Waiting 30 seconds before retry..."
+            Start-Sleep -Seconds 30
+            $attempt++
+          }
+        }
 
     - name: Deploy to Azure Web App with Retry
       id: deploy-to-webapp
+      shell: pwsh
       run: |
-        max_attempts=3
-        attempt=1
-        while [ $attempt -le $max_attempts ]; do
-          echo "Attempt $attempt of $max_attempts for web app deployment"
-          if az webapp deployment source config-zip \
-            --subscription "${{ env.SUBSCRIPTION_ID }}" \
-            --resource-group "${{ env.RESOURCE_GROUP_NAME }}" \
-            --name "${{ env.APP_SERVICE_NAME }}" \
-            --src .; then
-            echo "Web app deployment succeeded on attempt $attempt"
+        $maxAttempts = 3
+        $attempt = 1
+        while ($attempt -le $maxAttempts) {
+          Write-Host "Attempt $attempt of $maxAttempts for web app deployment"
+          try {
+            az webapp deployment source config-zip `
+              --subscription "${{ env.SUBSCRIPTION_ID }}" `
+              --resource-group "${{ env.RESOURCE_GROUP_NAME }}" `
+              --name "${{ env.APP_SERVICE_NAME }}" `
+              --src .
+            Write-Host "Web app deployment succeeded on attempt $attempt"
             break
-          else
-            echo "Web app deployment failed on attempt $attempt"
-            if [ $attempt -eq $max_attempts ]; then
-              echo "All attempts failed. Exiting."
+          }
+          catch {
+            Write-Host "Web app deployment failed on attempt $attempt"
+            if ($attempt -eq $maxAttempts) {
+              Write-Host "All attempts failed. Exiting."
               exit 1
-            fi
-            echo "Waiting 30 seconds before retry..."
-            sleep 30
-            ((attempt++))
-          fi
-        done
+            }
+            Write-Host "Waiting 30 seconds before retry..."
+            Start-Sleep -Seconds 30
+            $attempt++
+          }
+        }
 
   test-in-production-crash:
     runs-on: windows-latest
