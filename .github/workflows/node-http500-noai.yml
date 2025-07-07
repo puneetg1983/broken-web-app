@@ -59,7 +59,7 @@ jobs:
         "production=true" | Out-File -FilePath deploy/.npmrc -Encoding utf8
         
         # Install production dependencies
-        npm ci --only=production --prefix deploy
+        npm install --omit=dev --prefix deploy
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v4
