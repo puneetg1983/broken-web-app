@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Deploy - Node.js HTTP 500 App
+name: Node.js HTTP 500 App
 
 on:
   push:
@@ -36,8 +36,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: node/package-lock.json
 
     - name: Install dependencies
       working-directory: node
@@ -153,8 +151,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: node/package-lock.json
 
     - name: Install dependencies
       working-directory: node
