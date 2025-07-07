@@ -1,0 +1,33 @@
+<div class="row">
+    <div class="col-12">
+        <div class="text-center">
+            <h1 class="display-1 text-danger">
+                <i class="fas fa-exclamation-triangle"></i>
+                <%= error.status || 500 %>
+            </h1>
+            <h2 class="text-muted mb-4"><%= message %></h2>
+            
+            <% if (typeof stack !== 'undefined' && stack) { %>
+                <div class="alert alert-danger text-start">
+                    <h5>Stack Trace:</h5>
+                    <pre class="mb-0"><%= stack %></pre>
+                </div>
+            <% } %>
+            
+            <div class="mt-4">
+                <a href="/" class="btn btn-primary me-2">
+                    <i class="fas fa-home me-1"></i>
+                    Go Home
+                </a>
+                <a href="/process-metrics" class="btn btn-info me-2">
+                    <i class="fas fa-chart-line me-1"></i>
+                    View Metrics
+                </a>
+                <button onclick="history.back()" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    Go Back
+                </button>
+            </div>
+        </div>
+    </div>
+</div> 

@@ -1,0 +1,281 @@
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="fas fa-chart-line me-2"></i>
+            Process Metrics
+        </h1>
+        <div class="alert alert-info">
+            <i class="fas fa-sync-alt me-2"></i>
+            This page auto-refreshes every 5 seconds to show real-time metrics.
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Process Information -->
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card metrics-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Process Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <strong>Process ID:</strong><br>
+                        <span class="badge bg-light text-dark"><%= metrics.processId %></span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Uptime:</strong><br>
+                        <span class="badge bg-light text-dark"><%= Math.floor(metrics.uptime) %>s</span>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-12">
+                        <strong>Node Version:</strong><br>
+                        <span class="badge bg-light text-dark"><%= metrics.nodeVersion %></span>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-12">
+                        <strong>Platform:</strong><br>
+                        <span class="badge bg-light text-dark"><%= metrics.platform %> (<%= metrics.systemCpu[0].model %>)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Memory Usage -->
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card metrics-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-memory me-2"></i>
+                    Memory Usage
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>RSS:</strong>
+                    <div class="progress mb-2">
+                        <div class="progress-bar" role="progressbar" 
+                             style="width: <%= (metrics.memoryUsage.rss / metrics.systemMemory.total * 100).toFixed(1) %>%">
+                            <%= (metrics.memoryUsage.rss / 1024 / 1024).toFixed(1) %> MB
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <strong>Heap Used:</strong>
+                    <div class="progress mb-2">
+                        <div class="progress-bar bg-warning" role="progressbar" 
+                             style="width: <%= (metrics.memoryUsage.heapUsed / metrics.memoryUsage.heapTotal * 100).toFixed(1) %>%">
+                            <%= (metrics.memoryUsage.heapUsed / 1024 / 1024).toFixed(1) %> MB
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <strong>Heap Total:</strong>
+                    <div class="progress mb-2">
+                        <div class="progress-bar bg-info" role="progressbar" 
+                             style="width: <%= (metrics.memoryUsage.heapTotal / metrics.systemMemory.total * 100).toFixed(1) %>%">
+                            <%= (metrics.memoryUsage.heapTotal / 1024 / 1024).toFixed(1) %> MB
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <strong>External:</strong>
+                    <div class="progress mb-2">
+                        <div class="progress-bar bg-success" role="progressbar" 
+                             style="width: <%= (metrics.memoryUsage.external / metrics.systemMemory.total * 100).toFixed(1) %>%">
+                            <%= (metrics.memoryUsage.external / 1024 / 1024).toFixed(1) %> MB
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Memory -->
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card metrics-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-server me-2"></i>
+                    System Memory
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Total:</strong>
+                    <span class="badge bg-light text-dark"><%= (metrics.systemMemory.total / 1024 / 1024 / 1024).toFixed(1) %> GB</span>
+                </div>
+                <div class="mb-3">
+                    <strong>Used:</strong>
+                    <div class="progress mb-2">
+                        <div class="progress-bar bg-danger" role="progressbar" 
+                             style="width: <%= (metrics.systemMemory.used / metrics.systemMemory.total * 100).toFixed(1) %>%">
+                            <%= (metrics.systemMemory.used / 1024 / 1024 / 1024).toFixed(1) %> GB
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <strong>Free:</strong>
+                    <div class="progress mb-2">
+                        <div class="progress-bar bg-success" role="progressbar" 
+                             style="width: <%= (metrics.systemMemory.free / metrics.systemMemory.total * 100).toFixed(1) %>%">
+                            <%= (metrics.systemMemory.free / 1024 / 1024 / 1024).toFixed(1) %> GB
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CPU Usage -->
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card metrics-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-microchip me-2"></i>
+                    CPU Usage
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>User:</strong>
+                    <span class="badge bg-light text-dark"><%= (metrics.cpuUsage.user / 1000000).toFixed(2) %>s</span>
+                </div>
+                <div class="mb-3">
+                    <strong>System:</strong>
+                    <span class="badge bg-light text-dark"><%= (metrics.cpuUsage.system / 1000000).toFixed(2) %>s</span>
+                </div>
+                <div class="mb-3">
+                    <strong>Load Average (1m):</strong>
+                    <span class="badge bg-light text-dark"><%= metrics.loadAverage[0].toFixed(2) %></span>
+                </div>
+                <div class="mb-3">
+                    <strong>Load Average (5m):</strong>
+                    <span class="badge bg-light text-dark"><%= metrics.loadAverage[1].toFixed(2) %></span>
+                </div>
+                <div class="mb-3">
+                    <strong>Load Average (15m):</strong>
+                    <span class="badge bg-light text-dark"><%= metrics.loadAverage[2].toFixed(2) %></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Scenarios -->
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card metrics-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-bug me-2"></i>
+                    Active Scenarios
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Active Threads:</strong>
+                    <span class="badge bg-warning text-dark"><%= metrics.activeThreads %></span>
+                </div>
+                <div class="mb-3">
+                    <strong>Memory Consumers:</strong>
+                    <span class="badge bg-danger text-white"><%= metrics.memoryConsumers %></span>
+                </div>
+                <div class="mb-3">
+                    <strong>Connection Pool Size:</strong>
+                    <span class="badge bg-info text-white"><%= metrics.connectionPoolSize %></span>
+                </div>
+                <div class="mb-3">
+                    <strong>Storage Usage:</strong>
+                    <span class="badge bg-secondary text-white"><%= (metrics.storageUsage / 1024 / 1024).toFixed(1) %> MB</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CPU Cores -->
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card metrics-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-cogs me-2"></i>
+                    CPU Cores
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Total Cores:</strong>
+                    <span class="badge bg-light text-dark"><%= metrics.systemCpu.length %></span>
+                </div>
+                <% metrics.systemCpu.slice(0, 4).forEach((cpu, index) => { %>
+                    <div class="mb-2">
+                        <strong>Core <%= index + 1 %>:</strong>
+                        <span class="badge bg-light text-dark"><%= cpu.model.split(' ').slice(-2).join(' ') %></span>
+                    </div>
+                <% }); %>
+                <% if (metrics.systemCpu.length > 4) { %>
+                    <div class="mb-2">
+                        <em>... and <%= metrics.systemCpu.length - 4 %> more cores</em>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    Memory Usage Chart
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="memoryChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Memory usage chart
+    const ctx = document.getElementById('memoryChart').getContext('2d');
+    const memoryChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['RSS', 'Heap Used', 'Heap Total', 'External'],
+            datasets: [{
+                data: [
+                    <%= metrics.memoryUsage.rss %>,
+                    <%= metrics.memoryUsage.heapUsed %>,
+                    <%= metrics.memoryUsage.heapTotal %>,
+                    <%= metrics.memoryUsage.external %>
+                ],
+                backgroundColor: [
+                    '#FF6384',
+                    '#36A2EB',
+                    '#FFCE56',
+                    '#4BC0C0'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+</script> 
