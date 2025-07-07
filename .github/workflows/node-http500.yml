@@ -39,7 +39,7 @@ jobs:
 
     - name: Install dependencies
       working-directory: node
-      run: npm ci
+      run: npm install
 
     - name: Create deployment package
       working-directory: node
@@ -154,7 +154,7 @@ jobs:
 
     - name: Install dependencies
       working-directory: node
-      run: npm ci
+      run: npm install
 
     - name: Run basic health checks
       shell: pwsh

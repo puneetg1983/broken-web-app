@@ -36,12 +36,10 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: node/package-lock.json
 
     - name: Install dependencies
       working-directory: node
-      run: npm ci
+      run: npm install
 
     - name: Create deployment package
       working-directory: node
@@ -153,12 +151,10 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: node/package-lock.json
 
     - name: Install dependencies
       working-directory: node
-      run: npm ci
+      run: npm install
 
     - name: Run basic health checks
       shell: pwsh
