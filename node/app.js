@@ -256,6 +256,16 @@ app.get('/api/status', (req, res) => {
     res.json(status);
 });
 
+// Health check endpoint for debugging
+app.get('/health', (req, res) => {
+    res.status(200).json({
+        status: 'OK',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        message: 'Application is running'
+    });
+});
+
 // Restart web app
 app.get('/restart-webapp', (req, res) => {
     res.render('restart-webapp');
@@ -617,10 +627,15 @@ app.use((req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-    console.log(`Diagnostic Scenarios Node.js app listening on port ${PORT}`);
-    console.log(`Visit http://localhost:${PORT} to see the scenarios`);
-});
+// Only listen if not running under Azure App Service with IISNode
+if (!process.env.WEBSITE_NODE_DEFAULT_VERSION) {
+    app.listen(PORT, () => {
+        console.log(`Diagnostic Scenarios Node.js app listening on port ${PORT}`);
+        console.log(`Visit http://localhost:${PORT} to see the scenarios`);
+    });
+} else {
+    console.log('Running under Azure App Service with IISNode, server startup handled by IIS');
+}
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
@@ -631,4 +646,7 @@ process.on('SIGTERM', () => {
 process.on('SIGINT', () => {
     console.log('SIGINT received, shutting down gracefully');
     process.exit(0);
-}); 
+});
+
+// Export the app for IISNode
+module.exports = app;

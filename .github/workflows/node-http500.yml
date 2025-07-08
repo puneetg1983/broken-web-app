@@ -41,6 +41,39 @@ jobs:
       working-directory: node
       run: npm install
 
+    - name: Test application startup locally
+      working-directory: node
+      shell: pwsh
+      run: |
+        Write-Host "Testing application startup locally..."
+        
+        # Start the application in the background
+        $process = Start-Process -FilePath "node" -ArgumentList "app.js" -PassThru -WindowStyle Hidden
+        
+        # Wait a few seconds for startup
+        Start-Sleep -Seconds 5
+        
+        # Test if the process is still running
+        if ($process.HasExited) {
+            Write-Host "❌ Application failed to start or crashed immediately"
+            Write-Host "Exit code: $($process.ExitCode)"
+            exit 1
+        } else {
+            Write-Host "✅ Application started successfully"
+            
+            # Test basic endpoint
+            try {
+                $response = Invoke-WebRequest -Uri "http://localhost:3000/health" -UseBasicParsing -TimeoutSec 10
+                Write-Host "✅ Health endpoint responded with status: $($response.StatusCode)"
+            } catch {
+                Write-Host "❌ Health endpoint test failed: $($_.Exception.Message)"
+            }
+            
+            # Stop the process
+            Stop-Process -Id $process.Id -Force
+            Write-Host "Application stopped"
+        }
+
     - name: Create deployment package
       working-directory: node
       shell: pwsh
@@ -48,18 +81,110 @@ jobs:
         # Create a deployment directory
         New-Item -ItemType Directory -Force -Path deploy
         
-        # Copy application files
-        Copy-Item -Path app.js,package.json,setup.js,start.bat,README.md,web.config,startup.cmd,.deployment,iisnode.yml -Destination deploy/ -Force
-        Copy-Item -Path views/ -Destination deploy/ -Recurse -Force
+        # Copy application files (including any missing startup files)
+        $filesToCopy = @('app.js', 'package.json', 'setup.js', 'start.bat', 'README.md', 'web.config', 'iisnode.yml', '.deployment')
+        
+        # Check for optional files and copy them if they exist
+        $optionalFiles = @('startup.cmd', 'startup.sh', '.npmrc')
+        foreach ($file in $optionalFiles) {
+            if (Test-Path $file) {
+                $filesToCopy += $file
+            }
+        }
+        
+        # Copy all identified files
+        foreach ($file in $filesToCopy) {
+            if (Test-Path $file) {
+                Copy-Item -Path $file -Destination deploy/ -Force
+                Write-Host "Copied: $file"
+            } else {
+                Write-Host "Warning: $file not found"
+            }
+        }
+        
+        # Copy directories
+        if (Test-Path "views") {
+            Copy-Item -Path views/ -Destination deploy/ -Recurse -Force
+            Write-Host "Copied: views directory"
+        }
+        
+        if (Test-Path "public") {
+            Copy-Item -Path public/ -Destination deploy/ -Recurse -Force
+            Write-Host "Copied: public directory"
+        }
+        
+        # Copy node_modules from the build environment
+        if (Test-Path "node_modules") {
+            Copy-Item -Path node_modules/ -Destination deploy/ -Recurse -Force
+            Write-Host "Copied: node_modules directory"
+        }
         
         # Create temp directory
         New-Item -ItemType Directory -Force -Path deploy/temp
         
-        # Create .npmrc to ensure production install
-        "production=true" | Out-File -FilePath deploy/.npmrc -Encoding utf8
+        # Verify critical files exist in deploy directory
+        $criticalFiles = @('app.js', 'package.json', 'web.config', 'iisnode.yml')
+        foreach ($file in $criticalFiles) {
+            if (-not (Test-Path "deploy/$file")) {
+                Write-Error "Critical file missing: $file"
+                exit 1
+            }
+        }
         
-        # Install production dependencies
-        npm install --omit=dev --prefix deploy
+        Write-Host "Deployment package created successfully"
+
+    - name: Verify deployment package
+      working-directory: node
+      shell: pwsh
+      run: |
+        Write-Host "Verifying deployment package contents..."
+        
+        # List all files in deploy directory
+        Write-Host "Files in deploy directory:"
+        Get-ChildItem -Path deploy -Recurse | Select-Object FullName, Length | Format-Table -AutoSize
+        
+        # Verify critical files and their content
+        $criticalFiles = @('app.js', 'package.json', 'web.config', 'iisnode.yml')
+        foreach ($file in $criticalFiles) {
+            $filePath = "deploy/$file"
+            if (Test-Path $filePath) {
+                $size = (Get-Item $filePath).Length
+                Write-Host "✅ $file exists (${size} bytes)"
+                
+                # Show first few lines for verification
+                if ($file -eq 'package.json') {
+                    Write-Host "Package.json content:"
+                    Get-Content $filePath | Select-Object -First 10
+                }
+            } else {
+                Write-Host "❌ $file is missing!"
+                exit 1
+            }
+        }
+        
+        # Check if node_modules was copied
+        if (Test-Path "deploy/node_modules") {
+            $moduleCount = (Get-ChildItem "deploy/node_modules" -Directory).Count
+            Write-Host "✅ node_modules directory exists with $moduleCount modules"
+        } else {
+            Write-Host "❌ node_modules directory is missing!"
+        }
+        
+        # Check views directory
+        if (Test-Path "deploy/views") {
+            $viewCount = (Get-ChildItem "deploy/views" -Recurse -File).Count
+            Write-Host "✅ views directory exists with $viewCount files"
+        } else {
+            Write-Host "❌ views directory is missing!"
+        }
+        
+        # List installed npm packages
+        if (Test-Path "deploy/node_modules") {
+            Write-Host "Installed npm packages:"
+            Get-ChildItem "deploy/node_modules" -Directory | Select-Object -ExpandProperty Name | Sort-Object | ForEach-Object { Write-Host " - $_" }
+        } else {
+            Write-Host "No npm packages found"
+        }
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v4
@@ -139,6 +264,49 @@ jobs:
         app-name: '${{ env.APP_SERVICE_NAME }}'
         slot-name: 'Production'
         package: .
+
+    - name: Verify deployment and troubleshoot IISNode
+      shell: pwsh
+      run: |
+        Write-Host "Verifying deployment to Azure Web App..."
+        
+        # Wait for deployment to settle
+        Start-Sleep -Seconds 30
+        
+        # Check if the application is responding
+        $appUrl = "${{ env.WEBAPP_URL }}"
+        Write-Host "Testing application at: $appUrl"
+        
+        try {
+            $response = Invoke-WebRequest -Uri $appUrl -UseBasicParsing -TimeoutSec 30
+            Write-Host "✅ Application is responding with status code: $($response.StatusCode)"
+        } catch {
+            Write-Host "❌ Application is not responding properly"
+            Write-Host "Error: $($_.Exception.Message)"
+            
+            # Try to get more detailed error information
+            if ($_.Exception.Response) {
+                Write-Host "Response status: $($_.Exception.Response.StatusCode)"
+                Write-Host "Response content:"
+                $_.Exception.Response.GetResponseStream() | Out-String
+            }
+        }
+        
+        # Check for common IISNode issues
+        Write-Host "Checking for common IISNode troubleshooting steps..."
+        Write-Host "1. Verify that package.json 'main' field points to correct file"
+        Write-Host "2. Verify that web.config handler points to correct file"
+        Write-Host "3. Verify that all dependencies are installed"
+        Write-Host "4. Check if the app can start locally"
+        
+        # Test a simple endpoint that should work
+        Write-Host "Testing basic endpoint..."
+        try {
+            $healthResponse = Invoke-WebRequest -Uri "$appUrl/health" -UseBasicParsing -TimeoutSec 10
+            Write-Host "✅ Health endpoint responding"
+        } catch {
+            Write-Host "❌ Health endpoint not responding: $($_.Exception.Message)"
+        }
 
   test:
     runs-on: windows-latest
