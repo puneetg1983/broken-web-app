@@ -2,7 +2,7 @@
 # This file configures how iisnode handles Node.js applications
 
 # Node.js process management
-nodeProcessCommandLine: "%programfiles%\nodejs\18.17.0\node.exe"
+nodeProcessCommandLine: "node"
 
 # File watching
 watchedFiles: "*.js;iisnode.yml;package.json"

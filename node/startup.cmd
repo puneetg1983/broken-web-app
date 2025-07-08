@@ -6,7 +6,7 @@ echo Starting Node.js Diagnostic Scenarios Application...
 
 REM Set environment variables
 set NODE_ENV=production
-set PORT=8080
+set PORT=%HTTP_PLATFORM_PORT%
 
 REM Create temp directory if it doesn't exist
 if not exist "temp" mkdir temp
