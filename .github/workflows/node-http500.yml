@@ -54,7 +54,17 @@ jobs:
         
         # Create deployment package
         mkdir -p deploy
-        cp -r . deploy/
+        
+        # Copy files and directories, excluding deploy directory itself
+        find . -maxdepth 1 -name "deploy" -prune -o -name ".*" -prune -o -type f -print | xargs -I {} cp {} deploy/
+        
+        # Copy directories (excluding deploy and hidden directories)
+        for dir in */; do
+          if [ "$dir" != "deploy/" ] && [[ ! "$dir" =~ ^\. ]]; then
+            cp -r "$dir" deploy/
+          fi
+        done
+        
         echo "✅ Deployment package created"
 
     - name: Upload artifact for deployment job
