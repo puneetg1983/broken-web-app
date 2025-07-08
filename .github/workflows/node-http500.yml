@@ -55,15 +55,29 @@ jobs:
         # Create deployment package
         mkdir -p deploy
         
-        # Copy files and directories, excluding deploy directory itself
-        find . -maxdepth 1 -name "deploy" -prune -o -name ".*" -prune -o -type f -print | xargs -I {} cp {} deploy/
+        # Copy all necessary files for the Node.js app
+        cp app.js deploy/
+        cp package.json deploy/
+        cp package-lock.json deploy/
+        cp web.config deploy/
+        cp iisnode.yml deploy/
+        cp setup.js deploy/
+        cp start.bat deploy/
+        cp startup.cmd deploy/
+        cp startup.sh deploy/
+        cp README.md deploy/
         
-        # Copy directories (excluding deploy and hidden directories)
-        for dir in */; do
-          if [ "$dir" != "deploy/" ] && [[ ! "$dir" =~ ^\. ]]; then
-            cp -r "$dir" deploy/
-          fi
-        done
+        # Copy .deployment file if it exists
+        [ -f .deployment ] && cp .deployment deploy/ || echo ".deployment file not found"
+        
+        # Copy directories (excluding node_modules, deploy, and hidden directories)
+        cp -r views/ deploy/
+        cp -r scripts/ deploy/
+        
+        # Copy node_modules if it exists (production dependencies)
+        if [ -d "node_modules" ]; then
+          cp -r node_modules/ deploy/
+        fi
         
         echo "✅ Deployment package created"
 
