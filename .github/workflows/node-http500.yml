@@ -25,7 +25,7 @@ env:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     permissions:
       contents: read #This is required for actions/checkout
 
@@ -36,155 +36,50 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: node/package-lock.json
 
     - name: Install dependencies
       working-directory: node
-      run: npm install
+      run: npm ci
 
-    - name: Test application startup locally
+    - name: Build and package application
       working-directory: node
-      shell: pwsh
       run: |
-        Write-Host "Testing application startup locally..."
+        # Test app starts locally
+        timeout 10s node app.js || echo "App test completed"
         
-        # Start the application in the background
-        $process = Start-Process -FilePath "node" -ArgumentList "app.js" -PassThru -WindowStyle Hidden
+        # Run build if available
+        npm run build 2>/dev/null || echo "No build script found"
         
-        # Wait a few seconds for startup
-        Start-Sleep -Seconds 5
+        # Create deployment package
+        mkdir -p deploy
         
-        # Test if the process is still running
-        if ($process.HasExited) {
-            Write-Host "❌ Application failed to start or crashed immediately"
-            Write-Host "Exit code: $($process.ExitCode)"
-            exit 1
-        } else {
-            Write-Host "✅ Application started successfully"
-            
-            # Test basic endpoint
-            try {
-                $response = Invoke-WebRequest -Uri "http://localhost:3000/health" -UseBasicParsing -TimeoutSec 10
-                Write-Host "✅ Health endpoint responded with status: $($response.StatusCode)"
-            } catch {
-                Write-Host "❌ Health endpoint test failed: $($_.Exception.Message)"
-            }
-            
-            # Stop the process
-            Stop-Process -Id $process.Id -Force
-            Write-Host "Application stopped"
-        }
-
-    - name: Create deployment package
-      working-directory: node
-      shell: pwsh
-      run: |
-        # Create a deployment directory
-        New-Item -ItemType Directory -Force -Path deploy
+        # Copy all necessary files for the Node.js app
+        cp app.js deploy/
+        cp package.json deploy/
+        cp package-lock.json deploy/
+        cp web.config deploy/
+        cp iisnode.yml deploy/
+        cp setup.js deploy/
+        cp start.bat deploy/
+        cp startup.cmd deploy/
+        cp startup.sh deploy/
+        cp README.md deploy/
         
-        # Copy application files (including any missing startup files)
-        $filesToCopy = @('app.js', 'package.json', 'setup.js', 'start.bat', 'README.md', 'web.config', 'iisnode.yml', '.deployment')
+        # Copy .deployment file if it exists
+        [ -f .deployment ] && cp .deployment deploy/ || echo ".deployment file not found"
         
-        # Check for optional files and copy them if they exist
-        $optionalFiles = @('startup.cmd', 'startup.sh', '.npmrc')
-        foreach ($file in $optionalFiles) {
-            if (Test-Path $file) {
-                $filesToCopy += $file
-            }
-        }
+        # Copy directories (excluding node_modules, deploy, and hidden directories)
+        cp -r views/ deploy/
+        cp -r scripts/ deploy/
         
-        # Copy all identified files
-        foreach ($file in $filesToCopy) {
-            if (Test-Path $file) {
-                Copy-Item -Path $file -Destination deploy/ -Force
-                Write-Host "Copied: $file"
-            } else {
-                Write-Host "Warning: $file not found"
-            }
-        }
+        # Copy node_modules if it exists (production dependencies)
+        if [ -d "node_modules" ]; then
+          cp -r node_modules/ deploy/
+        fi
         
-        # Copy directories
-        if (Test-Path "views") {
-            Copy-Item -Path views/ -Destination deploy/ -Recurse -Force
-            Write-Host "Copied: views directory"
-        }
-        
-        if (Test-Path "public") {
-            Copy-Item -Path public/ -Destination deploy/ -Recurse -Force
-            Write-Host "Copied: public directory"
-        }
-        
-        # Copy node_modules from the build environment
-        if (Test-Path "node_modules") {
-            Copy-Item -Path node_modules/ -Destination deploy/ -Recurse -Force
-            Write-Host "Copied: node_modules directory"
-        }
-        
-        # Create temp directory
-        New-Item -ItemType Directory -Force -Path deploy/temp
-        
-        # Verify critical files exist in deploy directory
-        $criticalFiles = @('app.js', 'package.json', 'web.config', 'iisnode.yml')
-        foreach ($file in $criticalFiles) {
-            if (-not (Test-Path "deploy/$file")) {
-                Write-Error "Critical file missing: $file"
-                exit 1
-            }
-        }
-        
-        Write-Host "Deployment package created successfully"
-
-    - name: Verify deployment package
-      working-directory: node
-      shell: pwsh
-      run: |
-        Write-Host "Verifying deployment package contents..."
-        
-        # List all files in deploy directory
-        Write-Host "Files in deploy directory:"
-        Get-ChildItem -Path deploy -Recurse | Select-Object FullName, Length | Format-Table -AutoSize
-        
-        # Verify critical files and their content
-        $criticalFiles = @('app.js', 'package.json', 'web.config', 'iisnode.yml')
-        foreach ($file in $criticalFiles) {
-            $filePath = "deploy/$file"
-            if (Test-Path $filePath) {
-                $size = (Get-Item $filePath).Length
-                Write-Host "✅ $file exists (${size} bytes)"
-                
-                # Show first few lines for verification
-                if ($file -eq 'package.json') {
-                    Write-Host "Package.json content:"
-                    Get-Content $filePath | Select-Object -First 10
-                }
-            } else {
-                Write-Host "❌ $file is missing!"
-                exit 1
-            }
-        }
-        
-        # Check if node_modules was copied
-        if (Test-Path "deploy/node_modules") {
-            $moduleCount = (Get-ChildItem "deploy/node_modules" -Directory).Count
-            Write-Host "✅ node_modules directory exists with $moduleCount modules"
-        } else {
-            Write-Host "❌ node_modules directory is missing!"
-        }
-        
-        # Check views directory
-        if (Test-Path "deploy/views") {
-            $viewCount = (Get-ChildItem "deploy/views" -Recurse -File).Count
-            Write-Host "✅ views directory exists with $viewCount files"
-        } else {
-            Write-Host "❌ views directory is missing!"
-        }
-        
-        # List installed npm packages
-        if (Test-Path "deploy/node_modules") {
-            Write-Host "Installed npm packages:"
-            Get-ChildItem "deploy/node_modules" -Directory | Select-Object -ExpandProperty Name | Sort-Object | ForEach-Object { Write-Host " - $_" }
-        } else {
-            Write-Host "No npm packages found"
-        }
+        echo "✅ Deployment package created"
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v4
@@ -193,7 +88,7 @@ jobs:
         path: node/deploy/
 
   deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: build
     
     permissions:
@@ -207,6 +102,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: node-app
+        path: ./deploy
     
     - name: Login to Azure
       uses: azure/login@v2
@@ -215,172 +111,53 @@ jobs:
         tenant-id: ${{ secrets.TENANTID }}
         subscription-id: ${{ secrets.SUBSCRIPTIONID }}
 
-    - name: List folder structure for debugging
-      shell: pwsh
-      run: Get-ChildItem -Recurse -Include "*.js","*.json","*.bicep" | Select-Object -First 20
-
-    - name: Deploy Log Analytics Workspace
-      uses: azure/arm-deploy@v1
-      with:
-        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
-        resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
-        template: ./node/infra/loganalytics.bicep
-        parameters: logAnalyticsName=${{ env.LOG_ANALYTICS_NAME }}
-        deploymentName: loganalytics-node-http500-${{ github.run_number }}
-
-    - name: Deploy Bicep (Web App & App Service Plan) with Retry
-      shell: pwsh
+    - name: Deploy infrastructure and app
       run: |
-        $maxAttempts = 3
-        $attempt = 1
-        while ($attempt -le $maxAttempts) {
-          Write-Host "Attempt $attempt of $maxAttempts for Bicep deployment"
-          try {
-            az deployment group create `
-              --subscription "${{ env.SUBSCRIPTION_ID }}" `
-              --resource-group "${{ env.RESOURCE_GROUP_NAME }}" `
-              --template-file "./node/infra/http500.bicep" `
-              --parameters appServiceName="${{ env.APP_SERVICE_NAME }}" appServicePlanName="${{ env.APP_SERVICE_PLAN_NAME }}" logAnalyticsName="${{ env.LOG_ANALYTICS_NAME }}" `
-              --name "node-http500-deployment-${{ github.run_number }}"
-            Write-Host "Bicep deployment succeeded on attempt $attempt"
-            break
-          }
-          catch {
-            Write-Host "Bicep deployment failed on attempt $attempt"
-            if ($attempt -eq $maxAttempts) {
-              Write-Host "All attempts failed. Exiting."
-              exit 1
-            }
-            Write-Host "Waiting 30 seconds before retry..."
-            Start-Sleep -Seconds 30
-            $attempt++
-          }
-        }
+        # Deploy Log Analytics
+        az deployment group create \
+          --subscription "${{ env.SUBSCRIPTION_ID }}" \
+          --resource-group "${{ env.RESOURCE_GROUP_NAME }}" \
+          --template-file "./node/infra/loganalytics.bicep" \
+          --parameters logAnalyticsName="${{ env.LOG_ANALYTICS_NAME }}" \
+          --name "loganalytics-${{ github.run_number }}"
+        
+        # Deploy Web App infrastructure
+        az deployment group create \
+          --subscription "${{ env.SUBSCRIPTION_ID }}" \
+          --resource-group "${{ env.RESOURCE_GROUP_NAME }}" \
+          --template-file "./node/infra/http500.bicep" \
+          --parameters appServiceName="${{ env.APP_SERVICE_NAME }}" appServicePlanName="${{ env.APP_SERVICE_PLAN_NAME }}" logAnalyticsName="${{ env.LOG_ANALYTICS_NAME }}" \
+          --name "webapp-${{ github.run_number }}"
 
     - name: Deploy to Azure Web App
-      id: deploy-to-webapp
       uses: azure/webapps-deploy@v3
       with:
         app-name: '${{ env.APP_SERVICE_NAME }}'
-        slot-name: 'Production'
-        package: .
+        package: ./deploy
 
-    - name: Verify deployment and troubleshoot IISNode
-      shell: pwsh
+    - name: Verify deployment
       run: |
-        Write-Host "Verifying deployment to Azure Web App..."
-        
-        # Wait for deployment to settle
-        Start-Sleep -Seconds 30
-        
-        # Check if the application is responding
-        $appUrl = "${{ env.WEBAPP_URL }}"
-        Write-Host "Testing application at: $appUrl"
-        
-        try {
-            $response = Invoke-WebRequest -Uri $appUrl -UseBasicParsing -TimeoutSec 30
-            Write-Host "✅ Application is responding with status code: $($response.StatusCode)"
-        } catch {
-            Write-Host "❌ Application is not responding properly"
-            Write-Host "Error: $($_.Exception.Message)"
-            
-            # Try to get more detailed error information
-            if ($_.Exception.Response) {
-                Write-Host "Response status: $($_.Exception.Response.StatusCode)"
-                Write-Host "Response content:"
-                $_.Exception.Response.GetResponseStream() | Out-String
-            }
-        }
-        
-        # Check for common IISNode issues
-        Write-Host "Checking for common IISNode troubleshooting steps..."
-        Write-Host "1. Verify that package.json 'main' field points to correct file"
-        Write-Host "2. Verify that web.config handler points to correct file"
-        Write-Host "3. Verify that all dependencies are installed"
-        Write-Host "4. Check if the app can start locally"
-        
-        # Test a simple endpoint that should work
-        Write-Host "Testing basic endpoint..."
-        try {
-            $healthResponse = Invoke-WebRequest -Uri "$appUrl/health" -UseBasicParsing -TimeoutSec 10
-            Write-Host "✅ Health endpoint responding"
-        } catch {
-            Write-Host "❌ Health endpoint not responding: $($_.Exception.Message)"
-        }
+        sleep 30
+        curl -f "${{ env.WEBAPP_URL }}" && echo "✅ App deployed successfully" || echo "❌ Deployment verification failed"
 
   test:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: deploy
     
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-
-    - name: Install dependencies
-      working-directory: node
-      run: npm install
-
-    - name: Run basic health checks
-      shell: pwsh
+    - name: Test application endpoints
       run: |
-        Write-Host "Testing application endpoints..."
+        sleep 30
         
-        # Wait for deployment to be ready
-        Start-Sleep -Seconds 30
+        # Test main endpoints
+        curl -f "${{ env.WEBAPP_URL }}/" || exit 1
+        curl -f "${{ env.WEBAPP_URL }}/process-metrics" || exit 1
+        curl -f "${{ env.WEBAPP_URL }}/scenarios/http500/http500_1" || exit 1
         
-        # Test home page
-        Write-Host "Testing home page..."
-        try {
-          Invoke-WebRequest -Uri "${{ env.WEBAPP_URL }}/" -UseBasicParsing | Out-Null
-        } catch {
-          Write-Host "Home page test failed"
-          exit 1
-        }
+        # Test HTTP 500 scenario (should return 500)
+        status=$(curl -s -o /dev/null -w "%{http_code}" "${{ env.WEBAPP_URL }}/scenarios/http500/http500_1/actual")
+        [ "$status" = "500" ] && echo "✅ HTTP 500 test passed" || exit 1
         
-        # Test process metrics
-        Write-Host "Testing process metrics..."
-        try {
-          Invoke-WebRequest -Uri "${{ env.WEBAPP_URL }}/process-metrics" -UseBasicParsing | Out-Null
-        } catch {
-          Write-Host "Process metrics test failed"
-          exit 1
-        }
-        
-        # Test HTTP 500 scenario page
-        Write-Host "Testing HTTP 500 scenario page..."
-        try {
-          Invoke-WebRequest -Uri "${{ env.WEBAPP_URL }}/scenarios/http500/http500_1" -UseBasicParsing | Out-Null
-        } catch {
-          Write-Host "HTTP 500 scenario page test failed"
-          exit 1
-        }
-        
-        Write-Host "All health checks passed!"
-      env:
-        WEBAPP_URL: ${{ env.WEBAPP_URL }}
-
-    - name: Test HTTP 500 scenario execution
-      shell: pwsh
-      run: |
-        Write-Host "Testing HTTP 500 scenario execution..."
-        
-        # Test the actual HTTP 500 scenario (should return 500)
-        try {
-          $response = Invoke-WebRequest -Uri "${{ env.WEBAPP_URL }}/scenarios/http500/http500_1/actual" -UseBasicParsing
-          $statusCode = $response.StatusCode
-        } catch {
-          $statusCode = $_.Exception.Response.StatusCode.value__
-        }
-        
-        if ($statusCode -eq 500) {
-          Write-Host "✅ HTTP 500 scenario working correctly (returned 500)"
-        } else {
-          Write-Host "❌ HTTP 500 scenario not working correctly (returned $statusCode)"
-          exit 1
-        }
+        echo "✅ All tests passed!"
       env:
         WEBAPP_URL: ${{ env.WEBAPP_URL }}

@@ -71,7 +71,7 @@ resource webApp 'Microsoft.Web/sites@2022-03-01' = {
         }
         {
           name: 'WEBSITE_NODE_DEFAULT_VERSION'
-          value: '18.17.0'
+          value: '~22'
         }
         {
           name: 'NODE_ENV'
