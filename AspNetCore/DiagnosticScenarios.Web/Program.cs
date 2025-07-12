@@ -26,6 +26,15 @@ namespace DiagnosticScenarios.Web
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
+            //
+            // Intentionally throw an exception to simulate a startup failure when CRASH_ON_STARTUP
+            // environment variable is set to true.
+            //
+            if (Environment.GetEnvironmentVariable("CRASH_ON_STARTUP") == "true")
+            {
+                throw new InvalidOperationException("I am failing at startup! Catch me if you can!");
+            }
+
             app.Run();
         }
     }
