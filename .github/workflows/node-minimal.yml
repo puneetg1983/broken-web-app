@@ -1,0 +1,80 @@
+# Minimal Node.js deployment to Azure Windows App Service
+name: Simple Node.js Deploy (Windows)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  WEBAPP_NAME: broken-node-http500-${{ github.actor }}
+
+jobs:
+  deploy:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: node/package-lock.json
+    
+    - name: Install dependencies
+      working-directory: node
+      run: npm ci
+    
+    - name: Verify required files for Windows App Service
+      working-directory: node
+      shell: pwsh
+      run: |
+        Write-Host "Checking required files for IISNode..."
+        $requiredFiles = @('app.js', 'package.json', 'web.config', 'iisnode.yml')
+        foreach ($file in $requiredFiles) {
+            if (Test-Path $file) {
+                Write-Host "✅ Found: $file"
+            } else {
+                Write-Host "❌ Missing: $file"
+            }
+        }
+    
+    - name: Login to Azure
+      uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.MANAGED_IDENTITY_CLIENTID }}
+        tenant-id: ${{ secrets.TENANTID }}
+        subscription-id: ${{ secrets.SUBSCRIPTIONID }}
+    
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: ${{ env.WEBAPP_NAME }}
+        package: node
+    
+    - name: Test deployment
+      shell: pwsh
+      run: |
+        Write-Host "Waiting for deployment to complete..."
+        Start-Sleep -Seconds 45
+        
+        $url = "https://${{ env.WEBAPP_NAME }}.azurewebsites.net/health"
+        Write-Host "Testing health endpoint: $url"
+        
+        try {
+            $response = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 30
+            Write-Host "✅ Deployment successful! Status: $($response.StatusCode)"
+        } catch {
+            Write-Host "❌ Health check failed: $($_.Exception.Message)"
+            
+            # Try the home page as fallback
+            try {
+                $homeResponse = Invoke-WebRequest -Uri "https://${{ env.WEBAPP_NAME }}.azurewebsites.net/" -UseBasicParsing -TimeoutSec 30
+                Write-Host "✅ Home page accessible! Status: $($homeResponse.StatusCode)"
+            } catch {
+                Write-Host "❌ Application not accessible: $($_.Exception.Message)"
+                exit 1
+            }
+        }
