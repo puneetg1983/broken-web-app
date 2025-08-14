@@ -86,7 +86,7 @@ resource appInsightsWebTestStuckRequest1 'Microsoft.Insights/webtests@2022-06-15
   }
 }
 
-resource appInsightsWebTestStuckRequestactual 'Microsoft.Insights/webtests@2022-06-15' = {
+resource appInsightsWebTestHighSleepActual 'Microsoft.Insights/webtests@2022-06-15' = {
   name: '${appServiceName}-webtest-highsleep-actual'
   location: location
   tags: {
@@ -96,8 +96,8 @@ resource appInsightsWebTestStuckRequestactual 'Microsoft.Insights/webtests@2022-
     SyntheticMonitorId: '${appServiceName}-webtest-highsleep-actual'
     Name: '${appServiceName}-webtest-highsleep-actual'
     Enabled: true
-    Frequency: 600
-    Timeout: 330
+    Frequency: 300
+    Timeout: 30
     Kind: 'standard'
     Locations: [
       {
