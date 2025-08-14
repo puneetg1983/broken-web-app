@@ -235,6 +235,11 @@
         </div>
 
         <div class="scenario-group">
+            <h2>Stuck Requests Scenarios</h2>
+            <a href="Scenarios/StuckRequests/HighSleep.aspx">High Sleep Scenario - Stuck Request Simulation (300 seconds, 500.121 scenario)</a>
+        </div>
+
+        <div class="scenario-group">
             <h2>Runtime Version Scenarios</h2>
             <a href="Scenarios/RuntimeVersion/RuntimeVersion1.aspx">Runtime Version Scenario 1 - Version Mismatch</a>
         </div>

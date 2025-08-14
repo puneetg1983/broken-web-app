@@ -1,0 +1,192 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Deploy - Stuck Request App
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# Add concurrency configuration to ensure only one workflow runs at a time
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  APP_SERVICE_NAME: broken-stuckrequest-${{ github.actor }}
+  APP_SERVICE_PLAN_NAME: broken-stuckrequest-${{ github.actor }}
+  WEBAPP_URL: https://broken-stuckrequest-${{ github.actor }}.azurewebsites.net
+  CONFIGURATION: 'Release'
+  SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
+  RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
+  LOG_ANALYTICS_NAME: broken-${{ github.actor }}
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: read #This is required for actions/checkout
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup MSBuild path
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.5
+
+    - name: Restore NuGet packages
+      run: msbuild AspNetFramework\DiagnosticScenarios.sln /t:restore /p:RestorePackagesConfig=true
+
+    - name: Publish to folder
+      run: |
+        Write-Host "Building solution..."
+        msbuild AspNetFramework\DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore
+        Write-Host "Publishing web project..."
+        msbuild AspNetFramework\DiagnosticScenarios.Web\DiagnosticScenarios.Web.csproj /p:Configuration=Release /p:Platform="Any CPU" /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
+
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v4
+      with:
+        name: ASP-app
+        path: '/published/**'
+
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    
+    permissions:
+      id-token: write #This is required for requesting the JWT
+      contents: read #This is required for actions/checkout
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download artifact from build job
+      uses: actions/download-artifact@v4
+      with:
+        name: ASP-app
+    
+    - name: Login to Azure
+      uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.MANAGED_IDENTITY_CLIENTID }}
+        tenant-id: ${{ secrets.TENANTID }}
+        subscription-id: ${{ secrets.SUBSCRIPTIONID }}
+
+    - name: List folder structure for debugging
+      run: Get-ChildItem -Recurse
+
+    - name: Deploy Log Analytics Workspace
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
+        resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
+        template: ./AspNetFramework/infra/loganalytics.bicep
+        parameters: logAnalyticsName=${{ env.LOG_ANALYTICS_NAME }}
+        deploymentName: loganalytics-stuckrequest-${{ github.run_number }}
+        scope: resourcegroup
+
+    - name: Deploy Bicep (Web App & App Service Plan) with Retry
+      shell: pwsh
+      run: |
+        $maxAttempts = 3
+        $attempt = 1
+        while ($attempt -le $maxAttempts) {
+          Write-Host "Attempt $attempt of $maxAttempts for Bicep deployment"
+          try {
+            az deployment group create `
+              --subscription "${{ env.SUBSCRIPTION_ID }}" `
+              --resource-group "${{ env.RESOURCE_GROUP_NAME }}" `
+              --template-file "./AspNetFramework/infra/stuckrequest.bicep" `
+              --parameters appServiceName="${{ env.APP_SERVICE_NAME }}" appServicePlanName="${{ env.APP_SERVICE_PLAN_NAME }}" logAnalyticsName="${{ env.LOG_ANALYTICS_NAME }}" `
+              --name "stuckrequest-deployment-${{ github.run_number }}"
+            Write-Host "Bicep deployment succeeded on attempt $attempt"
+            break
+          }
+          catch {
+            Write-Host "Bicep deployment failed on attempt $attempt"
+            if ($attempt -eq $maxAttempts) {
+              Write-Host "All attempts failed. Exiting."
+              exit 1
+            }
+            Write-Host "Waiting 30 seconds before retry..."
+            Start-Sleep -Seconds 30
+            $attempt++
+          }
+        }
+
+    - name: Restart Web App to recover from previous deployment
+      run: |
+        Write-Host "Restarting web app..."
+        az webapp restart --name ${{ env.APP_SERVICE_NAME }} --resource-group ${{ env.RESOURCE_GROUP_NAME }}
+        Write-Host "Waiting for web app to be ready..."
+        Start-Sleep -Seconds 30
+        Write-Host "Verifying web app is responding..."
+        $maxAttempts = 10
+        $attempt = 0
+        $success = $false
+        while (-not $success -and $attempt -lt $maxAttempts) {
+            $attempt++
+            try {
+                $response = Invoke-WebRequest -Uri ${{ env.WEBAPP_URL }} -Method GET -UseBasicParsing
+                if ($response.StatusCode -eq 200) {
+                    Write-Host "Web app is responding successfully!"
+                    $success = $true
+                }
+            }
+            catch {
+                Write-Host "Attempt $attempt failed. Waiting before retry..."
+                Start-Sleep -Seconds 10
+            }
+        }
+        if (-not $success) {
+            Write-Error "Web app failed to respond after $maxAttempts attempts"
+            exit 1
+        }
+
+    - name: Deploy to Azure Web App
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: '${{ env.APP_SERVICE_NAME }}'
+        slot-name: 'Production'
+        package: .
+
+  test-in-production-stuck-request:
+    runs-on: windows-latest
+    needs: deploy
+    
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup MSBuild path
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.5
+
+    - name: Restore NuGet packages
+      run: msbuild AspNetFramework\DiagnosticScenarios.sln /t:restore /p:RestorePackagesConfig=true
+
+    - name: Build Solution in Release Mode
+      run: |
+        Write-Host "Building solution in Release mode..."
+        msbuild AspNetFramework\DiagnosticScenarios.sln /p:Configuration=Release /p:Platform="Any CPU" /t:Build /v:m /restore /p:OutputPath="bin\Release"
+
+    - name: Install NUnit Console Runner
+      run: |
+        Write-Host "Installing NUnit Console Runner..."
+        nuget install NUnit.ConsoleRunner -Version 3.16.3 -OutputDirectory tools
+
+    - name: Run Tests
+      run: |
+        Write-Host "Running Stuck Request tests..."
+        $nunitPath = Join-Path $env:GITHUB_WORKSPACE "tools\NUnit.ConsoleRunner.3.16.3\tools\nunit3-console.exe"
+        $testDll = Join-Path $env:GITHUB_WORKSPACE "AspNetFramework\DiagnosticScenarios.Tests\bin\Release\DiagnosticScenarios.Tests.dll"
+        & $nunitPath $testDll --framework=net-4.8 --where "cat==StuckRequest"
+      env:
+        WEBAPP_URL: ${{ env.WEBAPP_URL }}
+        RUN_SPECIALIZED_TESTS: StuckRequest
