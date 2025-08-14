@@ -127,6 +127,8 @@
     <Content Include="Scenarios\HighConnections\HighConnections1Actual.aspx" />
     <Content Include="Scenarios\StorageQuota\StorageQuota1.aspx" />
     <Content Include="Scenarios\StorageQuota\StorageQuota1Actual.aspx" />
+    <Content Include="Scenarios\StuckRequests\HighSleep.aspx" />
+    <Content Include="Scenarios\StuckRequests\HighSleepActual.aspx" />
     <Content Include="Scenarios\ThreadLeak\ThreadLeak1.aspx" />
     <Content Include="Scenarios\ThreadLeak\ThreadLeak1Actual.aspx" />
     <Content Include="Scenarios\OutOfMemory\OutOfMemory1.aspx" />
@@ -544,6 +546,20 @@
     </Compile>
     <Compile Include="Scenarios\StorageQuota\StorageQuota1Actual.aspx.designer.cs">
       <DependentUpon>StorageQuota1Actual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\StuckRequests\HighSleep.aspx.cs">
+      <DependentUpon>HighSleep.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\StuckRequests\HighSleep.aspx.designer.cs">
+      <DependentUpon>HighSleep.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenarios\StuckRequests\HighSleepActual.aspx.cs">
+      <DependentUpon>HighSleepActual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Scenarios\StuckRequests\HighSleepActual.aspx.designer.cs">
+      <DependentUpon>HighSleepActual.aspx</DependentUpon>
     </Compile>
     <Compile Include="Scenarios\ThreadLeak\ThreadLeak1Actual.aspx.cs">
       <DependentUpon>ThreadLeak1Actual.aspx</DependentUpon>
