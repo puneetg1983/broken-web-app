@@ -22,6 +22,16 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   }
 }
 
+resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: appInsightsName
+  location: location
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+    WorkspaceResourceId: logAnalyticsWorkspace.id
+  }
+}
+
 resource webApp 'Microsoft.Web/sites@2022-03-01' = {
   name: appServiceName
   location: location
@@ -35,18 +45,7 @@ resource webApp 'Microsoft.Web/sites@2022-03-01' = {
   }
 }
 
-// Create a basic app insights component for web tests but no integration with the web app
-resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
-  name: appInsightsName
-  location: location
-  kind: 'web'
-  properties: {
-    Application_Type: 'web'
-    WorkspaceResourceId: logAnalyticsWorkspace.id
-  }
-}
-
-resource appInsightsWebTestHighSleep 'Microsoft.Insights/webtests@2022-06-15' = {
+resource appInsightsWebTestStuckRequest1 'Microsoft.Insights/webtests@2022-06-15' = {
   name: '${appServiceName}-webtest-highsleep'
   location: location
   tags: {
@@ -87,7 +86,7 @@ resource appInsightsWebTestHighSleep 'Microsoft.Insights/webtests@2022-06-15' = 
   }
 }
 
-resource appInsightsWebTestHighSleepActual 'Microsoft.Insights/webtests@2022-06-15' = {
+resource appInsightsWebTestStuckRequest1Actual 'Microsoft.Insights/webtests@2022-06-15' = {
   name: '${appServiceName}-webtest-highsleep-actual'
   location: location
   tags: {
