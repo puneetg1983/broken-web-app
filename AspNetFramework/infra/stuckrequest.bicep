@@ -3,6 +3,7 @@ param appServicePlanName string
 param logAnalyticsName string
 
 var location = resourceGroup().location
+var appInsightsName = '${appServiceName}-insights'
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: logAnalyticsName
@@ -36,7 +37,7 @@ resource webApp 'Microsoft.Web/sites@2022-03-01' = {
 
 // Create a basic app insights component for web tests but no integration with the web app
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
-  name: '${appServiceName}-insights'
+  name: appInsightsName
   location: location
   kind: 'web'
   properties: {
